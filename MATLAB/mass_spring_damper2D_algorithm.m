@@ -1,13 +1,13 @@
 % Allokering av minne
-n = 5;
-m = 4;
-SIZE = [n m];
+nRows = 2;
+nCols = 3;
+SIZE = [nRows nCols];
 number_of_masses = prod(SIZE);
 
 masses = ones(number_of_masses,1);
 
-%number of connections:    -        |         / and \
-number_of_connections = (n-1)*m + n*(m-1) + 2*(n-1)*(m-1);
+%number of connections:        -                |                 / and \
+number_of_connections = (nRows-1)*nCols + nRows*(nCols-1) + 2*(nRows-1)*(nCols-1);
 
 spring_constants = 200*ones(SIZE-1);
 spring_length = 4*ones(SIZE-1);
@@ -20,39 +20,36 @@ velocities = zeros([SIZE 2]);
 
 % skapa lista med index till grannar
 max_number_of_neighbors = 8;
-neighbor_index = zeros([SIZE max_number_of_neighbors]);
-
-% todo: 
-% fixa linjära indexlistor till 
-% till connections
-
 connection_index = zeros(prod(SIZE), max_number_of_neighbors);
 neighbor_index = zeros(prod(SIZE), max_number_of_neighbors);
 
+
+
 %% Calculate neighbor indices
-for j=1:N % For each mass
+for j=1:number_of_masses % For each mass
     
     %Compute cartesian index
-    [y, x] = ind2sub(SIZE,j); 
+    [col, row] = ind2sub([nCols,nRows],j);
     
     for z=1:max_number_of_neighbors % For each neighbor
-        
         % Calculate cartesian index
-        neighbor_pos = [y, x] + neighborIndex2offset(z); 
+        neighbor_pos = [row, col] + neighborIndex2offset(z);
         
         % Store y and x index as nice variables
-        y_ = neighbor_pos(1); 
-        x_ = neighbor_pos(2);
+        neighbor_row = neighbor_pos(1);
+        neighbor_col = neighbor_pos(2);
         
         %Check if neighbor exist
-        if 0<y_ && y_<=n  &&  0<x_ && x_<=m
+        if 0<neighbor_row && neighbor_row<=nRows && ...
+           0<neighbor_col && neighbor_col<=nCols
             % Add linear index in neighbor index list
-            neighbor_index(j,z) = sub2ind(SIZE,y_,x_);
+            neighbor_index(j,z) = sub2ind([nCols,nRows],neighbor_col,neighbor_row);
         end
     end
 end
 
 %% Calculate connection indices
+% TODO fixa linjära indexlistor till till connections
 
 
 
