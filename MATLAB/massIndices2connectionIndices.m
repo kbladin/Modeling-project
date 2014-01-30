@@ -18,11 +18,11 @@ c = -1;
         
         % connection orientation: /
         case nCols-1 
-            if rem(min(i,j),nCols) ~= 0
+            if rem(min(i,j)-1,nCols) ~= 0
                 d = 2;
-            else
-                return
+                c = min(i,j)-1;
             end
+            return
             
         % connection orientation: |
         case nCols 
@@ -37,7 +37,7 @@ c = -1;
             end
             
         otherwise
-            error(['|i-j| = ', num2str(abs(i-j))]);
+            error(['|i-j| = ', num2str(abs(i-j)) ' -> No such neighbor']);
     end
 c = min(i,j);
 end
