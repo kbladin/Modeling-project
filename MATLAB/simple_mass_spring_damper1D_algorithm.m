@@ -1,9 +1,9 @@
 % Allokering av minne
 N = 5;
 masses = ones(N,1);
-spring_constants = 200*ones(N-1,1);
-spring_length = 4*ones(N-1,1);
-damper_constants = 6*ones(N-1,1);
+spring_constants = 30*ones(N-1,1);
+spring_length = 1*ones(N-1,1);
+damper_constants = 1*ones(N-1,1);
 
 
 positions = zeros(N,2);
@@ -29,12 +29,12 @@ close all;
 read_buffer_index = 1;
 write_buffer_index = 2;
 
-positions(:,1) = 4*(1:N);
+positions(:,1) = 1*(1:N);
 velocities(:,1) = zeros(1,N);
 
-positions(2:N,1) = positions(2:N)-1;
+%positions(2:N,1) = positions(2:N)-1;
 
-%positions(1,1) = -1;
+positions(1,1) = -0.5;
 
 
 n_frames = 500;
@@ -44,8 +44,6 @@ t = T*(0:n_frames-1);
 for i=1:n_frames %Loop through frames
     t=t+T;
     for j=1:N %Loop through masses
-        
-        positions(1,1)=1;
         
         F = 0;
         
@@ -79,10 +77,10 @@ for i=1:n_frames %Loop through frames
     end
     
     
-    plot(ones(1,N),positions(:,write_buffer_index),'*');
-    hold off;
+    plot(t(i)*ones(1,N),positions(:,write_buffer_index),'*');
+    hold on;
     axis manual;
-    axis([0 2 -1 31]);
+    axis([0 25 -1 7]);
     pause(T);
     
     read_buffer_index = rem(read_buffer_index,2)+1;
