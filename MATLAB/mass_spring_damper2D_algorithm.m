@@ -1,31 +1,60 @@
 % Allokering av minne
-nRows = 2;
-nCols = 3;
+clear all;
+nRows = 6;
+nCols = 6;
 SIZE = [nRows nCols];
+
+%number of masses:
 number_of_masses = prod(SIZE);
-
-masses = ones(number_of_masses,1);
-
 %number of connections:        -                |                 / and \
 number_of_connections = (nRows-1)*nCols + nRows*(nCols-1) + 2*(nRows-1)*(nCols-1);
 
-spring_constants = 200*ones(SIZE-1);
-spring_length = 4*ones(SIZE-1);
-damper_constants = 6*ones(SIZE-1);
+%--Masses list--
+masses = ones(number_of_masses,1);
+positions = zeros([number_of_masses, 2, 2]);
+velocities = zeros([number_of_masses, 2, 2]);
+
+for j=1:number_of_masses % For each mass
+    positions(j,:,1) = [floor((j-1)/nRows), rem(j-1,nRows)];
+end
+
+positions(1,:,1) = [-0.5, -0.5];
+positions(2,:,1) = [0.5, -0.5];
+positions(3,:,1) = [1.5, -0.5];
 
 
-positions = zeros([SIZE 2]);
-velocities = zeros([SIZE 2]);
-
-
-% skapa lista med index till grannar
-max_number_of_neighbors = 8;
-connection_index = zeros(prod(SIZE), max_number_of_neighbors);
+% Create list with indices to neighbors and connections
+max_number_of_neighbors = 8; % 8 i två dimensioner
+connection_index = zeros(number_of_masses, max_number_of_neighbors);
 neighbor_index = zeros(prod(SIZE), max_number_of_neighbors);
 
 
+%Fel i funktionen massIndices2connectionIndices!!!
 
-%% Calculate neighbor indices
+%Calculate connection indices and mass indices of neighbors
+for j=1:number_of_masses % For each mass
+    for z=1:max_number_of_neighbors % For each neighbor
+        connection_index(j,z) = connectionInDir(j, z, nRows, nCols);
+        neighbor_index(j,z) = massIndexOfNeighbor(j,z, nRows, nCols);
+    end
+end
+
+%{
+connection_index = ...
+    [-1 -1 4 6 1 -1 -1 -1;
+     -1 -1 -1 -1 2 3 4 -1;
+     1 3 5 -1 -1 -1 -1 -1;
+     2 -1 -1 -1 -1 -1 5 6];
+
+neighbor_index = ...
+    [-1 -1 2 4 3 -1 -1 -1;
+     -1 -1 -1 -1 4 3 1 -1;
+     1 2 4 -1 -1 -1 -1 -1;
+     2 -1 -1 -1 -1 -1 3 1];
+%}
+
+%{
+%Calculate mass indices of neighbors
 for j=1:number_of_masses % For each mass
     
     %Compute cartesian index
@@ -47,42 +76,72 @@ for j=1:number_of_masses % For each mass
         end
     end
 end
+%}
 
-%% Calculate connection indices
-% TODO fixa linjära indexlistor till till connections
+%--Connections list--
+spring_constants = 100000 * ones(number_of_connections, 1);
+damper_constants = 50 * ones(number_of_connections, 1);
+spring_length = ones(number_of_connections, 1);
+
+spring_length(nRows*(nCols-1)+1:nRows*(nCols-1) + (nRows-1)*(nCols-1)) = sqrt(2);
+spring_length(nRows*(nCols-1) + (nRows-1)*(nCols-1) + (nRows-1)*nCols + 1:number_of_connections) = sqrt(2);
 
 
-
-
-%%
 close all;
 
 % Startvärden
 read_buffer_index = 1;
 write_buffer_index = 2;
 
-positions(:,1) = 4*(1:SIZE);
-velocities(:,1) = zeros(1,SIZE);
-
-positions(2:SIZE,1) = positions(2:SIZE)-1;
-
-%positions(1,1) = -1;
-
-
 n_frames = 500;
-T = 0.05;
-t = T*(0:n_frames-1);
+T = 0.001;
+
+    positions(1,:,write_buffer_index)
+
 
 for i=1:n_frames %Loop through frames
-    t=t+T;
-    for j=1:SIZE %Loop through masses
+    hold on;
+    for j=1:number_of_masses %Loop through masses        
+        F = [0,0];
         
-        positions(1,1)=1;
+        for dir=1:max_number_of_neighbors %Loop through neighbors in all directions
+            con_ind = connection_index(j,dir);
+            neigh_ind = neighbor_index(j,dir);
+            
+            if neigh_ind ~= -1 && con_ind ~= -1
+                %Spring properties
+                k = spring_constants(con_ind);
+                b = damper_constants(con_ind);
+                l = spring_length(con_ind);
+
+                %Vector from neighbors position to this mass position
+                pos = positions(j, :, read_buffer_index);
+                neigh_pos = positions(neigh_ind, :, read_buffer_index);
+                deltaP = pos - neigh_pos;
+                
+                xVec = [pos(1), neigh_pos(1)];
+                yVec = [pos(2), neigh_pos(2)];
+                
+                plot(xVec, yVec);
         
-        F = 0;
-        
-        for k=1:max_number_of_neighbors %Loop through neighbors
-            %Calculate force
+                
+                norm_deltaP = norm(deltaP);
+                if(norm_deltaP == 0)
+                    deltaP_hat = [0,0];
+                else
+                    deltaP_hat = 1/norm(deltaP)*deltaP;
+                end
+
+                %Vector from neighbors velocity to this mass velocity
+                vel = velocities(j, :, read_buffer_index);
+                neigh_vel = velocities(neigh_ind, :, read_buffer_index);
+                deltaV = vel - neigh_vel;
+
+                %Calculate force
+                F = F + (-k*(norm(deltaP) - l) - b*dot(deltaV, deltaP_hat))*deltaP_hat;
+            end
+            
+            %{
             j_neighbor = neighbor_index(j,k);
             if j_neighbor ~= 0
                 connection_index = min([j, j_neighbor]);
@@ -97,30 +156,26 @@ for i=1:n_frames %Loop through frames
                 
                 F = F + (Fk+Fb);
             end
+            %}
         end
         
         %Calculacte acceleration, velocity and position
         a = F/masses(j);
-        v = velocities(j,read_buffer_index) + T*a;
-        p = positions(j,read_buffer_index) + T*v;
+        v = velocities(j, :,read_buffer_index) + T*a;
+        p = positions(j, :,read_buffer_index) + T*v;
         
         %Store information in backbuffer
-        velocities(j,write_buffer_index) = v;
-        positions(j,write_buffer_index) = p;
-    
+        velocities(j, :,write_buffer_index) = v;
+        positions(j, :,write_buffer_index) = p;
     end
-    
-    
-    plot(ones(1,SIZE),positions(:,write_buffer_index),'*');
-    hold off;
+    plot(positions(:,1,write_buffer_index), ...
+            positions(:,2,write_buffer_index),'*');
     axis manual;
-    axis([0 2 -1 31]);
+    axis([-2 10 -2 10]);
     pause(T);
     
+    %Swap buffer
     read_buffer_index = rem(read_buffer_index,2)+1;
-    write_buffer_index = rem(write_buffer_index,2)+1; 
+    write_buffer_index = rem(write_buffer_index,2)+1;
+    clf('reset');
 end
-
-
-
-

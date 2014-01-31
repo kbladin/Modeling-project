@@ -17,5 +17,5 @@ if 0<neighbor_row && neighbor_row<=nRows && ...
 
     massIndex_neighbor = sub2ind([nCols,nRows],neighbor_col,neighbor_row);
 else
-    error('No neighbor in this direction!'); 
+    massIndex_neighbor = -1;
 end
