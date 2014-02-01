@@ -1,7 +1,7 @@
 % Allokering av minne
 clear all;
 nRows = 6;
-nCols = 6;
+nCols = 4;
 SIZE = [nRows nCols];
 
 %number of masses:
@@ -15,12 +15,10 @@ positions = zeros([number_of_masses, 2, 2]);
 velocities = zeros([number_of_masses, 2, 2]);
 
 for j=1:number_of_masses % For each mass
-    positions(j,:,1) = [floor((j-1)/nRows), rem(j-1,nRows)];
+    positions(j,:,1) = [floor((j-1)/nCols), rem(j-1,nCols)];
 end
 
-positions(1,:,1) = [-0.5, -0.5];
-positions(2,:,1) = [0.5, -0.5];
-positions(3,:,1) = [1.5, -0.5];
+positions(1,:,1) = [0, -0.5];
 
 
 % Create list with indices to neighbors and connections
@@ -39,6 +37,8 @@ for j=1:number_of_masses % For each mass
     end
 end
 
+
+
 %{
 connection_index = ...
     [-1 -1 4 6 1 -1 -1 -1;
@@ -53,38 +53,13 @@ neighbor_index = ...
      2 -1 -1 -1 -1 -1 3 1];
 %}
 
-%{
-%Calculate mass indices of neighbors
-for j=1:number_of_masses % For each mass
-    
-    %Compute cartesian index
-    [col, row] = ind2sub([nCols,nRows],j);
-    
-    for z=1:max_number_of_neighbors % For each neighbor
-        % Calculate cartesian index
-        neighbor_pos = [row, col] + neighborIndex2offset(z);
-        
-        % Store y and x index as nice variables
-        neighbor_row = neighbor_pos(1);
-        neighbor_col = neighbor_pos(2);
-        
-        %Check if neighbor exist
-        if 0<neighbor_row && neighbor_row<=nRows && ...
-           0<neighbor_col && neighbor_col<=nCols
-            % Add linear index in neighbor index list
-            neighbor_index(j,z) = sub2ind([nCols,nRows],neighbor_col,neighbor_row);
-        end
-    end
-end
-%}
-
 %--Connections list--
-spring_constants = 100000 * ones(number_of_connections, 1);
+spring_constants = 400000 * ones(number_of_connections, 1);
 damper_constants = 50 * ones(number_of_connections, 1);
 spring_length = ones(number_of_connections, 1);
 
-spring_length(nRows*(nCols-1)+1:nRows*(nCols-1) + (nRows-1)*(nCols-1)) = sqrt(2);
-spring_length(nRows*(nCols-1) + (nRows-1)*(nCols-1) + (nRows-1)*nCols + 1:number_of_connections) = sqrt(2);
+%spring_length(nRows*(nCols-1)+1:nRows*(nCols-1) + (nRows-1)*(nCols-1)) = sqrt(2);
+%spring_length(nRows*(nCols-1) + (nRows-1)*(nCols-1) + (nRows-1)*nCols + 1:number_of_connections) = sqrt(2);
 
 
 close all;
@@ -96,9 +71,8 @@ write_buffer_index = 2;
 n_frames = 500;
 T = 0.001;
 
-    positions(1,:,write_buffer_index)
-
-
+figure;
+pause(2);
 for i=1:n_frames %Loop through frames
     hold on;
     for j=1:number_of_masses %Loop through masses        
@@ -122,8 +96,7 @@ for i=1:n_frames %Loop through frames
                 xVec = [pos(1), neigh_pos(1)];
                 yVec = [pos(2), neigh_pos(2)];
                 
-                plot(xVec, yVec);
-        
+                plot(yVec, xVec);
                 
                 norm_deltaP = norm(deltaP);
                 if(norm_deltaP == 0)
@@ -140,25 +113,7 @@ for i=1:n_frames %Loop through frames
                 %Calculate force
                 F = F + (-k*(norm(deltaP) - l) - b*dot(deltaV, deltaP_hat))*deltaP_hat;
             end
-            
-            %{
-            j_neighbor = neighbor_index(j,k);
-            if j_neighbor ~= 0
-                connection_index = min([j, j_neighbor]);
-                
-                delta_p = positions(j_neighbor,read_buffer_index)-positions(j,read_buffer_index);
-                delta_v = velocities(j_neighbor,read_buffer_index)-velocities(j,read_buffer_index);
-                
-                direction = sign(delta_p);
-                
-                Fk = -direction*spring_constants(connection_index)*(spring_length(connection_index)-abs(delta_p));
-                Fb = damper_constants(connection_index)*delta_v;
-                
-                F = F + (Fk+Fb);
-            end
-            %}
         end
-        
         %Calculacte acceleration, velocity and position
         a = F/masses(j);
         v = velocities(j, :,read_buffer_index) + T*a;
@@ -168,10 +123,10 @@ for i=1:n_frames %Loop through frames
         velocities(j, :,write_buffer_index) = v;
         positions(j, :,write_buffer_index) = p;
     end
-    plot(positions(:,1,write_buffer_index), ...
-            positions(:,2,write_buffer_index),'*');
+    plot(positions(:,2,write_buffer_index), ...
+            positions(:,1,write_buffer_index),'*');
     axis manual;
-    axis([-2 10 -2 10]);
+    axis([-1 6 -1 6]);
     pause(T);
     
     %Swap buffer
