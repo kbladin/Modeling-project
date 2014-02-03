@@ -46,9 +46,11 @@ spring_length(nRows*(nCols-1)+1:nRows*(nCols-1) + (nRows-1)*(nCols-1)) = sqrt(2)
 spring_length(nRows*(nCols-1) + (nRows-1)*(nCols-1) + (nRows-1)*nCols + 1:number_of_connections) = sqrt(2);
 
 
-close all;
+
 
 %% Startvärden. Simulering
+close all;
+
 read_buffer_index = 1;
 write_buffer_index = 2;
 
@@ -56,18 +58,20 @@ velocities(:,:,:) = 0;
 for j=1:number_of_masses % For each mass
     positions(j,:,read_buffer_index) = [15 + floor((j-1)/nCols), rem(j-1,nCols)];
 end
-%positions(1,:,read_buffer_index) = [0, -1];
+
+%Add rotation to the body
 velocities(1,:,read_buffer_index) = [5, -5];
 velocities(number_of_masses,:,read_buffer_index) = [-5, 5];
 
-n_frames = 5000;
+n_frames = 600;
 T = 0.01;
 
 figure;
 %pause(2);
-%hold on;
+
 for i=1:n_frames %Loop through frames
 	tic;
+    hold on;
     for j=1:number_of_masses %Loop through masses        
         F = [0,0];
         for dir=1:max_number_of_neighbors %Loop through neighbors in all directions
@@ -85,12 +89,7 @@ for i=1:n_frames %Loop through frames
                 neigh_pos = positions(neigh_ind, :, read_buffer_index);
                 deltaP = pos - neigh_pos;
                 
-                %Only for plot
-                %xVec = [pos(1), neigh_pos(1)];
-                %yVec = [pos(2), neigh_pos(2)];
-                %plot(yVec, xVec);
-                
-                
+                %Normalize delta_p
                 norm_deltaP = norm(deltaP);
                 if(norm_deltaP == 0)
                     deltaP_hat = [0,0];
@@ -105,6 +104,14 @@ for i=1:n_frames %Loop through frames
 
                 %Calculate force
                 F = F + (-k*(norm(deltaP) - l) - b*dot(deltaV, deltaP_hat))*deltaP_hat;
+                
+                %Only for plot
+                xVec = [pos(1), neigh_pos(1)];
+                yVec = [pos(2), neigh_pos(2)];
+                r = 5*abs(norm_deltaP-l);
+                r = min(max(r,0),1);
+                color = [r 1-r 0];
+                plot(yVec, xVec, 'Color', color);
             end
         end
         
@@ -131,12 +138,12 @@ for i=1:n_frames %Loop through frames
     %axis manual;
     axis equal;
     axis([-2 5 0 20]);
-    computation_time = toc
+    computation_time = toc;
     pause(max(T-computation_time,0.001));
     
     %Swap buffer
     read_buffer_index = rem(read_buffer_index,2)+1;
     write_buffer_index = rem(write_buffer_index,2)+1;
-    %clf('reset');
+    clf('reset');
     %toc;
 end
