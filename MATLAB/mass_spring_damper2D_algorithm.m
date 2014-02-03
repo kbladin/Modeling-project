@@ -68,7 +68,6 @@ figure;
 %hold on;
 for i=1:n_frames %Loop through frames
 	tic;
-    %tic;
     for j=1:number_of_masses %Loop through masses        
         F = [0,0];
         for dir=1:max_number_of_neighbors %Loop through neighbors in all directions
@@ -132,7 +131,8 @@ for i=1:n_frames %Loop through frames
     %axis manual;
     axis equal;
     axis([-2 5 0 20]);
-    pause(max(T-toc,0.001));
+    computation_time = toc
+    pause(max(T-computation_time,0.001));
     
     %Swap buffer
     read_buffer_index = rem(read_buffer_index,2)+1;
