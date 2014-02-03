@@ -1,8 +1,10 @@
 % Allokering av minne
 clear all;
-nRows = 6;
-nCols = 4;
+nRows = 4;
+nCols = 3;
 SIZE = [nRows nCols];
+
+g = 9.82;
 
 %number of masses:
 number_of_masses = prod(SIZE);
@@ -27,8 +29,6 @@ connection_index = zeros(number_of_masses, max_number_of_neighbors);
 neighbor_index = zeros(prod(SIZE), max_number_of_neighbors);
 
 
-%Fel i funktionen massIndices2connectionIndices!!!
-
 %Calculate connection indices and mass indices of neighbors
 for j=1:number_of_masses % For each mass
     for z=1:max_number_of_neighbors % For each neighbor
@@ -37,24 +37,8 @@ for j=1:number_of_masses % For each mass
     end
 end
 
-
-
-%{
-connection_index = ...
-    [-1 -1 4 6 1 -1 -1 -1;
-     -1 -1 -1 -1 2 3 4 -1;
-     1 3 5 -1 -1 -1 -1 -1;
-     2 -1 -1 -1 -1 -1 5 6];
-
-neighbor_index = ...
-    [-1 -1 2 4 3 -1 -1 -1;
-     -1 -1 -1 -1 4 3 1 -1;
-     1 2 4 -1 -1 -1 -1 -1;
-     2 -1 -1 -1 -1 -1 3 1];
-%}
-
 %--Connections list--
-spring_constants = 400000 * ones(number_of_connections, 1);
+spring_constants = 100000 * ones(number_of_connections, 1);
 damper_constants = 50 * ones(number_of_connections, 1);
 spring_length = ones(number_of_connections, 1);
 
@@ -64,17 +48,26 @@ spring_length = ones(number_of_connections, 1);
 
 close all;
 
-% Startvärden
+%% Startvärden. Simulering
 read_buffer_index = 1;
 write_buffer_index = 2;
 
-n_frames = 500;
+velocities(:,:,:) = 0;
+for j=1:number_of_masses % For each mass
+    positions(j,:,read_buffer_index) = [floor((j-1)/nCols), rem(j-1,nCols)];
+end
+%positions(1,:,read_buffer_index) = [0, -1];
+%velocities(1,:,read_buffer_index) = [-100, -100];
+
+n_frames = 5000;
 T = 0.001;
 
 figure;
-pause(2);
+%pause(2);
+%hold on;
 for i=1:n_frames %Loop through frames
-    hold on;
+    
+    tic;
     for j=1:number_of_masses %Loop through masses        
         F = [0,0];
         
@@ -93,16 +86,17 @@ for i=1:n_frames %Loop through frames
                 neigh_pos = positions(neigh_ind, :, read_buffer_index);
                 deltaP = pos - neigh_pos;
                 
-                xVec = [pos(1), neigh_pos(1)];
-                yVec = [pos(2), neigh_pos(2)];
+                %Only for plot
+                %xVec = [pos(1), neigh_pos(1)];
+                %yVec = [pos(2), neigh_pos(2)];
+                %plot(yVec, xVec);
                 
-                plot(yVec, xVec);
                 
                 norm_deltaP = norm(deltaP);
                 if(norm_deltaP == 0)
                     deltaP_hat = [0,0];
                 else
-                    deltaP_hat = 1/norm(deltaP)*deltaP;
+                    deltaP_hat = deltaP/norm_deltaP;
                 end
 
                 %Vector from neighbors velocity to this mass velocity
@@ -126,11 +120,12 @@ for i=1:n_frames %Loop through frames
     plot(positions(:,2,write_buffer_index), ...
             positions(:,1,write_buffer_index),'*');
     axis manual;
-    axis([-1 6 -1 6]);
+    axis([-2 5 -2 5]);
     pause(T);
     
     %Swap buffer
     read_buffer_index = rem(read_buffer_index,2)+1;
     write_buffer_index = rem(write_buffer_index,2)+1;
-    clf('reset');
+    %clf('reset');
+    toc
 end
