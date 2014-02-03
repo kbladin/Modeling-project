@@ -120,7 +120,7 @@ for i=1:n_frames %Loop through frames
         %Check collision with y=0
         if p(1) < 0
             p(1) = 0;
-            v(1) = -v(1); 
+            v(1) = -v(1);
         end
         
         %Store information in backbuffer
@@ -129,7 +129,8 @@ for i=1:n_frames %Loop through frames
     end
     plot(positions(:,2,write_buffer_index), ...
             positions(:,1,write_buffer_index),'*');
-    axis manual;
+    %axis manual;
+    axis equal;
     axis([-2 5 0 20]);
     pause(max(T-toc,0.001));
     
