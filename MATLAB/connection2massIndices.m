@@ -1,28 +1,29 @@
 function [mi1,mi2] = connection2massIndices(ci,nRows,nCols)
 
 %Number of connections in each direction (|/_\)
-num_first = (nRows-1)*nCols; % |
-num_second = (nRows-1)*(nCols-1); % /
-num_third = nRows*(nCols-1); % _
-%num_forth = num_second; % \
+n_type1 = (nRows-1)*nCols; % |
+n_type2 = (nRows-1)*(nCols-1); % /
+n_type3 = nRows*(nCols-1); % _
+%n_type4 = n_type2; % \
 
 
-if(ci<=num_first) %Direction: |
+
+if(ci<=n_type1) %Direction: |
     %prev_num_springs = 0;
     mi1 = ci;
     mi2 = ci + nCols;
-elseif (ci<=(num_first + num_second)) %Direction /
-    prev_num_springs = num_first;
+elseif (ci<=(n_type1 + n_type2)) %Direction /
+    prev_num_springs = n_type1;
     row_m1 = floor((ci - prev_num_springs)/nCols) + 1;
     mi1 = (ci - prev_num_springs) + row_m1;
     mi2 = mi1 + nCols - 1;
-elseif (ci<=(num_first + num_second + num_third)) %Direction _
-    prev_num_springs = num_first + num_second;
+elseif (ci<=(n_type1 + n_type2 + n_type3)) %Direction _
+    prev_num_springs = n_type1 + n_type2;
     row_m1 = floor((ci - prev_num_springs)/nCols) + 1;
     mi1 = ci - prev_num_springs + row_m1 - 1;
     mi2 = mi1 + 1;
 else %Direction \
-    prev_num_springs = num_first + num_second + num_third;
+    prev_num_springs = n_type1 + n_type2 + n_type3;
     row_m1 = floor((ci - prev_num_springs)/nCols) + 1;
     mi1 = ci - prev_num_springs + row_m1 - 1;
     mi2 = mi1 + nCols + 1;

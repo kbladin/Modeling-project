@@ -1,12 +1,18 @@
 % Allokering av minne
 clear all;
-nRows = 4;
-nCols = 4;
+nRows = 7;
+nCols = 7;
 
 g = 9.82;
 
-number_of_masses = nRows*nCols;%  -                |                 / and \
-number_of_connections = (nRows-1)*nCols + nRows*(nCols-1) + 2*(nRows-1)*(nCols-1);
+number_of_masses = nRows*nCols;
+
+n_type1 = (nRows-1)*nCols; % |
+n_type2 = (nRows-1)*(nCols-1); % /
+n_type3 = nRows*(nCols-1); % _
+n_type4 = n_type2; % \
+
+number_of_connections = n_type1 + n_type2 + n_type3 + n_type4;
 
 %--Masses list--
 masses = ones(number_of_masses,1);
@@ -31,8 +37,10 @@ spring_constants = 2000 * ones(number_of_connections, 1);
 damper_constants = 5 * ones(number_of_connections, 1);
 spring_length = ones(number_of_connections, 1);
 
-spring_length(nRows*(nCols-1)+1:nRows*(nCols-1) + (nRows-1)*(nCols-1)) = sqrt(2);
-spring_length(nRows*(nCols-1) + (nRows-1)*(nCols-1) + (nRows-1)*nCols + 1:number_of_connections) = sqrt(2);
+type_2_range = n_type1+1 : n_type1+n_type2;
+type_4_range = n_type1+n_type2+n_type3+1 : number_of_connections;
+spring_length(type_2_range) = sqrt(2);
+spring_length(type_4_range) = sqrt(2);
 
 
 %% Startvärden. Simulering
@@ -47,10 +55,10 @@ for j=1:number_of_masses % For each mass
 end
 
 %Add rotation to the body
-%velocities(1,:,read_buffer_index) = [5, -5];
-%velocities(number_of_masses,:,read_buffer_index) = [-5, 5];
+velocities(1,:,read_buffer_index) = [5, -5];
+velocities(number_of_masses,:,read_buffer_index) = [-5, 5];
 
-n_frames = 300;
+n_frames = 1000;
 T = 0.01;
 
 figure;
@@ -83,6 +91,14 @@ for i=1:n_frames %Loop through frames
             delta_p_hat = delta_p/norm_delta_p;
         end
         
+        %Only for plot
+        xVec = [p1(1), p2(1)];
+        yVec = [p1(2), p2(2)];
+        r = 5*abs(norm_delta_p-l);
+        r = min(max(r,0),1);
+        color = [r 1-r 0];
+        plot(yVec, xVec, 'Color', color);
+        
         % velocities
         v1 = velocities(mass_index1,:,read_buffer_index);
         v2 = velocities(mass_index2,:,read_buffer_index);
@@ -95,8 +111,9 @@ for i=1:n_frames %Loop through frames
         force_from_connection = (-k*(norm(delta_p) - l) - b*dot(delta_v, delta_p_hat))*delta_p_hat;
         forces(mass_index1,:) = forces(mass_index1,:) + force_from_connection;
         forces(mass_index2,:) = forces(mass_index2,:) - force_from_connection;
-
+                
     end
+    
     
     %Calculacte acceleration, velocity and position
     for mass_index=1:number_of_masses
@@ -119,15 +136,20 @@ for i=1:n_frames %Loop through frames
         
         %reset force
         forces(mass_index,:) = [0,0];
+        
+        p_last = positions(mass_index, :,read_buffer_index);
+        text(0.2+p_last(2),p_last(1),num2str(mass_index));
     end
         
-    plot(positions(:,2,write_buffer_index), ...
-            positions(:,1,write_buffer_index),'*');
+    plot(positions(:,2,read_buffer_index), ...
+            positions(:,1,read_buffer_index),'*');
+    
     %axis manual;
-    axis equal;
-    axis([-2 5 0 20]);
+    %axis equal;
+    axis([-2 6 0 25]);
     computation_time = toc;
     pause(max(T-computation_time,0.001));
+    pause();
     
     %Swap buffer
     read_buffer_index = rem(read_buffer_index,2)+1;
