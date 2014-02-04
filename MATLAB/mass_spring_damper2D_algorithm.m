@@ -111,7 +111,7 @@ for i=1:n_frames %Loop through frames
                 r = 5*abs(norm_deltaP-l);
                 r = min(max(r,0),1);
                 color = [r 1-r 0];
-                plot(yVec, xVec, 'Color', color);
+                %plot(yVec, xVec, 'Color', color);
             end
         end
         

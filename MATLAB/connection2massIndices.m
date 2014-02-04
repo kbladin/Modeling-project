@@ -1,4 +1,4 @@
-function [mi1,mi2] = connection2massIndex(ci,nRows,nCols)
+function [mi1,mi2] = connection2massIndices(ci,nRows,nCols)
 
 %Number of connections in each direction (|/_\)
 num_first = (nRows-1)*nCols; % |
