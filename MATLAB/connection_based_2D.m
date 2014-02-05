@@ -1,7 +1,7 @@
 % Allokering av minne
 clear all;
-nRows = 7;
-nCols = 7;
+nRows = 4;
+nCols = 3;
 
 g = 9.82;
 
@@ -92,22 +92,19 @@ for i=1:n_frames %Loop through frames
         end
         
         %Only for plot
-        xVec = [p1(1), p2(1)];
-        yVec = [p1(2), p2(2)];
-        r = 5*abs(norm_delta_p-l);
-        r = min(max(r,0),1);
-        color = [r 1-r 0];
-        plot(yVec, xVec, 'Color', color);
+        %xVec = [p1(1), p2(1)];
+        %yVec = [p1(2), p2(2)];
+        %r = 5*abs(norm_delta_p-l);
+        %r = min(max(r,0),1);
+        %color = [r 1-r 0];
+        %plot(yVec, xVec, 'Color', color);
         
         % velocities
         v1 = velocities(mass_index1,:,read_buffer_index);
         v2 = velocities(mass_index2,:,read_buffer_index);
         delta_v = v1 - v2;
         
-        %Call numerical method
-        %Euler: F = F + (-k*(norm(deltaP) - l) - b*dot(deltaV, delta_P_hat))*delta_P_hat;
-        
-        %force_from_connection = [0,0]; % = numerical_method(k,l,b,delta_p,delta_v,T)
+        %Calculate force from connections
         force_from_connection = (-k*(norm(delta_p) - l) - b*dot(delta_v, delta_p_hat))*delta_p_hat;
         forces(mass_index1,:) = forces(mass_index1,:) + force_from_connection;
         forces(mass_index2,:) = forces(mass_index2,:) - force_from_connection;
@@ -137,19 +134,18 @@ for i=1:n_frames %Loop through frames
         %reset force
         forces(mass_index,:) = [0,0];
         
-        p_last = positions(mass_index, :,read_buffer_index);
-        text(0.2+p_last(2),p_last(1),num2str(mass_index));
+        %p_last = positions(mass_index, :,read_buffer_index);
+        %text(0.2+p_last(2),p_last(1),num2str(mass_index));
     end
         
     plot(positions(:,2,read_buffer_index), ...
             positions(:,1,read_buffer_index),'*');
     
     %axis manual;
-    %axis equal;
-    axis([-2 6 0 25]);
+    axis equal;
+    axis([-2 6 0 20]);
     computation_time = toc;
     pause(max(T-computation_time,0.001));
-    pause();
     
     %Swap buffer
     read_buffer_index = rem(read_buffer_index,2)+1;
