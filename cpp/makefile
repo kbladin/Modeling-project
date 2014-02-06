@@ -4,9 +4,9 @@ SOURCE = $(wildcard src/*)
 CC = clang++
 
 #The glfw lib
-GLFWINCLUDE = -I"/usr/local/Cellar/glfw3/3.0.3/include"
-GLFWLIB = -L"/usr/local/Cellar/glfw3/3.0.3/lib"
-GLFW = $(GLFWINCLUDE) $(GLFWLIB) -lglfw3
+#GLFWINCLUDE = -I"/usr/local/Cellar/glfw3/3.0.3/include"
+#GLFWLIB = -L"/usr/local/Cellar/glfw3/3.0.3/lib"
+GLFW = -lglfw3
 
 #The glew lib
 GLEWINCLUDE = -I"/usr/local/Cellar/glew/1.10.0/include"
@@ -18,15 +18,14 @@ INCLUDE = -I"include"
 LDFLAGS =
 
 
-FRAMEWORKS = $(GLFW) $(GLEW) -framework Opengl -framework AGL -framework Cocoa -framework IOKit
-
+FRAMEWORKS = $(GLFW) $(GLEW) -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 
 $(EXEC): objects
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(INCLUDE) $(FRAMEWORKS)
 
 objects: $(SOURCE)
 	mkdir objects; \
-	clang++ -c $(SOURCE) $(INCLUDE) $(GLFWINCLUDE) $(GLEWINCLUDE); \
+	$(CC) -c $(SOURCE) $(INCLUDE) $(GLFWINCLUDE) $(GLEWINCLUDE); \
 	mv *.o objects/; 
 
 run:
