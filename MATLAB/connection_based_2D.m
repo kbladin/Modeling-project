@@ -1,6 +1,6 @@
 % Allokering av minne
 clear all;
-nRows = 4;
+nRows = 6;
 nCols = 3;
 
 g = 9.82;
@@ -35,12 +35,12 @@ end
 %--Connections list--
 spring_constants = 2000 * ones(number_of_connections, 1);
 damper_constants = 5 * ones(number_of_connections, 1);
-spring_length = ones(number_of_connections, 1);
+spring_lengths = ones(number_of_connections, 1);
 
 type_2_range = n_type1+1 : n_type1+n_type2;
 type_4_range = n_type1+n_type2+n_type3+1 : number_of_connections;
-spring_length(type_2_range) = sqrt(2);
-spring_length(type_4_range) = sqrt(2);
+spring_lengths(type_2_range) = sqrt(2);
+spring_lengths(type_4_range) = sqrt(2);
 
 
 %% Startvärden. Simulering
@@ -69,6 +69,22 @@ for i=1:n_frames %Loop through frames
 	tic;
     hold on;
     
+    
+    forces_from_connectios = calculateForce(...
+        spring_constants,...
+        damper_constants,...
+        spring_lengths,...
+        positions(connected_masses(:,1),:,read_buffer_index),...
+        positions(connected_masses(:,2),:,read_buffer_index),...
+        velocities(connected_masses(:,1),:,read_buffer_index),...
+        velocities(connected_masses(:,2),:,read_buffer_index));
+    
+    for connection_index=1:number_of_connections %Loop through connections and apply forces
+        forces(connected_masses(connection_index,1),:) = forces(connected_masses(connection_index,1),:) + forces_from_connectios(connection_index,:);
+        forces(connected_masses(connection_index,2),:) = forces(connected_masses(connection_index,2),:) - forces_from_connectios(connection_index,:);
+    end
+    
+    %{
     for connection_index=1:number_of_connections %Loop through connections
         
         % Spring and damper properties
@@ -110,6 +126,7 @@ for i=1:n_frames %Loop through frames
         forces(mass_index2,:) = forces(mass_index2,:) - force_from_connection;
                 
     end
+    %}
     
     
     %Calculacte acceleration, velocity and position
@@ -143,7 +160,7 @@ for i=1:n_frames %Loop through frames
     
     %axis manual;
     axis equal;
-    axis([-2 6 0 20]);
+    axis([-2 30 0 20]);
     computation_time = toc;
     pause(max(T-computation_time,0.001));
     
