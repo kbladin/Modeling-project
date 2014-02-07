@@ -1,3 +1,4 @@
+#include "glm/glm.hpp"
 #include "NumericalMethods.h"
 
 /** Global functions  **/

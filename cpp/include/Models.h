@@ -1,4 +1,6 @@
-#include <GL/glm.h>
+
+#ifndef MODELS_H
+#define MODELS_H
 
 /** Classes **/
 // The abstract base class for all systems 
@@ -65,3 +67,5 @@ class MSDFS : public MSDS{
 		}
 		Friction * friction;
 };
+
+#endif

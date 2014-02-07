@@ -1,3 +1,7 @@
+
+#ifndef CONNECTION_DATA_H
+#define CONNECTION_DATA_H
+
 /** Structs **/
 
 // A connection associates two masses
@@ -21,3 +25,5 @@ struct Friction{
 	float staticFrictionConstant;
 	float dynamicFrictionConstant;
 };
+
+#endif
