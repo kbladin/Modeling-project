@@ -1,7 +1,7 @@
 % Allokering av minne
 clear all;
-nRows = 6;
-nCols = 3;
+nRows = 2;
+nCols = 2;
 
 g = 9.82;
 
@@ -64,12 +64,11 @@ T = 0.01;
 figure;
 %pause(2);
 
-
 for i=1:n_frames %Loop through frames
 	tic;
     hold on;
     
-    
+    %{
     forces_from_connectios = calculateForce(...
         spring_constants,...
         damper_constants,...
@@ -83,14 +82,13 @@ for i=1:n_frames %Loop through frames
         forces(connected_masses(connection_index,1),:) = forces(connected_masses(connection_index,1),:) + forces_from_connectios(connection_index,:);
         forces(connected_masses(connection_index,2),:) = forces(connected_masses(connection_index,2),:) - forces_from_connectios(connection_index,:);
     end
-    
-    %{
+    %}
+    %%{
     for connection_index=1:number_of_connections %Loop through connections
-        
         % Spring and damper properties
         k = spring_constants(connection_index);
         b = damper_constants(connection_index);
-        l = spring_length(connection_index);
+        l = spring_lengths(connection_index);
         
         % position
         mass_index1 = connected_masses(connection_index,1);
@@ -108,12 +106,18 @@ for i=1:n_frames %Loop through frames
         end
         
         %Only for plot
-        %xVec = [p1(1), p2(1)];
-        %yVec = [p1(2), p2(2)];
-        %r = 5*abs(norm_delta_p-l);
-        %r = min(max(r,0),1);
-        %color = [r 1-r 0];
-        %plot(yVec, xVec, 'Color', color);
+        %%{
+        xVec = [p1(1), p2(1)];
+        yVec = [p1(2), p2(2)];
+        r = 5*abs(norm_delta_p-l);
+        r = min(max(r,0),1);
+        color = [r 1-r 0];
+        plot(yVec, xVec, 'Color', color);
+        
+        p = 0.5*[p1 + p2];
+        text(0.2+p(2),p(1),num2str(connection_index));
+        
+        %%}
         
         % velocities
         v1 = velocities(mass_index1,:,read_buffer_index);
@@ -126,7 +130,7 @@ for i=1:n_frames %Loop through frames
         forces(mass_index2,:) = forces(mass_index2,:) - force_from_connection;
                 
     end
-    %}
+    %%}
     
     
     %Calculacte acceleration, velocity and position
@@ -151,8 +155,8 @@ for i=1:n_frames %Loop through frames
         %reset force
         forces(mass_index,:) = [0,0];
         
-        %p_last = positions(mass_index, :,read_buffer_index);
-        %text(0.2+p_last(2),p_last(1),num2str(mass_index));
+        p_last = positions(mass_index, :,read_buffer_index);
+        %dtext(0.2+p_last(2),p_last(1),num2str(mass_index));
     end
         
     plot(positions(:,2,read_buffer_index), ...
@@ -162,6 +166,7 @@ for i=1:n_frames %Loop through frames
     axis equal;
     axis([-2 30 0 20]);
     computation_time = toc;
+    pause();
     pause(max(T-computation_time,0.001));
     
     %Swap buffer
