@@ -8,6 +8,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 #include <shader.h>
+#include "connection2massindices.h"
 
 static void error_callback(int error, const char* description)
 {
@@ -19,10 +20,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-
-
-const int N_ROWS = 2;
-const int N_COLS = 2;
+const int N_ROWS = 40;
+const int N_COLS = 40;
 
 const int N_TYPE1 = (N_ROWS-1)*N_COLS; // |
 const int N_TYPE2 = (N_ROWS-1)*(N_COLS-1); // /
@@ -70,19 +69,20 @@ int main(void)
         masses[i] = 1.0f;
         int row = i%N_COLS;
         int col = floor(i/N_COLS);
-        positions[i][0] = glm::vec2(1.0f*row - 0.5f,1.0f*col - 0.5f);
+        positions[i][0] = glm::vec2(row,col);
         positions[i][1] = glm::vec2(0,0);
         velocities[i][0] = glm::vec2(0,0);
         velocities[i][1] = glm::vec2(0,0);
         forces[i] = glm::vec2(0,0);
     }
     positions[0][0] = glm::vec2(0.0f,-1.0f);
+    velocities[0][0] = glm::vec2(0.0f,-100.0f);
 
 
     // Set values for springs, dampers, and lengths
     for (int i = 0; i < N_CONNECTIONS; ++i)
     {
-        spring_constants[i] = 500.0f;
+        spring_constants[i] = 2000.0f;
         damper_constants[i] = 5.0f;
         spring_lengths[i] = 1.0f;
     }
@@ -115,6 +115,7 @@ int main(void)
     #----3----#
     */
 
+/*
     // Hard coded connections
     connected_masses[0][0] = 0;
     connected_masses[0][1] = 2;
@@ -128,11 +129,19 @@ int main(void)
     connected_masses[4][1] = 3;
     connected_masses[5][0] = 1;
     connected_masses[5][1] = 2;
+*/
+
+    // Calculate connections
+    for (int i = 0; i < N_CONNECTIONS; ++i)
+    {
+        connection2massIndices(i, connected_masses[i][0], connected_masses[i][1], N_ROWS, N_COLS);
+    }
 
     int read_buffer = 0;
     int write_buffer = 1;
 
     float T = 0.01f;
+    float current_time;
 
     glEnable( GL_POINT_SMOOTH );
     glEnable( GL_BLEND );
@@ -142,6 +151,9 @@ int main(void)
 
     while (!glfwWindowShouldClose(window))
     {
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+
         /* SIMULATION */
         for (int connection_index = 0; connection_index < N_CONNECTIONS; ++connection_index)
         {
@@ -169,8 +181,15 @@ int main(void)
             forces[mass_index2] -= force_from_connection;
         }
 
+        // Moving one mass 
+        double x_mouse;
+        double y_mouse;
+
+        glfwGetCursorPos( window,&x_mouse, &y_mouse);
+        positions[0][write_buffer] = glm::vec2(float(x_mouse-0.25*width)/5, -float(y_mouse-0.25*height)/5);
+
         //Calculate acceleration, velocity and position
-        for (int mass_index = 0; mass_index < N_MASSES; ++mass_index)
+        for (int mass_index = 1; mass_index < N_MASSES; ++mass_index) // OBS!!!! NOT UPDATING MASS 1 HERE NOW
         {
             glm::vec2 a = forces[mass_index]/masses[mass_index];// - glm::vec2(0.f,-1.f)*g;
             glm::vec2 v = velocities[mass_index][read_buffer] + a*T;
@@ -191,26 +210,25 @@ int main(void)
             forces[mass_index] = glm::vec2(0.0f, 0.0f);
         }
 
-
-
-
         /* DRAW */
         float ratio;
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
+        //int width, height;
+        //glfwGetFramebufferSize(window, &width, &height);
         ratio = width / (float) height;
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+        float scale = 40.f;
+        glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, 1.f * scale, -1.f * scale);
 
         //Init gl points
         glEnable( GL_POINT_SMOOTH );
         glEnable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        glPointSize( 6.0 );
+        glPointSize( 15.0 );
 
+        //Draw masses
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
         for (int i = 0; i < N_MASSES; ++i)
@@ -220,6 +238,22 @@ int main(void)
         }
         glEnd();
 
+        //Init gl lines
+        glEnable( GL_LINE_SMOOTH );
+        
+        //Draw connections
+        glBegin(GL_LINES);
+        glColor3f(0.f, 1.f, 0.f);
+        for (int i = 0; i < N_CONNECTIONS; ++i)
+        {
+            glVertex3f(positions[connected_masses[i][0]][read_buffer][0],
+                       positions[connected_masses[i][0]][read_buffer][1], 0.f);
+            glVertex3f(positions[connected_masses[i][1]][read_buffer][0],
+                       positions[connected_masses[i][1]][read_buffer][1], 0.f);
+        }
+        glEnd();
+
+
         //Swap simulation buffers
         read_buffer = (read_buffer+1)%2;
         write_buffer = (write_buffer+1)%2;
@@ -227,7 +261,6 @@ int main(void)
         //Swap draw buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
-
     }
 
     /* CLEAN UP GLFW */
