@@ -60,6 +60,7 @@ int main(void)
     }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
+    float scale = 40.f;
 
     /* INIT SIMULATION */
 
@@ -185,8 +186,9 @@ int main(void)
         double x_mouse;
         double y_mouse;
 
-        glfwGetCursorPos( window,&x_mouse, &y_mouse);
+        glfwGetCursorPos(window, &x_mouse, &y_mouse);
         positions[0][write_buffer] = glm::vec2(float(x_mouse-0.25*width)/5, -float(y_mouse-0.25*height)/5);
+        float scalex = scale*width/height;
 
         //Calculate acceleration, velocity and position
         for (int mass_index = 1; mass_index < N_MASSES; ++mass_index) // OBS!!!! NOT UPDATING MASS 1 HERE NOW
@@ -195,11 +197,28 @@ int main(void)
             glm::vec2 v = velocities[mass_index][read_buffer] + a*T;
             glm::vec2 p = positions[mass_index][read_buffer] + v*T;
 
-            //Check collision with y = 0
-            if (p[1] < 0.0f)
+            //Check collision
+            if (p[1] < -scale)
             {
-                //p[1] = 0.0f;
-                //v[1] = -v[1];
+                p[1] = -scale;
+                v[1] = -v[1];
+            }
+            else if (p[1] > scale)
+            {
+                p[1] = scale;
+                v[1] = -v[1];   
+            }
+
+
+            if (p[0] < -scalex)
+            {
+                p[0] = -scalex;
+                v[0] = -v[0];
+            }
+            else if (p[0] > scalex)
+            {
+                p[0] = scalex;
+                v[0] = -v[0];
             }
 
             //Store information in backbuffer
@@ -219,7 +238,6 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        float scale = 40.f;
         glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, 1.f * scale, -1.f * scale);
 
         //Init gl points
