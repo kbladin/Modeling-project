@@ -154,6 +154,7 @@ int main(void)
     {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
+        float ratio = width / (float) height;
 
         /* SIMULATION */
         for (int connection_index = 0; connection_index < N_CONNECTIONS; ++connection_index)
@@ -187,13 +188,14 @@ int main(void)
         double y_mouse;
 
         glfwGetCursorPos(window, &x_mouse, &y_mouse);
-        positions[0][write_buffer] = glm::vec2(float(x_mouse-0.25*width)/5, -float(y_mouse-0.25*height)/5);
-        float scalex = scale*width/height;
+        positions[0][write_buffer] = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+
+        float scalex = scale*ratio;
 
         //Calculate acceleration, velocity and position
         for (int mass_index = 1; mass_index < N_MASSES; ++mass_index) // OBS!!!! NOT UPDATING MASS 1 HERE NOW
         {
-            glm::vec2 a = forces[mass_index]/masses[mass_index];// - glm::vec2(0.f,-1.f)*g;
+            glm::vec2 a = forces[mass_index]/masses[mass_index];// - glm::vec2(0.f,1.f)*g;
             glm::vec2 v = velocities[mass_index][read_buffer] + a*T;
             glm::vec2 p = positions[mass_index][read_buffer] + v*T;
 
@@ -230,10 +232,10 @@ int main(void)
         }
 
         /* DRAW */
-        float ratio;
+        
         //int width, height;
         //glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float) height;
+        
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
