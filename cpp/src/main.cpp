@@ -26,7 +26,7 @@ const int N_COLS = 40;
 const int N_TYPE1 = (N_ROWS-1)*N_COLS; // |
 const int N_TYPE2 = (N_ROWS-1)*(N_COLS-1); // /
 const int N_TYPE3 = N_ROWS*(N_COLS-1); // _
-const int N_TYPE4 = N_TYPE2; // \
+const int N_TYPE4 = N_TYPE2; // \.
 
 const int N_MASSES = N_ROWS*N_COLS;
 const int N_CONNECTIONS = N_TYPE1+N_TYPE2+N_TYPE3+N_TYPE4;
@@ -143,10 +143,14 @@ int main(void)
     float T = 0.01f;
     float current_time;
 
+    //Init gl points
     glEnable( GL_POINT_SMOOTH );
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glPointSize( 6.0 );
+    glPointSize( 15.0 );
+
+    //Init gl lines
+    glEnable( GL_LINE_SMOOTH );
 
 
     while (!glfwWindowShouldClose(window))
@@ -222,12 +226,6 @@ int main(void)
         float scale = 40.f;
         glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, 1.f * scale, -1.f * scale);
 
-        //Init gl points
-        glEnable( GL_POINT_SMOOTH );
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        glPointSize( 15.0 );
-
         //Draw masses
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
@@ -238,9 +236,6 @@ int main(void)
         }
         glEnd();
 
-        //Init gl lines
-        glEnable( GL_LINE_SMOOTH );
-        
         //Draw connections
         glBegin(GL_LINES);
         glColor3f(0.f, 1.f, 0.f);
@@ -252,7 +247,6 @@ int main(void)
                        positions[connected_masses[i][1]][read_buffer][1], 0.f);
         }
         glEnd();
-
 
         //Swap simulation buffers
         read_buffer = (read_buffer+1)%2;
