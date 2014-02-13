@@ -20,8 +20,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-const int N_ROWS = 40;
-const int N_COLS = 40;
+const int N_ROWS = 10;
+const int N_COLS = 10;
 
 const int N_TYPE1 = (N_ROWS-1)*N_COLS; // |
 const int N_TYPE2 = (N_ROWS-1)*(N_COLS-1); // /
@@ -60,7 +60,7 @@ int main(void)
     }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-    float scale = 40.f;
+    float scale = (float) fmax(N_ROWS,N_COLS);
 
     /* INIT SIMULATION */
 
