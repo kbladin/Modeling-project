@@ -20,8 +20,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-const int N_ROWS = 40;
-const int N_COLS = 40;
+const int N_ROWS = 20;
+const int N_COLS = 20;
 
 const int N_TYPE1 = (N_ROWS-1)*N_COLS; // |
 const int N_TYPE2 = (N_ROWS-1)*(N_COLS-1); // /
@@ -60,7 +60,7 @@ int main(void)
     }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-    float scale = 40.f;
+    float scale = 30.f;
 
     /* INIT SIMULATION */
 
@@ -192,7 +192,11 @@ int main(void)
         double y_mouse;
 
         glfwGetCursorPos(window, &x_mouse, &y_mouse);
-        positions[0][write_buffer] = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+        
+        //positions[0][write_buffer] = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+        // Retina
+        positions[0][write_buffer] = glm::vec2(float(x_mouse-0.25*width)*4*scale/height, -float(y_mouse-0.25*height)*4*scale/height);
+
 
         float scalex = scale*ratio;
 

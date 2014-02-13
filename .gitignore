@@ -6,4 +6,3 @@ Thumbs.db
 *.m~
 /cpp/program
 /cpp/objects/*.o
-objects/*.o
