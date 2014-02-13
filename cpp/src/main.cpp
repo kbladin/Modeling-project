@@ -83,7 +83,7 @@ int main(void)
     // Set values for springs, dampers, and lengths
     for (int i = 0; i < N_CONNECTIONS; ++i)
     {
-        spring_constants[i] = 2000.0f;
+        spring_constants[i] = 100.0f;
         damper_constants[i] = 5.0f;
         spring_lengths[i] = 1.0f;
     }
@@ -91,13 +91,13 @@ int main(void)
     // Set type_2 connections to legnth sqrt(2)
     for (int i = N_TYPE1; i < N_TYPE1+N_TYPE2; ++i)
     {
-        spring_lengths[i] = sqrt(2);
+        spring_lengths[i] *= sqrt(2);
     }
 
     // Set type_4 connections to legnth sqrt(2)
     for (int i = N_TYPE1+N_TYPE2+N_TYPE3; i < N_CONNECTIONS; ++i)
     {
-        spring_lengths[i] = sqrt(2);
+        spring_lengths[i] *= sqrt(2);
     }
 
     /*
@@ -141,7 +141,7 @@ int main(void)
     int read_buffer = 0;
     int write_buffer = 1;
 
-    float T = 0.01f;
+    float T = 1/60.0f;
     float current_time;
 
     //Init gl points
@@ -154,11 +154,15 @@ int main(void)
     glEnable( GL_LINE_SMOOTH );
 
 
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    float ratio = width / (float) height;
+    glfwSetCursorPos(window, 0,0);
+
     while (!glfwWindowShouldClose(window))
     {
-        int width, height;
         glfwGetFramebufferSize(window, &width, &height);
-        float ratio = width / (float) height;
+        ratio = width / (float) height;
 
         /* SIMULATION */
         for (int connection_index = 0; connection_index < N_CONNECTIONS; ++connection_index)
@@ -182,9 +186,18 @@ int main(void)
             glm::vec2 delta_v = v1 - v2;
 
             //calculate force from connection
-            glm::vec2 force_from_connection = ( -k*(glm::length(delta_p) - l) - b*(delta_v*delta_p_hat) )*delta_p_hat;
+            float spring_elongation = glm::length(delta_p) - l;
+            //if (connection_index == 0.0f)
+                //std::cout << spring_elongation*spring_elongation << std::endl;
+            float elongation_sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
+            float parallel_delta_v_magnitude = glm::dot(delta_v,delta_p_hat);
+
+            //Spring force is now proportional to the squared spring elongation
+            float signed_spring_force = -k*spring_elongation;//*spring_elongation*elongation_sign;
+
+            glm::vec2 force_from_connection = ( signed_spring_force - b*parallel_delta_v_magnitude )*delta_p_hat;
             forces[mass_index1] += force_from_connection;
-            forces[mass_index2] -= force_from_connection;
+            forces[mass_index2] -= force_from_connection; 
         }
 
         // Moving one mass 
@@ -200,6 +213,7 @@ int main(void)
         for (int mass_index = 1; mass_index < N_MASSES; ++mass_index) // OBS!!!! NOT UPDATING MASS 1 HERE NOW
         {
             glm::vec2 a = forces[mass_index]/masses[mass_index];// - glm::vec2(0.f,1.f)*g;
+
             glm::vec2 v = velocities[mass_index][read_buffer] + a*T;
             glm::vec2 p = positions[mass_index][read_buffer] + v*T;
 
@@ -236,9 +250,6 @@ int main(void)
         }
 
         /* DRAW */
-        
-        //int width, height;
-        //glfwGetFramebufferSize(window, &width, &height);
         
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
