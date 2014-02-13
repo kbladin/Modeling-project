@@ -20,7 +20,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-const int N_ROWS = 40;
+/* const int N_ROWS = 40;
 const int N_COLS = 40;
 
 const int N_TYPE1 = (N_ROWS-1)*N_COLS; // |
@@ -40,7 +40,7 @@ int connected_masses[N_CONNECTIONS][2];
 float spring_constants[N_CONNECTIONS];
 float damper_constants[N_CONNECTIONS];
 float spring_lengths[N_CONNECTIONS];
-
+*/
 const float g = 9.82f;
 
 
