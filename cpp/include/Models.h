@@ -1,16 +1,14 @@
-
 #ifndef MODELS_H
 #define MODELS_H
 
-/** Classes **/
-// The abstract base class for all systems 
-/*class Model{
-	public:
-		float diffEq();
-};*/
+#include <glm/glm.hpp>
+#include "Particle.h"
+#include "Connection.h"
 
-// The abstract subclass MCS - Mass Connection System
-class MCS /*: public Model*/{
+/** Classes **/
+
+// The MCS - Mass Connection System
+class MCS{
 
     public:
         // Constructor
@@ -64,7 +62,8 @@ class MSDS : public MCS{
 		float spring_constants[N_CONNECTIONS];
 		float damper_constants[N_CONNECTIONS];
 		float spring_lengths[N_CONNECTIONS];
-};*/
+};
+*/
 /*
 // The subclass MSDFS - Mass Spring Damper Friction System
 class MSDFS : public MSDS{

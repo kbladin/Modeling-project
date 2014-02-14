@@ -1,8 +1,5 @@
-#include <iostream>
-#include <glm/glm.hpp>
-#include <models.h>
-#include <Particle.h>
-#include <Connection.h>
+#include "Models.h"
+
 
 //Constructor
 MCS::MCS(const int n_rows, const int n_cols, const int n_stacks)
@@ -13,6 +10,7 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks)
 {
 
     particles = new Particle[N_PARTICLES];
+    
 	setStartingValues();
     connections = new Connection[N_PARTICLES];
 /* TODO
@@ -26,7 +24,7 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks)
 //Destructor
 MCS::~MCS(){
     delete[] particles;
-    delete[] connected_particles;
+    delete[] connections;
 }
 
 void MCS::setStartingValues(){
