@@ -1,6 +1,6 @@
 #include "Connection.h"
 
-Connection::Connection(Particle& p1, Particle& p2, float length, float k,float b):
+Connection::Connection(Particle * p1, Particle * p2, float length, float k,float b):
 _p1(p1), _p2(p2), _l(length), _k(k), _b(b){ }
 
 void Connection::setConnectionLength(float l){
@@ -18,10 +18,11 @@ void Connection::setDamperConstant(float b){
 		_b = b;
 }
 
+
 void Connection::applyForcesToConnectedParticles(float dt){
 	glm::vec3 force = calcForce(dt);
-	_p1.storeForce(force);
-	_p2.storeForce(-force);
+	_p1->storeForce(force);
+	_p2->storeForce(-force);
 }
 
 glm::vec3 Connection::calcForce(float dt) const{
@@ -33,9 +34,9 @@ glm::vec3 Connection::calcForce(float dt) const{
 }
 
 glm::vec3 Connection::getDeltaPosition() const{
-	return _p1.readPosition() - _p2.readPosition();
+	return _p1->readPosition() - _p2->readPosition();
 }
 
 glm::vec3 Connection::getDeltaVelocity() const{
-	return _p1.readVelocity() - _p2.readVelocity();
+	return _p1->readVelocity() - _p2->readVelocity();
 }

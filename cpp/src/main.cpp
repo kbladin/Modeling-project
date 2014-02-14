@@ -21,7 +21,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-
 const int N_ROWS = 10;
 const int N_COLS = 10;
 

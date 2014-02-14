@@ -25,7 +25,7 @@ void testParticle(){
 void testConnection(){
     Particle p1(2.0f, glm::vec3(1,2,3), glm::vec3(5,6,7));
     Particle p2(1.0f, glm::vec3(0,0,0), glm::vec3(0,0,0));
-    Connection c(p1,p2,1,10,5);
+    Connection c(&p1,&p2,1,10,5);
     assert(c._l == 1);
     assert(c._k == 10);
     assert(c._b == 5);

@@ -6,8 +6,8 @@
 
 class Connection{
 public:
-	Connection(Particle& p1, 
-			   Particle& p2, 
+	Connection(Particle * p1 = NULL, 
+			   Particle * p2 = NULL, 
 			   float length = 1, 
 			   float k = 1,
 			   float b = 1);
@@ -31,12 +31,13 @@ protected:
 
 private:
 	friend void testConnection();
+	friend class MCS;
 
 	glm::vec3 getDeltaPosition() const;
 	glm::vec3 getDeltaVelocity() const;
 
-	Particle& _p1;
-	Particle& _p2;
+	Particle * _p1;
+	Particle * _p2;
 
 	float _l;
 	float _k;
