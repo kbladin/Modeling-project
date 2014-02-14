@@ -13,9 +13,13 @@ public:
 	
 	const glm::vec3& readPosition() const;
 	const glm::vec3& readVelocity() const;
+	const glm::vec3& readForce() const;
 
-	void writePosition(const glm::vec3& p);
-	void writeVelocity(const glm::vec3& v);
+	void writePosition(const glm::vec3& position);
+	void writeVelocity(const glm::vec3& velocity);
+	void storeForce(const glm::vec3& force);
+
+	void resetForce();
 
 	static void swapBuffers();
 
