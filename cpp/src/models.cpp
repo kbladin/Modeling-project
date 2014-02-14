@@ -3,91 +3,75 @@
 //#include <models.h>
 // The abstract subclass MCS - Mass Connection System
 class MCS /*: public Model*/{
-    
 
     public:
         // Constructor
-        MCS(int n_rows, int n_cols);
+        MCS(const int n_rows, const int n_cols, const int n_stacks);
         // Destructor
         ~MCS();
 
     protected:
         const int N_ROWS;
         const int N_COLS;
+        const int N_STACKS;
 
         const int N_TYPE1;
         const int N_TYPE2;
         const int N_TYPE3;
         const int N_TYPE4;
 
-        const int N_MASSES;
+        const int N_PARTICLES;
         const int N_CONNECTIONS;
 
-        /*
-        float * masses[N_MASSES];
-        glm::vec2 * positions[N_MASSES][2];
-        glm::vec2 * velocities[N_MASSES][2];
-        glm::vec2 * forces[N_MASSES];
-
-        int * connected_masses[N_CONNECTIONS][2];
-        */
-
-        float * masses;
-        glm::vec2 * positions;
-        glm::vec2 * velocities;
-        glm::vec2 * forces;
-
-        int * connected_masses[N_CONNECTIONS][2];
+        void setStartingValues();
+        Particle * particles;
+        Particle * connected_particles;
 
 };
 
 //Constructor
-MCS::MCS(int n_rows, int n_cols) : N_ROWS(n_rows), N_COLS(n_cols){
-//	const int N_ROWS = n_rows;
-//	const int N_COLS = n_cols;
+MCS::MCS(const int n_rows, const int n_cols, const int n_stacks)
+        : N_ROWS(n_rows), N_COLS(n_cols), N_STACKS(n_stacks),
+          N_TYPE1((N_ROWS-1)*N_COLS), N_TYPE2((N_ROWS-1)*(N_COLS-1)),
+          N_TYPE3(N_ROWS*(N_COLS-1)), N_TYPE4(N_TYPE2),
+          N_PARTICLES(N_ROWS*N_COLS), N_CONNECTIONS(N_TYPE1+N_TYPE2+N_TYPE3+N_TYPE4)
+{
 
-	N_TYPE1 = (N_ROWS-1)*N_COLS; // |
+	/*
+    N_TYPE1 = (N_ROWS-1)*N_COLS; // |
 	N_TYPE2 = (N_ROWS-1)*(N_COLS-1); // /
 	N_TYPE3 = N_ROWS*(N_COLS-1); // _
 	N_TYPE4 = N_TYPE2; // \
 
-	N_MASSES = N_ROWS*N_COLS;
+	N_PARTICLES = N_ROWS*N_COLS;
 	N_CONNECTIONS = N_TYPE1+N_TYPE2+N_TYPE3+N_TYPE4;
-
+    */
+    particles = new Particle[N_PARTICLES];
 	setStartingValues();
+    connected_particles = new Particle[N_PARTICLES][2];
 
 	// Calculate connections
     for (int i = 0; i < N_CONNECTIONS; ++i){
-        connection2massIndices(i, connected_masses[i][0], connected_masses[i][1], N_ROWS, N_COLS);
+        connection2massIndices(i, connected_particles[i][0], connected_particles[i][1], N_ROWS, N_COLS, N_STACKS);
     }
 
 }
 
 //Destructor
 MCS::~MCS(){
-	delete[] connected_masses;
-	delete[] masses;
-	delete[] positions;
-	delete[] velocities;
-	delete[] forces;
+    delete[] particles;
+    delete[] connected_particles;
 }
 
 void MCS::setStartingValues(){
 // Set starting values to masses, positions velocities and forces
-    for (int i = 0; i < N_MASSES; ++i)
+    for (int i = 0; i < N_PARTICLES; ++i)
     {
-        masses[i] = 1.0f;
-        int row = i%N_COLS;
-        int col = floor(i/N_COLS);
-        positions[i][0] = glm::vec2(row,col);		// Read buffer postition = row, col for each mass
-        positions[i][1] = glm::vec2(0,0);			// Write buffer position = 0,0
-        velocities[i][0] = glm::vec2(0,0);
-        velocities[i][1] = glm::vec2(0,0);
-        forces[i] = glm::vec2(0,0);
+        int row = i%N_COLS;                         //x
+        int col = floor(i/N_COLS);                  //y
+        int stack = floor(i/(N_COLS*N_ROWS));       //z
+        particles[i] = Particle(1.0f, glm::vec3(row,col,stack));    // starting position from 3D index, vel. = 0
     }
-    positions[0][0] = glm::vec2(0.0f,-1.0f);
-    velocities[0][0] = glm::vec2(0.0f,-100.0f);
-
 }
 /*
 //constructor
