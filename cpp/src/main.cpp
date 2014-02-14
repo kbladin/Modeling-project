@@ -9,15 +9,19 @@
 
 #include <shader.h>
 #include "connection2massindices.h"
+#include "Particle.h"
+#include "test.cpp"
 
-static void error_callback(int error, const char* description)
-{
+static void error_callback(int error, const char* description){
     fputs(description, stderr);
 }
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
+}
+
+static std::ostream& operator<<(std::ostream& os, const glm::vec3& vec){
+    return os << "(" << vec[0] << ", " << vec[1] << ", " << vec[2] << ")";
 }
 
 const int N_ROWS = 10;
@@ -46,6 +50,9 @@ const float g = 9.82f;
 
 
 int main(void){
+    //Test particle
+    testParticle();
+
     /* INIT GLFW */
     GLFWwindow* window;
     glfwSetErrorCallback(error_callback);

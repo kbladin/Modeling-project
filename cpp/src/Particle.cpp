@@ -13,8 +13,8 @@ void Particle::swapBuffers(){
 
 Particle::Particle(const float mass, const glm::vec3& position, const glm::vec3& velocity){
 	_mass = mass;
-	_position[write_buffer_index] = position;
-	_velocity[write_buffer_index] = velocity;
+	_position[read_buffer_index] = position;
+	_velocity[read_buffer_index] = velocity;
 	_force = glm::vec3(0,0,0);
 }
 
@@ -28,6 +28,10 @@ const glm::vec3& Particle::readVelocity() const{
 
 const glm::vec3& Particle::readForce() const{
 	return _force;
+}
+
+const float Particle::getMass() const{
+	return _mass;
 }
 
 
