@@ -21,8 +21,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-const int N_ROWS = 10;
-const int N_COLS = 10;
+const int N_ROWS = 20;
+const int N_COLS = 20;
 
 const int N_TYPE1 = (N_ROWS-1)*N_COLS; // |
 const int N_TYPE2 = (N_ROWS-1)*(N_COLS-1); // /
@@ -79,7 +79,7 @@ int main(void){
         forces[i] = glm::vec2(0,0);
     }
     positions[0][0] = glm::vec2(0.0f,-1.0f);
-    velocities[0][0] = glm::vec2(0.0f,-100.0f);
+    //velocities[0][0] = glm::vec2(0.0f,-100.0f);
 
 
     // Set values for springs, dampers, and lengths
@@ -231,6 +231,10 @@ int main(void){
         glBegin(GL_LINES);
         glColor3f(0.f, 1.f, 0.f);
         for (int i = 0; i < N_CONNECTIONS; ++i){
+            glm::vec2 delta_p = positions[connected_masses[i][0]][read_buffer]
+                               -positions[connected_masses[i][1]][read_buffer];
+            float r = glm::abs(glm::length(delta_p)-spring_lengths[i]);
+            glColor3f(r,1-r,0.0f);
             glVertex3f(positions[connected_masses[i][0]][read_buffer][0],
                        positions[connected_masses[i][0]][read_buffer][1], 0.f);
             glVertex3f(positions[connected_masses[i][1]][read_buffer][0],
