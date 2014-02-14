@@ -1,5 +1,45 @@
 #include <iostream>
-#include <models.h>
+#include <glm/glm.hpp>
+//#include <models.h>
+// The abstract subclass MCS - Mass Connection System
+class MCS /*: public Model*/{
+    
+
+    public:
+        // Constructor
+        MCS(int n_rows, int n_cols);
+        // Destructor
+        ~MCS();
+
+    protected:
+        const int N_ROWS;
+        const int N_COLS;
+
+        const int N_TYPE1;
+        const int N_TYPE2;
+        const int N_TYPE3;
+        const int N_TYPE4;
+
+        const int N_MASSES;
+        const int N_CONNECTIONS;
+
+        /*
+        float * masses[N_MASSES];
+        glm::vec2 * positions[N_MASSES][2];
+        glm::vec2 * velocities[N_MASSES][2];
+        glm::vec2 * forces[N_MASSES];
+
+        int * connected_masses[N_CONNECTIONS][2];
+        */
+
+        float * masses;
+        glm::vec2 * positions;
+        glm::vec2 * velocities;
+        glm::vec2 * forces;
+
+        int * connected_masses[N_CONNECTIONS][2];
+
+};
 
 //Constructor
 MCS::MCS(int n_rows, int n_cols) : N_ROWS(n_rows), N_COLS(n_cols){
@@ -17,8 +57,7 @@ MCS::MCS(int n_rows, int n_cols) : N_ROWS(n_rows), N_COLS(n_cols){
 	setStartingValues();
 
 	// Calculate connections
-    for (int i = 0; i < N_CONNECTIONS; ++i)
-    {
+    for (int i = 0; i < N_CONNECTIONS; ++i){
         connection2massIndices(i, connected_masses[i][0], connected_masses[i][1], N_ROWS, N_COLS);
     }
 
@@ -50,7 +89,7 @@ void MCS::setStartingValues(){
     velocities[0][0] = glm::vec2(0.0f,-100.0f);
 
 }
-
+/*
 //constructor
 MSDS::MSDS(float spring_const, float damper_const, float spring_l, n_rows, n_cols) : MCS(n_rows, n_cols);{
 	// Set values for springs, dampers, and lengths
@@ -80,6 +119,9 @@ MSDS::~MSDS(){
 	delete[] damper_constants;
 	delete[] spring_lengths;
 }
-
+*/
+int main(){
+    std::cout << "Hej" << std::endl;
+}
 
 
