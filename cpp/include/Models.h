@@ -11,34 +11,47 @@
 
 // The abstract subclass MCS - Mass Connection System
 class MCS /*: public Model*/{
-	public:
-		// Constructor
-		MCS(int n_rows, int n_cols);
-		// Destructor
-		~MCS();
 
-	protected:
-		const int N_ROWS;
-		const int N_COLS;
+    public:
+        // Constructor
+        MCS(const int n_rows, const int n_cols, const int n_stacks);
+        // Destructor
+        ~MCS();
 
-		const int N_TYPE1;
-		const int N_TYPE2;
-		const int N_TYPE3;
-		const int N_TYPE4;
+        //Get-functions to access the protected variables in the MCS class
+        int getRows();
+        int getCols();
+        int getStack();
+        int getParticles();
+        int getConnections();
+        
 
-		const int N_MASSES;
-		const int N_CONNECTIONS;
+    protected:
+        //The dimensions variables for the MCS
+        const int N_ROWS;
+        const int N_COLS;
+        const int N_STACKS;
 
-		float masses[N_MASSES];
-		glm::vec2 positions[N_MASSES][2];
-		glm::vec2 velocities[N_MASSES][2];
-		glm::vec2 forces[N_MASSES];
+        //The number of connections of each type/direction
+        const int N_TYPE1;
+        const int N_TYPE2;
+        const int N_TYPE3;
+        const int N_TYPE4;
 
-		int connected_masses[N_CONNECTIONS][2];
+        //The total number of particles and connections
+        const int N_PARTICLES;
+        const int N_CONNECTIONS;
+
+        void setStartingValues();
+        
+        // Pointers for dynamically allocated arrays of particle and connetion objects
+        Particle * particles;
+        Connection * connections;
 
 };
 
 // The subclass MSDS - Mass Spring Damper System
+/*
 class MSDS : public MCS{
 	public:
 		// Constructor
@@ -51,7 +64,7 @@ class MSDS : public MCS{
 		float spring_constants[N_CONNECTIONS];
 		float damper_constants[N_CONNECTIONS];
 		float spring_lengths[N_CONNECTIONS];
-};
+};*/
 /*
 // The subclass MSDFS - Mass Spring Damper Friction System
 class MSDFS : public MSDS{
