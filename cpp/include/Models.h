@@ -1,3 +1,4 @@
+#include <glm/glm.hpp>
 
 #ifndef MODELS_H
 #define MODELS_H
@@ -6,7 +7,7 @@
 // The abstract base class for all systems 
 class Model{
 	public:
-		float diffEq();
+		glm::vec3& diffEq();
 };
 
 // The abstract subclass MCS - Mass Connection System
@@ -42,7 +43,8 @@ class MCS : public Model{
 class MSDS : public MCS{
 	public:
 		// Constructor
-		MSDS(int numberOfMasses, int numberOfConnections) : MCS(numberOfMasses, numberOfConnections){
+		MSDS(int numberOfMasses, int numberOfConnections) : 
+		MCS(numberOfMasses, numberOfConnections){
 			springDampers = new SpringDamper [numberOfConnections];
 		}
 		// Destructor
