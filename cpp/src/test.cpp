@@ -35,6 +35,6 @@ void testConnection(){
     p1.writePosition(glm::vec3(0,0,0));
     p2.writePosition(glm::vec3(2,0,0));
     Particle::swapBuffers();
-    //assert(calcForce(0.0f) == glm::vec3())
+    //assert(calcForce(0.0f) == glm::vec3(10,0,0))
     //std::cout << c.calcForce(0.0f) << std::endl;
 }
