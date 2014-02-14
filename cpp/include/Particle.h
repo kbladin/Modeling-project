@@ -11,8 +11,8 @@ public:
 			 const glm::vec3& velocity = glm::vec3(0,0,0));
 	~Particle();
 	
-	glm::vec3& readPosition() const;
-	glm::vec3& readVelocity() const;
+	const glm::vec3& readPosition() const;
+	const glm::vec3& readVelocity() const;
 
 	void writePosition(const glm::vec3& p);
 	void writeVelocity(const glm::vec3& v);
@@ -31,4 +31,4 @@ private:
 
 };
 
-#endif
+#endif 
