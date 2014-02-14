@@ -20,6 +20,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
+
 static std::ostream& operator<<(std::ostream& os, const glm::vec3& vec){
     return os << "(" << vec[0] << ", " << vec[1] << ", " << vec[2] << ")";
 }

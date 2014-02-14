@@ -4,56 +4,55 @@
 
 /** Classes **/
 // The abstract base class for all systems 
-class Model{
+/*class Model{
 	public:
 		float diffEq();
-};
+};*/
 
 // The abstract subclass MCS - Mass Connection System
-class MCS : public Model{
+class MCS /*: public Model*/{
 	public:
 		// Constructor
-		MCS(int numberOfMasses, int numberOfConnections){
-			// Allocate memory for variable length arrays
-			masses = new float [numberOfMasses];
-			connections = new float [numberOfConnections];
-			positions = new glm::vec3 [numberOfMasses];
-			velocities = new glm::vec3 [numberOfMasses];
-			forces = new glm::vec3 [numberOfMasses];
-		}
+		MCS(int n_rows, int n_cols);
 		// Destructor
-		~MCS(){
-			delete[] masses;
-			delete[] connections;
-			delete[] positions;
-			delete[] velocities;
-			delete[] forces;
-		}
+		~MCS();
+
 	protected:
-		//int numberOfMasses;
-		float * masses;
-		float * connections;
-		glm::vec3 * positions;
-		glm::vec3 * velocities;
-		glm::vec3 * forces;
+		const int N_ROWS;
+		const int N_COLS;
+
+		const int N_TYPE1;
+		const int N_TYPE2;
+		const int N_TYPE3;
+		const int N_TYPE4;
+
+		const int N_MASSES;
+		const int N_CONNECTIONS;
+
+		float masses[N_MASSES];
+		glm::vec2 positions[N_MASSES][2];
+		glm::vec2 velocities[N_MASSES][2];
+		glm::vec2 forces[N_MASSES];
+
+		int connected_masses[N_CONNECTIONS][2];
+
 };
 
 // The subclass MSDS - Mass Spring Damper System
 class MSDS : public MCS{
 	public:
 		// Constructor
-		MSDS(int numberOfMasses, int numberOfConnections) : MCS(numberOfMasses, numberOfConnections){
-			springDampers = new SpringDamper [numberOfConnections];
-		}
+		MSDS(float spring_const, float damper_const, float spring_l, int n_rows, int n_cols);
 		// Destructor
-		~MSDS(){
-			delete[] springDampers;
-		}
+		~MSDS();
 
 	protected:
-		SpringDamper * springDampers;
+		//SpringDamper * springDampers;
+		float spring_constants[N_CONNECTIONS];
+		float damper_constants[N_CONNECTIONS];
+		float spring_lengths[N_CONNECTIONS];
 };
-
+/*
 // The subclass MSDFS - Mass Spring Damper Friction System
 class MSDFS : public MSDS{
 	public:
@@ -67,5 +66,5 @@ class MSDFS : public MSDS{
 		}
 		Friction * friction;
 };
-
+*/
 #endif
