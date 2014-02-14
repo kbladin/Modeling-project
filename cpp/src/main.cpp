@@ -45,16 +45,14 @@ const float g = 9.82f;
 
 
 
-int main(void)
-{
+int main(void){
     /* INIT GLFW */
     GLFWwindow* window;
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(EXIT_FAILURE);
     window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
-    if (!window)
-    {
+    if (!window){
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
@@ -65,8 +63,7 @@ int main(void)
     /* INIT SIMULATION */
 
     // Set start values to masses, positions velocities and forces
-    for (int i = 0; i < N_MASSES; ++i)
-    {
+    for (int i = 0; i < N_MASSES; ++i){
         masses[i] = 1.0f;
         int row = i%N_COLS;
         int col = floor(i/N_COLS);
@@ -81,60 +78,25 @@ int main(void)
 
 
     // Set values for springs, dampers, and lengths
-    for (int i = 0; i < N_CONNECTIONS; ++i)
-    {
+    for (int i = 0; i < N_CONNECTIONS; ++i){
         spring_constants[i] = 100.0f;
         damper_constants[i] = 5.0f;
         spring_lengths[i] = 1.0f;
     }
 
     // Set type_2 connections to legnth sqrt(2)
-    for (int i = N_TYPE1; i < N_TYPE1+N_TYPE2; ++i)
-    {
+    for (int i = N_TYPE1; i < N_TYPE1+N_TYPE2; ++i){
         spring_lengths[i] *= sqrt(2);
     }
 
     // Set type_4 connections to legnth sqrt(2)
-    for (int i = N_TYPE1+N_TYPE2+N_TYPE3; i < N_CONNECTIONS; ++i)
-    {
+    for (int i = N_TYPE1+N_TYPE2+N_TYPE3; i < N_CONNECTIONS; ++i){
         spring_lengths[i] *= sqrt(2);
     }
 
-    /*
-    Mass indices:
-    2---------3
-    |  \   /  |
-    |    X    |
-    |  /   \  |
-    0---------1
-
-    Connection indices:
-    #----4----#
-    |  \  2/  |
-    0    X    1
-    |  /   \5 |
-    #----3----#
-    */
-
-/*
-    // Hard coded connections
-    connected_masses[0][0] = 0;
-    connected_masses[0][1] = 2;
-    connected_masses[1][0] = 1;
-    connected_masses[1][1] = 3;
-    connected_masses[2][0] = 0;
-    connected_masses[2][1] = 3;
-    connected_masses[3][0] = 0;
-    connected_masses[3][1] = 1;
-    connected_masses[4][0] = 2;
-    connected_masses[4][1] = 3;
-    connected_masses[5][0] = 1;
-    connected_masses[5][1] = 2;
-*/
 
     // Calculate connections
-    for (int i = 0; i < N_CONNECTIONS; ++i)
-    {
+    for (int i = 0; i < N_CONNECTIONS; ++i){
         connection2massIndices(i, connected_masses[i][0], connected_masses[i][1], N_ROWS, N_COLS);
     }
 
@@ -159,14 +121,12 @@ int main(void)
     float ratio = width / (float) height;
     glfwSetCursorPos(window, 0,0);
 
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)){
         glfwGetFramebufferSize(window, &width, &height);
         ratio = width / (float) height;
 
         /* SIMULATION */
-        for (int connection_index = 0; connection_index < N_CONNECTIONS; ++connection_index)
-        {
+        for (int connection_index = 0; connection_index < N_CONNECTIONS; ++connection_index){
             //connection properties
             float k = spring_constants[connection_index];
             float b = damper_constants[connection_index];
@@ -210,33 +170,29 @@ int main(void)
         float scalex = scale*ratio;
 
         //Calculate acceleration, velocity and position
-        for (int mass_index = 1; mass_index < N_MASSES; ++mass_index) // OBS!!!! NOT UPDATING MASS 1 HERE NOW
-        {
+        // OBS!!!! NOT UPDATING MASS 1 HERE NOW
+        for (int mass_index = 1; mass_index < N_MASSES; ++mass_index){
             glm::vec2 a = forces[mass_index]/masses[mass_index];// - glm::vec2(0.f,1.f)*g;
 
             glm::vec2 v = velocities[mass_index][read_buffer] + a*T;
             glm::vec2 p = positions[mass_index][read_buffer] + v*T;
 
             //Check collision
-            if (p[1] < -scale)
-            {
+            if (p[1] < -scale){
                 p[1] = -scale;
                 v[1] = -v[1];
             }
-            else if (p[1] > scale)
-            {
+            else if (p[1] > scale){
                 p[1] = scale;
                 v[1] = -v[1];   
             }
 
 
-            if (p[0] < -scalex)
-            {
+            if (p[0] < -scalex){
                 p[0] = -scalex;
                 v[0] = -v[0];
             }
-            else if (p[0] > scalex)
-            {
+            else if (p[0] > scalex){
                 p[0] = scalex;
                 v[0] = -v[0];
             }
@@ -260,8 +216,7 @@ int main(void)
         //Draw masses
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
-        for (int i = 0; i < N_MASSES; ++i)
-        {
+        for (int i = 0; i < N_MASSES; ++i){
             glVertex3f(positions[i][read_buffer][0],
                        positions[i][read_buffer][1], 0.f);
         }
@@ -270,8 +225,7 @@ int main(void)
         //Draw connections
         glBegin(GL_LINES);
         glColor3f(0.f, 1.f, 0.f);
-        for (int i = 0; i < N_CONNECTIONS; ++i)
-        {
+        for (int i = 0; i < N_CONNECTIONS; ++i){
             glVertex3f(positions[connected_masses[i][0]][read_buffer][0],
                        positions[connected_masses[i][0]][read_buffer][1], 0.f);
             glVertex3f(positions[connected_masses[i][1]][read_buffer][0],
