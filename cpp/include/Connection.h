@@ -31,6 +31,7 @@ protected:
 
 private:
 	friend void testConnection();
+	friend class MCS;
 
 	glm::vec3 getDeltaPosition() const;
 	glm::vec3 getDeltaVelocity() const;

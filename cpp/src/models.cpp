@@ -13,11 +13,15 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks)
     
 	setStartingValues();
     connections = new Connection[N_PARTICLES];
-/* TODO
+
 	// Calculate connections
+    int connected_particles1, connected_particles2;
     for (int i = 0; i < N_CONNECTIONS; ++i){
-        connection2massIndices(i, connected_particles[i][0], connected_particles[i][1], N_ROWS, N_COLS, N_STACKS);
-    }*/
+        //connection2massIndices(i, connected_particles1, connected_particles2, N_ROWS, N_COLS, N_STACKS);
+        connections[i]._p1 = &particles[connected_particles1];
+        connections[i]._p2 = &particles[connected_particles2];
+    }
+
 
 }
 
