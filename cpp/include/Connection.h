@@ -27,7 +27,8 @@ protected:
 	
 	//This method calculates the force which this
 	//connection affects the particle p1 with.
-	glm::vec3 calcForce(float dt) const;
+	glm::vec3 calcForce(const glm::vec3& delta_p_offset = glm::vec3(0,0,0), 
+						const glm::vec3& delta_v_offset = glm::vec3(0,0,0)) const;
 
 private:
 	friend void testConnection();

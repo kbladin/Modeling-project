@@ -50,6 +50,7 @@ int main(void){
     //Test
     testParticle();
     testConnection();
+    testMCS();
 
     /* INIT GLFW */
     GLFWwindow* window;
