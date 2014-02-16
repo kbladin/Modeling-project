@@ -6,3 +6,10 @@ Thumbs.db
 *.m~
 /cpp/program
 /cpp/objects/*.o
+objects/*.o
+
+
+# LaTeX shit
+/Rapport/reportsam.pdf
+/Rapport/reportsam.log
+/Rapport/reportsam.synctex.gz
