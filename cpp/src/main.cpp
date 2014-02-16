@@ -29,17 +29,6 @@ static std::ostream& operator<<(std::ostream& os, const glm::vec3& vec){
 const int N_ROWS = 10;
 const int N_COLS = 10;
 const int N_STACKS = 1;
-/*
-=======
-const int N_ROWS = 100;
-const int N_COLS = 100;
-
->>>>>>> efc5880e0277035ed386ab4a87dd376f3a08447f
-const int N_TYPE1 = (N_ROWS-1)*N_COLS; // |
-const int N_TYPE2 = (N_ROWS-1)*(N_COLS-1); // /
-const int N_TYPE3 = N_ROWS*(N_COLS-1); // _
-const int N_TYPE4 = N_TYPE2; // \.
-*/
 
 const int N_TYPE0 = N_ROWS*(N_COLS-1)*N_STACKS;
 const int N_TYPE1 = (N_ROWS-1)*N_COLS*N_STACKS;
