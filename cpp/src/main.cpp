@@ -21,11 +21,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-<<<<<<< HEAD
-const int N_ROWS = 20;
-const int N_COLS = 20;
-=======
->>>>>>> master
 
 static std::ostream& operator<<(std::ostream& os, const glm::vec3& vec){
     return os << "(" << vec[0] << ", " << vec[1] << ", " << vec[2] << ")";
@@ -116,11 +111,7 @@ int main(void){
     }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-<<<<<<< HEAD
-    float scale = 30.f;
-=======
     float scale = (float) fmax(N_ROWS,N_COLS);
->>>>>>> master
 
     /* INIT SIMULATION */
 
@@ -178,56 +169,10 @@ int main(void){
     glEnable( GL_LINE_SMOOTH );
 
 
-<<<<<<< HEAD
-    while (!glfwWindowShouldClose(window))
-    {
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        float ratio = width / (float) height;
-
-        /* SIMULATION */
-        for (int connection_index = 0; connection_index < N_CONNECTIONS; ++connection_index)
-        {
-            //connection properties
-            float k = spring_constants[connection_index];
-            float b = damper_constants[connection_index];
-            float l = spring_lengths[connection_index];
-
-            //sosition
-            int mass_index1 = connected_masses[connection_index][0];
-            int mass_index2 = connected_masses[connection_index][1];
-            glm::vec2 p1 = positions[mass_index1][read_buffer];
-            glm::vec2 p2 = positions[mass_index2][read_buffer];
-            glm::vec2 delta_p = p1 - p2;
-            glm::vec2 delta_p_hat = glm::normalize(delta_p);//Not tested
-
-            //velocities
-            glm::vec2 v1 = velocities[mass_index1][read_buffer];
-            glm::vec2 v2 = velocities[mass_index2][read_buffer];
-            glm::vec2 delta_v = v1 - v2;
-
-            //calculate force from connection
-            glm::vec2 force_from_connection = ( -k*(glm::length(delta_p) - l) - b*(delta_v*delta_p_hat) )*delta_p_hat;
-            forces[mass_index1] += force_from_connection;
-            forces[mass_index2] -= force_from_connection;
-        }
-
-        // Moving one mass 
-        double x_mouse;
-        double y_mouse;
-
-        glfwGetCursorPos(window, &x_mouse, &y_mouse);
-        
-        //positions[0][write_buffer] = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
-        // Retina
-        positions[0][write_buffer] = glm::vec2(float(x_mouse-0.25*width)*4*scale/height, -float(y_mouse-0.25*height)*4*scale/height);
-
-=======
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     float ratio = width / (float) height;
     glfwSetCursorPos(window, 0,0);
->>>>>>> master
 
     while (!glfwWindowShouldClose(window)){
         glfwGetFramebufferSize(window, &width, &height);
