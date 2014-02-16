@@ -1,10 +1,9 @@
-#include <glm/glm.hpp>
-
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
-class Particle
-{
+#include <glm/glm.hpp>
+
+class Particle{
 public:
 	Particle(const float mass = 1, 
 			 const glm::vec3& position = glm::vec3(0,0,0), 
@@ -18,11 +17,12 @@ public:
 	void writePosition(const glm::vec3& position);
 	void writeVelocity(const glm::vec3& velocity);
 	void storeForce(const glm::vec3& force);
-	void resetForce();
+	void applyForce(float dt);
 
 	static void swapBuffers();
 
 private:
+	friend void testConnection();
 
 	float _mass;
 	glm::vec3 _position[2];
