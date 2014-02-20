@@ -34,7 +34,7 @@ int main(void){
     testConnection();
     testMCS();
 
-    MCS mcs(2,2,2);
+    MCS mcs(5,5,5);
 
     /* INIT GLFW */
     GLFWwindow* window;
@@ -48,10 +48,10 @@ int main(void){
     }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-    float scale = 5;//(float) fmax(mcs.N_ROWS, mcs.N_COLS) * 2;
+    float scale = 10;//(float) fmax(mcs.N_ROWS, mcs.N_COLS) * 2;
 
     /* INIT SIMULATION */
-    int simulations_per_frame = 40;
+    int simulations_per_frame = 10;
     float T = 1.0f/(60.0f*simulations_per_frame);
     float current_time;
 
@@ -129,11 +129,15 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        float zNear = 0.f;
-        float zFar = -20.f;
-        glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, zNear, zFar);
+
+        float zNear = 0.1f;
+        float zFar = 255.0f;
+
+        glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, zNear, -zFar);
+        glTranslatef(0.f,0.f,0.f);
         //glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
         //Draw masses
+
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
         for (int i = 0; i < mcs.numberOfParticles(); ++i){
