@@ -26,6 +26,8 @@ class MCS{
         
 
     protected:
+        friend void testMCS();
+
         //The dimensions variables for the MCS
         const int N_ROWS;
         const int N_COLS;

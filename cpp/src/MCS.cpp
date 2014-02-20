@@ -20,10 +20,10 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks)
     for (int i = 0; i < N_CONNECTIONS; ++i){
         connection2massIndices(i, connected_particle1, connected_particle2, N_ROWS, N_COLS, N_STACKS);
         connections[i] = new Connection(&particles[connected_particle1], &particles[connected_particle2]);
+
         //connections[i]._p1 = &particles[connected_particles1];
         //connections[i]._p2 = &particles[connected_particles2];
     }*/
-
 
 }
 

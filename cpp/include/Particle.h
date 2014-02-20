@@ -17,7 +17,7 @@ public:
 	void writePosition(const glm::vec3& position);
 	void writeVelocity(const glm::vec3& velocity);
 	void storeForce(const glm::vec3& force);
-	void resetForce();
+	void applyForce(float dt);
 
 	static void swapBuffers();
 
