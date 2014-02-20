@@ -21,16 +21,63 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-const int N_ROWS = 5;
-const int N_COLS = 5;
 
-const int N_TYPE1 = (N_ROWS-1)*N_COLS; // |
-const int N_TYPE2 = (N_ROWS-1)*(N_COLS-1); // /
-const int N_TYPE3 = N_ROWS*(N_COLS-1); // _
-const int N_TYPE4 = N_TYPE2; // \.
+static std::ostream& operator<<(std::ostream& os, const glm::vec3& vec){
+    return os << "(" << vec[0] << ", " << vec[1] << ", " << vec[2] << ")";
+}
+
+const int N_ROWS = 10;
+const int N_COLS = 10;
+const int N_STACKS = 1;
+
+const int N_TYPE0 = N_ROWS*(N_COLS-1)*N_STACKS;
+const int N_TYPE1 = (N_ROWS-1)*N_COLS*N_STACKS;
+const int N_TYPE2 = N_ROWS*N_COLS*(N_STACKS-1);
+const int N_TYPE3 = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
+const int N_TYPE4 = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
+const int N_TYPE5 = N_ROWS*(N_COLS-1)*(N_STACKS-1);
+const int N_TYPE6 = N_ROWS*(N_COLS-1)*(N_STACKS-1);
+const int N_TYPE7 = (N_ROWS-1)*N_COLS*(N_STACKS-1);
+const int N_TYPE8 = (N_ROWS-1)*N_COLS*(N_STACKS-1);
+const int N_TYPE9 = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+const int N_TYPE10 = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+const int N_TYPE11 = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+const int N_TYPE12 = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
 
 const int N_MASSES = N_ROWS*N_COLS;
-const int N_CONNECTIONS = N_TYPE1+N_TYPE2+N_TYPE3+N_TYPE4;
+const int N_CONNECTIONS =
+    N_TYPE0 +
+    N_TYPE1 +
+    N_TYPE2 +
+    N_TYPE3 +
+    N_TYPE4 +
+    N_TYPE5 +
+    N_TYPE6 +
+    N_TYPE7 +
+    N_TYPE8 +
+    N_TYPE9 +
+    N_TYPE10 +
+    N_TYPE11 +
+    N_TYPE12;
+
+const int N_LENGTH_1 =
+    N_TYPE0 +
+    N_TYPE1 +
+    N_TYPE2;
+
+const int N_LENGTH_SQRT2 =
+    N_TYPE3 +
+    N_TYPE4 +
+    N_TYPE5 + 
+    N_TYPE6 +
+    N_TYPE7 +
+    N_TYPE8;
+
+const int N_LENGTH_SQRT3 =
+    N_TYPE9 +
+    N_TYPE10 +
+    N_TYPE11 + 
+    N_TYPE12;
 
 float masses[N_MASSES];
 glm::vec2 positions[N_MASSES][2];
@@ -80,36 +127,36 @@ int main(void){
         forces[i] = glm::vec2(0,0);
     }
     positions[0][0] = glm::vec2(0.0f,-1.0f);
-    //velocities[0][0] = glm::vec2(0.0f,-100.0f);
+    velocities[0][0] = glm::vec2(0.0f,-100.0f);
 
 
     // Set values for springs, dampers, and lengths
     for (int i = 0; i < N_CONNECTIONS; ++i){
-        spring_constants[i] = 100.0f;
+        spring_constants[i] = 5000.0f;
         damper_constants[i] = 5.0f;
         spring_lengths[i] = 1.0f;
     }
 
-    // Set type_2 connections to legnth sqrt(2)
-    for (int i = N_TYPE1; i < N_TYPE1+N_TYPE2; ++i){
+    // Set connection lengths sqrt2
+    for (int i = N_LENGTH_1; i < N_LENGTH_1 + N_LENGTH_SQRT2; ++i){
         spring_lengths[i] *= sqrt(2);
     }
 
-    // Set type_4 connections to legnth sqrt(2)
-    for (int i = N_TYPE1+N_TYPE2+N_TYPE3; i < N_CONNECTIONS; ++i){
-        spring_lengths[i] *= sqrt(2);
+    // Set connection lengths sqrt3
+    for (int i = N_LENGTH_1 + N_LENGTH_SQRT2; i < N_CONNECTIONS; ++i){
+        spring_lengths[i] *= sqrt(3);
     }
-
 
     // Calculate connections
     for (int i = 0; i < N_CONNECTIONS; ++i){
-        connection2massIndices(i, connected_masses[i][0], connected_masses[i][1], N_ROWS, N_COLS);
+        connection2massIndices3D(i, connected_masses[i][0], connected_masses[i][1], N_ROWS, N_COLS, 1);
     }
 
     int read_buffer = 0;
     int write_buffer = 1;
 
-    float T = 1/60.0f;
+    int simulations_per_frame = 40;
+    float T = 1/(60.0f*simulations_per_frame);
     float current_time;
 
     //Init gl points
@@ -131,85 +178,95 @@ int main(void){
         glfwGetFramebufferSize(window, &width, &height);
         ratio = width / (float) height;
 
-        /* SIMULATION */
-        for (int connection_index = 0; connection_index < N_CONNECTIONS; ++connection_index){
-            //connection properties
-            float k = spring_constants[connection_index];
-            float b = damper_constants[connection_index];
-            float l = spring_lengths[connection_index];
+        for (int i = 0; i < simulations_per_frame; ++i)
+        {
+            /* SIMULATION */
+            for (int connection_index = 0; connection_index < N_CONNECTIONS; ++connection_index){
+                //connection properties
+                float k = spring_constants[connection_index];
+                float b = damper_constants[connection_index];
+                float l = spring_lengths[connection_index];
 
-            //sosition
-            int mass_index1 = connected_masses[connection_index][0];
-            int mass_index2 = connected_masses[connection_index][1];
-            glm::vec2 p1 = positions[mass_index1][read_buffer];
-            glm::vec2 p2 = positions[mass_index2][read_buffer];
-            glm::vec2 delta_p = p1 - p2;
-            glm::vec2 delta_p_hat = glm::normalize(delta_p);//Not tested
+                //sosition
+                int mass_index1 = connected_masses[connection_index][0];
+                int mass_index2 = connected_masses[connection_index][1];
+                glm::vec2 p1 = positions[mass_index1][read_buffer];
+                glm::vec2 p2 = positions[mass_index2][read_buffer];
+                glm::vec2 delta_p = p1 - p2;
+                glm::vec2 delta_p_hat = glm::normalize(delta_p);//Not tested
 
-            //velocities
-            glm::vec2 v1 = velocities[mass_index1][read_buffer];
-            glm::vec2 v2 = velocities[mass_index2][read_buffer];
-            glm::vec2 delta_v = v1 - v2;
+                //velocities
+                glm::vec2 v1 = velocities[mass_index1][read_buffer];
+                glm::vec2 v2 = velocities[mass_index2][read_buffer];
+                glm::vec2 delta_v = v1 - v2;
 
-            //calculate force from connection
-            float spring_elongation = glm::length(delta_p) - l;
-            //if (connection_index == 0.0f)
-                //std::cout << spring_elongation*spring_elongation << std::endl;
-            float elongation_sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
-            float parallel_delta_v_magnitude = glm::dot(delta_v,delta_p_hat);
+                //calculate force from connection
+                float spring_elongation = glm::length(delta_p) - l;
+                //if (connection_index == 0.0f)
+                    //std::cout << spring_elongation*spring_elongation << std::endl;
+                float elongation_sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
+                float parallel_delta_v_magnitude = glm::dot(delta_v,delta_p_hat);
 
-            //Spring force is now proportional to the squared spring elongation
-            float signed_spring_force = -k*spring_elongation;//*spring_elongation*elongation_sign;
+                //Spring force is now proportional to the squared spring elongation
+                float signed_spring_force = -k*spring_elongation;//*spring_elongation*elongation_sign;
 
-            glm::vec2 force_from_connection = ( signed_spring_force - b*parallel_delta_v_magnitude )*delta_p_hat;
-            forces[mass_index1] += force_from_connection;
-            forces[mass_index2] -= force_from_connection; 
-        }
-
-        // Moving one mass 
-        double x_mouse;
-        double y_mouse;
-
-        glfwGetCursorPos(window, &x_mouse, &y_mouse);
-        positions[0][write_buffer] = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
-        velocities[0][write_buffer] = glm::vec2(0,0);
-
-        float scalex = scale*ratio;
-
-        //Calculate acceleration, velocity and position
-        // OBS!!!! NOT UPDATING MASS 1 HERE NOW
-        for (int mass_index = 1; mass_index < N_MASSES; ++mass_index){
-            glm::vec2 a = forces[mass_index]/masses[mass_index];// - glm::vec2(0.f,1.f)*g;
-
-            glm::vec2 v = velocities[mass_index][read_buffer] + a*T;
-            glm::vec2 p = positions[mass_index][read_buffer] + v*T;
-
-            //Check collision
-            if (p[1] < -scale){
-                p[1] = -scale;
-                v[1] = -v[1];
-            }
-            else if (p[1] > scale){
-                p[1] = scale;
-                v[1] = -v[1];   
+                glm::vec2 force_from_connection = ( signed_spring_force - b*parallel_delta_v_magnitude )*delta_p_hat;
+                forces[mass_index1] += force_from_connection;
+                forces[mass_index2] -= force_from_connection; 
             }
 
+            // Moving one mass 
+            double x_mouse;
+            double y_mouse;
 
-            if (p[0] < -scalex){
-                p[0] = -scalex;
-                v[0] = -v[0];
+            //glfwGetCursorPos(window, &x_mouse, &y_mouse);
+            //positions[0][write_buffer] = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+            //velocities[0][write_buffer] = glm::vec2(0.0f, 0.0f);
+
+            float scalex = scale*ratio;
+
+            //Calculate acceleration, velocity and position
+            // OBS!!!! NOT UPDATING MASS 1 HERE NOW
+            for (int mass_index = 0; mass_index < N_MASSES; ++mass_index){
+                glm::vec2 a = forces[mass_index]/masses[mass_index] - glm::vec2(0.f,1.f)*g;
+
+                glm::vec2 v = velocities[mass_index][read_buffer] + a*T;
+                glm::vec2 p = positions[mass_index][read_buffer] + v*T;
+
+                float friction = 1.0f;
+                //Check collision
+                if (p[1] < -scale){
+                    p[1] = -scale;
+                    v[1] = -v[1];
+                    v[0] *= (1-friction);
+                }
+                else if (p[1] > scale){
+                    p[1] = scale;
+                    v[1] = -v[1];
+                    v[0] *= (1-friction);
+                }
+
+                if (p[0] < -scalex){
+                    p[0] = -scalex;
+                    v[0] = -v[0];
+                    v[1] *= (1-friction);
+                }
+                else if (p[0] > scalex){
+                    p[0] = scalex;
+                    v[0] = -v[0];
+                    v[1] *= (1-friction);
+                }
+
+                //Store information in backbuffer
+                velocities[mass_index][write_buffer] = v;
+                positions[mass_index][write_buffer] = p;
+
+                //reset force
+                forces[mass_index] = glm::vec2(0.0f, 0.0f);
             }
-            else if (p[0] > scalex){
-                p[0] = scalex;
-                v[0] = -v[0];
-            }
-
-            //Store information in backbuffer
-            velocities[mass_index][write_buffer] = v;
-            positions[mass_index][write_buffer] = p;
-
-            //reset force
-            forces[mass_index] = glm::vec2(0.0f, 0.0f);
+            //Swap simulation buffers
+            read_buffer = (read_buffer+1)%2;
+            write_buffer = (write_buffer+1)%2;
         }
 
         /* DRAW */
@@ -244,9 +301,7 @@ int main(void){
         }
         glEnd();
 
-        //Swap simulation buffers
-        read_buffer = (read_buffer+1)%2;
-        write_buffer = (write_buffer+1)%2;
+
 
         //Swap draw buffers
         glfwSwapBuffers(window);
