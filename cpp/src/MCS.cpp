@@ -24,7 +24,7 @@ void MCS::initParticles(){
         particles[i] = Particle(1.0f, glm::vec3(row,col,stack)); 
     }
 
-    //particles[0].storeForce(glm::vec3(0,0,1000));
+    particles[0].storeForce(glm::vec3(0,1000,1000));
 }
 
 void MCS::initConnections(){
@@ -58,7 +58,7 @@ void MCS::initConnections(){
     for (int i = 0; i < numberOfConnections; ++i){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         connections[i] = Connection(&particles[p_index1], &particles[p_index2]);
-        connections[i].setSpringConstant(100.f);
+        connections[i].setSpringConstant(10000.f);
         connections[i].setDamperConstant(5.0f);
         connections[i].setConnectionLength(1.0f);
     }
