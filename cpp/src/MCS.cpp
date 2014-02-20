@@ -14,10 +14,7 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
 {
 	initParticles();
     initConnections();
-
 }
-
-
 
 
 void MCS::initParticles(){
@@ -36,12 +33,10 @@ void MCS::initConnections(){
     connections = c_tmp;
 
     // Calculate connections
+    int p_index1;
+    int p_index2;
     for (int i = 0; i < N_CONNECTIONS; ++i){
-        int p_index1;
-        int p_index2;
-
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
-
 
         connections[i] = Connection(&particles[p_index1], &particles[p_index2]);
     }
@@ -60,10 +55,18 @@ void MCS::update(float dt){
 }
 
 //Get-functions
+const Particle& MCS::getParticle(int index) const{
+    return particles[index];
+}
 
-int MCS::getParticles(){
+const Connection& MCS::getConnection(int index) const{
+    return connections[index];
+}
+
+int MCS::numberOfParticles(){
     return N_PARTICLES;
 }
-int MCS::getConnections(){
+
+int MCS::numberOfConnections(){
     return N_CONNECTIONS;
 }

@@ -37,7 +37,6 @@ int main(void){
     testMCS();
 
     MCS mcs(10,10,1);
-    exit(EXIT_SUCCESS);
 
 
     /* INIT GLFW */
@@ -119,16 +118,11 @@ int main(void){
                     v[0] = -v[0];
                     v[1] *= (1-friction);
                 }
-
-                //Store information in backbuffer
-                velocities[mass_index][write_buffer] = v;
-                positions[mass_index][write_buffer] = p;
-                
-                
                 
             }
             */
-            //Swap simulation buffers
+            
+            mcs.update(T);
             Particle::swapBuffers();
         }
 
@@ -143,7 +137,7 @@ int main(void){
         //Draw masses
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
-        for (int i = 0; i < mcs.getParticles(); ++i){
+        for (int i = 0; i < mcs.numberOfParticles(); ++i){
             //glVertex3f(positions[i][read_buffer][0],
             //           positions[i][read_buffer][1], 0.f);
         }
@@ -152,17 +146,16 @@ int main(void){
         //Draw connections
         glBegin(GL_LINES);
         glColor3f(0.f, 1.f, 0.f);
-        for (int i = 0; i < mcs.getConnections(); ++i){
-            /*
-            glm::vec2 delta_p = positions[connected_masses[i][0]][read_buffer]
-                               -positions[connected_masses[i][1]][read_buffer];
-            float r = glm::abs(glm::length(delta_p)-spring_lengths[i]);
+        for (int i = 0; i < mcs.numberOfConnections(); ++i){
+            const Connection& c = mcs.getConnection(i);
+            const glm::vec3& p1 = c.getParticle_1().readPosition();
+            const glm::vec3& p2 = c.getParticle_2().readPosition();
+            const glm::vec3& delta_p = p1 - p2;
+            
+            float r = glm::abs(glm::length(delta_p)-c.getConnectionLength());
             glColor3f(r,1-r,0.0f);
-            glVertex3f(positions[connected_masses[i][0]][read_buffer][0],
-                       positions[connected_masses[i][0]][read_buffer][1], 0.f);
-            glVertex3f(positions[connected_masses[i][1]][read_buffer][0],
-                       positions[connected_masses[i][1]][read_buffer][1], 0.f);
-            */
+            glVertex3f(p1[0], p1[1], p1[2]);
+            glVertex3f(p2[0], p2[1], p2[2]);
         }
         glEnd();
 

@@ -18,6 +18,25 @@ void Connection::setDamperConstant(float b){
 		_b = b;
 }
 
+const Particle& Connection::getParticle_1() const{
+	return *_p1;
+}
+
+const Particle& Connection::getParticle_2() const{
+	return *_p2;
+}
+
+float Connection::getConnectionLength() const{
+	return _l;
+}
+float Connection::getSpringConstant() const{
+	return _k;
+}
+float Connection::getDamperConstant() const{
+	return _b;
+}
+
+
 
 void Connection::applyForcesToConnectedParticles(float dt){
 	glm::vec3 force = calcForce();

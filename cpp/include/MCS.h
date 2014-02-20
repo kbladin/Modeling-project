@@ -23,9 +23,12 @@ class MCS{
         const int N_COLS;
         const int N_STACKS;
 
+        const Particle& getParticle(int index) const;
+        const Connection& getConnection(int index) const;
+
         //Get-functions to access the protected variables in the MCS class
-        int getParticles();
-        int getConnections();
+        int numberOfParticles();
+        int numberOfConnections();
 
         
 
@@ -50,6 +53,5 @@ class MCS{
         
         std::vector<Particle> particles;
         std::vector<Connection> connections;
-
 };
 #endif
