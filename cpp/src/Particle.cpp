@@ -48,7 +48,7 @@ void Particle::storeForce(const glm::vec3& force){
 }
 
 void Particle::applyForce(float dt){
-	glm::vec3 a = _force/_mass;
+	glm::vec3 a = _force/_mass - glm::vec3(0.0f, 1.0f, 0.0f)*9.81f;
 	glm::vec3 v = _velocity[read_buffer_index] + a*dt;
 	glm::vec3 p = _position[read_buffer_index] + v*dt;
 
