@@ -49,7 +49,7 @@ add_executable(ElasticMaterials src/main.cpp)
 set_target_properties(ElasticMaterials_lib PROPERTIES COMPILE_FLAGS "-std=c++11")
 set_target_properties(ElasticMaterials PROPERTIES COMPILE_FLAGS "-std=c++11")
 
-target_link_libraries(ElasticMaterials ElasticMaterials_lib ${GLEW_LIBRARY} ${GLFW_STATIC_LIBRARIES} ${OPENGL_FRAMEWORK})
+target_link_libraries(ElasticMaterials ElasticMaterials_lib ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_FRAMEWORK})
 
 
 
