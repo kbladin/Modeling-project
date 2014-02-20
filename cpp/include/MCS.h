@@ -27,35 +27,18 @@ class MCS{
         const Connection& getConnection(int index) const;
 
         //Get-functions to access the protected variables in the MCS class
-        int numberOfParticles();
-        int numberOfConnections();
+        int getNumberOfParticles();
+        int getNumberOfConnections();
 
         //The number of connections of each type/direction
-        const int N_TYPE0;
-        const int N_TYPE1;
-        const int N_TYPE2;
-        const int N_TYPE3;
-        const int N_TYPE4;
-        const int N_TYPE5;
-        const int N_TYPE6;
-        const int N_TYPE7;
-        const int N_TYPE8;
-        const int N_TYPE9;
-        const int N_TYPE10;
-        const int N_TYPE11;
-        const int N_TYPE12;
-
+        
+        int numberOfConnectionsOfType[13];
+        int startOfConnectionOfType[13];
         
 
     protected:
         friend void testMCS();
 
-        
-
-
-        //The total number of particles and connections
-        const int N_PARTICLES;
-        const int N_CONNECTIONS;
 
         void initParticles();
         void initConnections();

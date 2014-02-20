@@ -140,7 +140,7 @@ int main(void){
 
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
-        for (int i = 0; i < mcs.numberOfParticles(); ++i){
+        for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
             //glVertex3f(positions[i][read_buffer][0],
             //           positions[i][read_buffer][1], 0.f);
         }
@@ -148,18 +148,14 @@ int main(void){
 
         //Draw connections
         glBegin(GL_LINES);
-        glColor3f(0.0f, 1.f, 0.f);
-        //int start = mcs.N_TYPE0 + mcs.N_TYPE1 + mcs.N_TYPE2 + mcs.N_TYPE3 + mcs.N_TYPE4 + mcs.N_TYPE5 + mcs.N_TYPE6 + mcs.N_TYPE7 + mcs.N_TYPE8;
-        //int end = mcs.N_TYPE0 + mcs.N_TYPE1 + mcs.N_TYPE2 + mcs.N_TYPE3 + mcs.N_TYPE4 + mcs.N_TYPE5 + mcs.N_TYPE6 + mcs.N_TYPE7 + mcs.N_TYPE8 + mcs.N_TYPE9;
-        for (int i = 0; i < mcs.numberOfConnections(); ++i){
+        glColor3f(0.0f, 1.f, 0.f);        
+        for (int i = 0; i < mcs.getNumberOfConnections(); ++i){
             const Connection& c = mcs.getConnection(i);
             const glm::vec3& p1 = c.getParticle_1().readPosition();
             const glm::vec3& p2 = c.getParticle_2().readPosition();
             const glm::vec3& delta_p = p1 - p2;
             
             float r = glm::abs(glm::length(delta_p)-c.getConnectionLength());
-            //if (r > 0.1)
-                //std::cout << i << "                     start : " << start << std::endl;
             glColor3f(r,1-r,0.0f);
             glVertex3f(p1[0], p1[1], p1[2]);
             glVertex3f(p2[0], p2[1], p2[2]);

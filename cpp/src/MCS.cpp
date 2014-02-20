@@ -4,24 +4,6 @@
 //Constructor
 MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):   
     N_ROWS(n_rows),N_COLS(n_cols),N_STACKS(n_stacks),
-
-    N_TYPE0(n_rows*(n_cols-1)*n_stacks),
-    N_TYPE1((n_rows-1)*n_cols*n_stacks),
-    N_TYPE2(n_rows*n_cols*(n_stacks-1)),
-    N_TYPE3((n_rows-1)*(n_cols-1)*n_stacks),
-    N_TYPE4((n_rows-1)*(n_cols-1)*n_stacks),
-    N_TYPE5(n_rows*(n_cols-1)*(n_stacks-1)),
-    N_TYPE6(n_rows*(n_cols-1)*(n_stacks-1)),
-    N_TYPE7((n_rows-1)*n_cols*(n_stacks-1)),
-    N_TYPE8((n_rows-1)*n_cols*(n_stacks-1)),
-    N_TYPE9((n_rows-1)*(n_cols-1)*(n_stacks-1)),
-    N_TYPE10((n_rows-1)*(n_cols-1)*(n_stacks-1)),
-    N_TYPE11((n_rows-1)*(n_cols-1)*(n_stacks-1)),
-    N_TYPE12((n_rows-1)*(n_cols-1)*(n_stacks-1)),
-
-    N_PARTICLES(N_ROWS*N_COLS*N_STACKS),
-    N_CONNECTIONS(N_TYPE0 + N_TYPE1 + N_TYPE2 + N_TYPE3 + N_TYPE4 + N_TYPE5 + N_TYPE6 + N_TYPE7 + N_TYPE8 + N_TYPE9 + N_TYPE10 + N_TYPE11 + N_TYPE12),
-
     particles(n_rows*n_cols*n_stacks)
 {
 
@@ -31,52 +13,75 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
 
 
 void MCS::initParticles(){
-// Set starting values to masses, positions velocities and forces
-    for (int i = 0; i < N_PARTICLES; ++i)
+    // Set starting values to masses, positions velocities and forces
+    int numberOfParticles = N_COLS*N_ROWS*N_STACKS;
+    for (int i = 0; i < numberOfParticles; ++i)
     {
         int row = i%N_COLS;                         //x
         int col = (i/N_COLS)%N_ROWS;              //y
         int stack = i/(N_COLS*N_ROWS);              //z
-
         // starting position from 3D index, vel. = 0
         particles[i] = Particle(1.0f, glm::vec3(row,col,stack)); 
     }
+
     particles[0].storeForce(glm::vec3(0,500000,500000));
+
 }
 
 void MCS::initConnections(){
-    std::vector<Connection> c_tmp(N_CONNECTIONS);
-    connections = c_tmp;
+    numberOfConnectionsOfType[0] = N_ROWS*(N_COLS-1)*N_STACKS;
+    numberOfConnectionsOfType[1] = (N_ROWS-1)*N_COLS*N_STACKS;
+    numberOfConnectionsOfType[2] = N_ROWS*N_COLS*(N_STACKS-1);
+    numberOfConnectionsOfType[3] = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
+    numberOfConnectionsOfType[4] = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
+    numberOfConnectionsOfType[5] = N_ROWS*(N_COLS-1)*(N_STACKS-1);
+    numberOfConnectionsOfType[6] = N_ROWS*(N_COLS-1)*(N_STACKS-1);
+    numberOfConnectionsOfType[7] = (N_ROWS-1)*N_COLS*(N_STACKS-1);
+    numberOfConnectionsOfType[8] = (N_ROWS-1)*N_COLS*(N_STACKS-1);
+    numberOfConnectionsOfType[9] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+    numberOfConnectionsOfType[10] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+    numberOfConnectionsOfType[11] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+    numberOfConnectionsOfType[12] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
 
-    int n_length_1 = N_TYPE0+N_TYPE1+N_TYPE2;
-    int n_length_sqrt2 = N_TYPE3 + N_TYPE4 + N_TYPE5 + N_TYPE6 + N_TYPE7 + N_TYPE8;
-    int n_length_sqrt3 = N_TYPE9 + N_TYPE10 + N_TYPE11 + N_TYPE12;
+    startOfConnectionOfType[0] = 0;
+    int numberOfConnections = numberOfConnectionsOfType[0];
+    for (int i = 1; i < 13; ++i){
+        startOfConnectionOfType[i] = startOfConnectionOfType[i-1] + numberOfConnectionsOfType[i-1];
+        numberOfConnections += numberOfConnectionsOfType[i];
+    }
+
+    std::vector<Connection> c_tmp(numberOfConnections);
+    connections = c_tmp;
 
     // Calculate connections
     int p_index1;
     int p_index2;
-    for (int i = 0; i < N_CONNECTIONS; ++i){
+    for (int i = 0; i < numberOfConnections; ++i){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         connections[i] = Connection(&particles[p_index1], &particles[p_index2]);
         connections[i].setSpringConstant(150.f);
         connections[i].setDamperConstant(50.0f);
         connections[i].setConnectionLength(1.0f);
-        if (n_length_1 <= i && i < n_length_1 + n_length_sqrt2){
-            connections[i].setConnectionLength(sqrt(2.0f));
-        }
-        else if (n_length_1 + n_length_sqrt2 <= i && i < N_CONNECTIONS){
-            connections[i].setConnectionLength(sqrt(3.0f));
-        }
+    }
+
+    //Set length of 2D-diagonal springs to sqrt(2)
+    for (int i = startOfConnectionOfType[3]; i < startOfConnectionOfType[9]; ++i){
+        connections[i].setConnectionLength(sqrt(2.0f));
+    }
+
+    //Set length of 3D-diagonal springs to sqrt(3)
+    for (int i = startOfConnectionOfType[9]; i < numberOfConnections; ++i){
+        connections[i].setConnectionLength(sqrt(3.0f));
     }
 }
 
 void MCS::update(float dt){
-    for (int i = 0; i < N_CONNECTIONS; ++i)
+    for (int i = 0; i < connections.size(); ++i)
     {
         connections[i].applyForcesToConnectedParticles(dt);
     }
 
-    for (int i = 0; i < N_PARTICLES; ++i)
+    for (int i = 0; i < particles.size(); ++i)
     {
         particles[i].applyForce(dt);
     }
@@ -91,10 +96,10 @@ const Connection& MCS::getConnection(int index) const{
     return connections[index];
 }
 
-int MCS::numberOfParticles(){
-    return N_PARTICLES;
+int MCS::getNumberOfParticles(){
+    return particles.size();
 }
 
-int MCS::numberOfConnections(){
-    return N_CONNECTIONS;
+int MCS::getNumberOfConnections(){
+    return connections.size();
 }
