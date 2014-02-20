@@ -15,16 +15,23 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
 void MCS::initParticles(){
     // Set starting values to masses, positions velocities and forces
     int numberOfParticles = N_COLS*N_ROWS*N_STACKS;
+    float X = N_COLS;
+    float Y = N_ROWS;
+    float Z = N_STACKS;
+
     for (int i = 0; i < numberOfParticles; ++i)
     {
-        int row = i%N_COLS;                         //x
-        int col = (i/N_COLS)%N_ROWS;              //y
-        int stack = i/(N_COLS*N_ROWS);              //z
-        // starting position from 3D index, vel. = 0
-        particles[i] = Particle(1.0f, glm::vec3(row,col,stack)); 
+        float x = i%N_COLS;
+        float y = (i/N_COLS)%N_ROWS;
+        float z = i/(N_COLS*N_ROWS);
+
+        particles[i] = Particle(1.0f, glm::vec3(x,y,z)); 
     }
 
-    particles[0].storeForce(glm::vec3(0,1000,1000));
+    //glm::vec3 axisOfRotation = glm::vec3(0,1,0);
+    //addRotation(axisOfRotation,1.0f);
+
+    //particles[0].storeForce(glm::vec3(0,1000,1000));
 }
 
 void MCS::initConnections(){
@@ -84,6 +91,28 @@ void MCS::update(float dt){
     {
         particles[i].applyForce(dt);
     }
+}
+
+void MCS::addRotation(glm::vec3 axisOfRotation, float amount){
+    glm::vec3 mid = centerPointOfMass();
+    std::cout << mid[0] << " " << mid[1] << " " << mid[2] << " "  << std::endl << std::endl;
+    for (int i = 0; i < particles.size(); ++i){
+        Particle& p = particles[i];
+        glm::vec3 midToParticle = p.readPosition()-mid;
+        glm::vec3 rotDir = glm::normalize(glm::cross(midToParticle,axisOfRotation));
+        std::cout << rotDir[0] << " " << rotDir[1] << " " << rotDir[2] << " "  << std::endl;
+        p._position[Particle::read_buffer_index] += rotDir*amount;
+    }
+}
+
+glm::vec3 MCS::centerPointOfMass() const{
+    glm::vec3 weightedSum(0,0,0);
+    float totalMass;
+    for (int i = 0; i < particles.size(); ++i){
+        weightedSum += particles[i].readPosition()*particles[i].getMass();
+        totalMass += particles[i].getMass();
+    }
+    return weightedSum/(particles.size()*totalMass);
 }
 
 //Get-functions

@@ -18,6 +18,9 @@ class MCS{
 
         void update(float dt);
 
+        void addRotation(glm::vec3 axisOfRotation, float amount);
+        glm::vec3 centerPointOfMass() const;
+
         //The dimensions variables for the MCS
         const int N_ROWS;
         const int N_COLS;
@@ -38,7 +41,6 @@ class MCS{
 
     protected:
         friend void testMCS();
-
 
         void initParticles();
         void initConnections();

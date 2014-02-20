@@ -23,6 +23,7 @@ public:
 
 private:
 	friend void testConnection();
+	friend class MCS;
 
 	float _mass;
 	glm::vec3 _position[2];

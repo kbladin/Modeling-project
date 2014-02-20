@@ -34,7 +34,7 @@ int main(void){
     testConnection();
     testMCS();
 
-    MCS mcs(2,2,2);
+    MCS mcs(3,3,3);
 
     /* INIT GLFW */
     GLFWwindow* window;
@@ -52,7 +52,7 @@ int main(void){
 
     /* INIT SIMULATION */
     int simulations_per_frame = 40;
-    float T = 1.0f/(60.0f*simulations_per_frame);
+    float T = 0.01*1.0f/(60.0f*simulations_per_frame);
     float current_time;
 
     //Init gl points
@@ -129,7 +129,7 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        float zNear = 0.f;
+        float zNear = 20.f;
         float zFar = -20.f;
         glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, zNear, zFar);
         //glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
