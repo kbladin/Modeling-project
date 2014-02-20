@@ -26,6 +26,7 @@ void MCS::initParticles(){
         int stack = floor(i/(N_COLS*N_ROWS));       //z
         particles[i] = Particle(1.0f, glm::vec3(row,col,stack));    // starting position from 3D index, vel. = 0
     }
+    //particles[0].storeForce(glm::vec3(0,0,1000));
 }
 
 void MCS::initConnections(){
@@ -39,6 +40,7 @@ void MCS::initConnections(){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
 
         connections[i] = Connection(&particles[p_index1], &particles[p_index2]);
+        connections[i].setSpringConstant(200.f);
     }
 }
 

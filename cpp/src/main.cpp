@@ -38,7 +38,6 @@ int main(void){
 
     MCS mcs(10,10,1);
 
-
     /* INIT GLFW */
     GLFWwindow* window;
     glfwSetErrorCallback(error_callback);
@@ -133,7 +132,7 @@ int main(void){
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, 1.f * scale, -1.f * scale);
-
+        //glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         //Draw masses
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
