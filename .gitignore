@@ -1,5 +1,4 @@
 # OS generated files #
-######################
 .DS_Store
 .DS_Store?
 Thumbs.db
@@ -9,7 +8,10 @@ Thumbs.db
 objects/*.o
 
 
-# LaTeX shit
+# LaTeX shit #
 /Rapport/reportsam.pdf
 /Rapport/reportsam.log
 /Rapport/reportsam.synctex.gz
+
+# Build #
+/cpp/build

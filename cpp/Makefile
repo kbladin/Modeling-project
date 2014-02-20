@@ -1,3 +1,4 @@
+
 EXEC = program
 OBJS = $(wildcard objects/*)
 SOURCE = $(wildcard src/*)
