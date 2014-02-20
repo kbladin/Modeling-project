@@ -1,6 +1,7 @@
 #ifndef MCS_H
 #define MCS_H
 
+#include <vector>
 #include <glm/glm.hpp>
 #include "Particle.h"
 #include "Connection.h"
@@ -14,24 +15,25 @@ class MCS{
     public:
         // Constructor
         MCS(const int n_rows, const int n_cols, const int n_stacks);
-        // Destructor
-        ~MCS();
 
-        //Get-functions to access the protected variables in the MCS class
-        int getRows();
-        int getCols();
-        int getStack();
-        int getParticles();
-        int getConnections();
-        
-
-    protected:
-        friend void testMCS();
+        void update(float dt);
 
         //The dimensions variables for the MCS
         const int N_ROWS;
         const int N_COLS;
         const int N_STACKS;
+
+        //Get-functions to access the protected variables in the MCS class
+        int getParticles();
+        int getConnections();
+
+        
+
+    protected:
+        friend void testMCS();
+
+        
+        
 
         //The number of connections of each type/direction
         const int N_TYPE1;
@@ -43,11 +45,11 @@ class MCS{
         const int N_PARTICLES;
         const int N_CONNECTIONS;
 
-        void setStartingValues();
+        void initParticles();
+        void initConnections();
         
-        // Pointers for dynamically allocated arrays of particle and connetion objects
-        Particle * particles;
-        Connection * connections;
+        std::vector<Particle> particles;
+        std::vector<Connection> connections;
 
 };
 #endif
