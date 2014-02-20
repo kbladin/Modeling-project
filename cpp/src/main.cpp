@@ -25,78 +25,18 @@ static std::ostream& operator<<(std::ostream& os, const glm::vec3& vec){
     return os << "(" << vec[0] << ", " << vec[1] << ", " << vec[2] << ")";
 }
 
-const int N_ROWS = 10;
-const int N_COLS = 10;
-const int N_STACKS = 1;
-
-const int N_TYPE0 = N_ROWS*(N_COLS-1)*N_STACKS;
-const int N_TYPE1 = (N_ROWS-1)*N_COLS*N_STACKS;
-const int N_TYPE2 = N_ROWS*N_COLS*(N_STACKS-1);
-const int N_TYPE3 = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
-const int N_TYPE4 = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
-const int N_TYPE5 = N_ROWS*(N_COLS-1)*(N_STACKS-1);
-const int N_TYPE6 = N_ROWS*(N_COLS-1)*(N_STACKS-1);
-const int N_TYPE7 = (N_ROWS-1)*N_COLS*(N_STACKS-1);
-const int N_TYPE8 = (N_ROWS-1)*N_COLS*(N_STACKS-1);
-const int N_TYPE9 = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
-const int N_TYPE10 = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
-const int N_TYPE11 = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
-const int N_TYPE12 = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
-
-const int N_MASSES = N_ROWS*N_COLS;
-const int N_CONNECTIONS =
-    N_TYPE0 +
-    N_TYPE1 +
-    N_TYPE2 +
-    N_TYPE3 +
-    N_TYPE4 +
-    N_TYPE5 +
-    N_TYPE6 +
-    N_TYPE7 +
-    N_TYPE8 +
-    N_TYPE9 +
-    N_TYPE10 +
-    N_TYPE11 +
-    N_TYPE12;
-
-const int N_LENGTH_1 =
-    N_TYPE0 +
-    N_TYPE1 +
-    N_TYPE2;
-
-const int N_LENGTH_SQRT2 =
-    N_TYPE3 +
-    N_TYPE4 +
-    N_TYPE5 + 
-    N_TYPE6 +
-    N_TYPE7 +
-    N_TYPE8;
-
-const int N_LENGTH_SQRT3 =
-    N_TYPE9 +
-    N_TYPE10 +
-    N_TYPE11 + 
-    N_TYPE12;
-
-float masses[N_MASSES];
-glm::vec2 positions[N_MASSES][2];
-glm::vec2 velocities[N_MASSES][2];
-glm::vec2 forces[N_MASSES];
-
-int connected_masses[N_CONNECTIONS][2];
-float spring_constants[N_CONNECTIONS];
-float damper_constants[N_CONNECTIONS];
-float spring_lengths[N_CONNECTIONS];
-
 const float g = 9.82f;
 
 
 
 int main(void){
+
     //Test
     testParticle();
     testConnection();
     testMCS();
+
+    MCS mcs(10,10,2);
 
     /* INIT GLFW */
     GLFWwindow* window;
@@ -110,51 +50,10 @@ int main(void){
     }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-    float scale = (float) fmax(N_ROWS,N_COLS);
+    float scale = (float) fmax(mcs.N_ROWS, mcs.N_COLS);
 
     /* INIT SIMULATION */
-
-    // Set start values to masses, positions velocities and forces
-    for (int i = 0; i < N_MASSES; ++i){
-        masses[i] = 1.0f;
-        int row = i%N_COLS;
-        int col = floor(i/N_COLS);
-        positions[i][0] = glm::vec2(row,col);
-        positions[i][1] = glm::vec2(0,0);
-        velocities[i][0] = glm::vec2(0,0);
-        velocities[i][1] = glm::vec2(0,0);
-        forces[i] = glm::vec2(0,0);
-    }
-    positions[0][0] = glm::vec2(0.0f,-1.0f);
-    velocities[0][0] = glm::vec2(0.0f,-100.0f);
-
-
-    // Set values for springs, dampers, and lengths
-    for (int i = 0; i < N_CONNECTIONS; ++i){
-        spring_constants[i] = 5000.0f;
-        damper_constants[i] = 5.0f;
-        spring_lengths[i] = 1.0f;
-    }
-
-    // Set connection lengths sqrt2
-    for (int i = N_LENGTH_1; i < N_LENGTH_1 + N_LENGTH_SQRT2; ++i){
-        spring_lengths[i] *= sqrt(2);
-    }
-
-    // Set connection lengths sqrt3
-    for (int i = N_LENGTH_1 + N_LENGTH_SQRT2; i < N_CONNECTIONS; ++i){
-        spring_lengths[i] *= sqrt(3);
-    }
-
-    // Calculate connections
-    for (int i = 0; i < N_CONNECTIONS; ++i){
-        connection2massIndices3D(i, connected_masses[i][0], connected_masses[i][1], N_ROWS, N_COLS, 1);
-    }
-
-    int read_buffer = 0;
-    int write_buffer = 1;
-
-    int simulations_per_frame = 40;
+    int simulations_per_frame = 4;
     float T = 1/(60.0f*simulations_per_frame);
     float current_time;
 
@@ -179,41 +78,7 @@ int main(void){
 
         for (int i = 0; i < simulations_per_frame; ++i)
         {
-            /* SIMULATION */
-            for (int connection_index = 0; connection_index < N_CONNECTIONS; ++connection_index){
-                //connection properties
-                float k = spring_constants[connection_index];
-                float b = damper_constants[connection_index];
-                float l = spring_lengths[connection_index];
-
-                //sosition
-                int mass_index1 = connected_masses[connection_index][0];
-                int mass_index2 = connected_masses[connection_index][1];
-                glm::vec2 p1 = positions[mass_index1][read_buffer];
-                glm::vec2 p2 = positions[mass_index2][read_buffer];
-                glm::vec2 delta_p = p1 - p2;
-                glm::vec2 delta_p_hat = glm::normalize(delta_p);//Not tested
-
-                //velocities
-                glm::vec2 v1 = velocities[mass_index1][read_buffer];
-                glm::vec2 v2 = velocities[mass_index2][read_buffer];
-                glm::vec2 delta_v = v1 - v2;
-
-                //calculate force from connection
-                float spring_elongation = glm::length(delta_p) - l;
-                //if (connection_index == 0.0f)
-                    //std::cout << spring_elongation*spring_elongation << std::endl;
-                float elongation_sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
-                float parallel_delta_v_magnitude = glm::dot(delta_v,delta_p_hat);
-
-                //Spring force is now proportional to the squared spring elongation
-                float signed_spring_force = -k*spring_elongation;//*spring_elongation*elongation_sign;
-
-                glm::vec2 force_from_connection = ( signed_spring_force - b*parallel_delta_v_magnitude )*delta_p_hat;
-                forces[mass_index1] += force_from_connection;
-                forces[mass_index2] -= force_from_connection; 
-            }
-
+            
             // Moving one mass 
             double x_mouse;
             double y_mouse;
@@ -226,11 +91,8 @@ int main(void){
 
             //Calculate acceleration, velocity and position
             // OBS!!!! NOT UPDATING MASS 1 HERE NOW
-            for (int mass_index = 0; mass_index < N_MASSES; ++mass_index){
-                glm::vec2 a = forces[mass_index]/masses[mass_index] - glm::vec2(0.f,1.f)*g;
-
-                glm::vec2 v = velocities[mass_index][read_buffer] + a*T;
-                glm::vec2 p = positions[mass_index][read_buffer] + v*T;
+            /*
+            for (int mass_index = 0; mass_index < mcsN_MASSES; ++mass_index){
 
                 float friction = 1.0f;
                 //Check collision
@@ -255,17 +117,12 @@ int main(void){
                     v[0] = -v[0];
                     v[1] *= (1-friction);
                 }
-
-                //Store information in backbuffer
-                velocities[mass_index][write_buffer] = v;
-                positions[mass_index][write_buffer] = p;
-
-                //reset force
-                forces[mass_index] = glm::vec2(0.0f, 0.0f);
+                
             }
-            //Swap simulation buffers
-            read_buffer = (read_buffer+1)%2;
-            write_buffer = (write_buffer+1)%2;
+            */
+            
+            mcs.update(T);
+            Particle::swapBuffers();
         }
 
         /* DRAW */
@@ -275,11 +132,11 @@ int main(void){
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, 1.f * scale, -1.f * scale);
-
+        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         //Draw masses
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
-        for (int i = 0; i < N_MASSES; ++i){
+        for (int i = 0; i < mcs.numberOfParticles(); ++i){
             //glVertex3f(positions[i][read_buffer][0],
             //           positions[i][read_buffer][1], 0.f);
         }
@@ -287,16 +144,17 @@ int main(void){
 
         //Draw connections
         glBegin(GL_LINES);
-        glColor3f(0.f, 1.f, 0.f);
-        for (int i = 0; i < N_CONNECTIONS; ++i){
-            glm::vec2 delta_p = positions[connected_masses[i][0]][read_buffer]
-                               -positions[connected_masses[i][1]][read_buffer];
-            float r = glm::abs(glm::length(delta_p)-spring_lengths[i]);
+        glColor3f(0.0f, 1.f, 0.f);
+        for (int i = 0; i < mcs.numberOfConnections(); ++i){
+            const Connection& c = mcs.getConnection(i);
+            const glm::vec3& p1 = c.getParticle_1().readPosition();
+            const glm::vec3& p2 = c.getParticle_2().readPosition();
+            const glm::vec3& delta_p = p1 - p2;
+            
+            float r = glm::abs(glm::length(delta_p)-c.getConnectionLength());
             glColor3f(r,1-r,0.0f);
-            glVertex3f(positions[connected_masses[i][0]][read_buffer][0],
-                       positions[connected_masses[i][0]][read_buffer][1], 0.f);
-            glVertex3f(positions[connected_masses[i][1]][read_buffer][0],
-                       positions[connected_masses[i][1]][read_buffer][1], 0.f);
+            glVertex3f(p1[0], p1[1], p1[2]);
+            glVertex3f(p2[0], p2[1], p2[2]);
         }
         glEnd();
 
