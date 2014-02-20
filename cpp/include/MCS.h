@@ -30,19 +30,28 @@ class MCS{
         int numberOfParticles();
         int numberOfConnections();
 
+        //The number of connections of each type/direction
+        const int N_TYPE0;
+        const int N_TYPE1;
+        const int N_TYPE2;
+        const int N_TYPE3;
+        const int N_TYPE4;
+        const int N_TYPE5;
+        const int N_TYPE6;
+        const int N_TYPE7;
+        const int N_TYPE8;
+        const int N_TYPE9;
+        const int N_TYPE10;
+        const int N_TYPE11;
+        const int N_TYPE12;
+
         
 
     protected:
         friend void testMCS();
 
         
-        
 
-        //The number of connections of each type/direction
-        const int N_TYPE1;
-        const int N_TYPE2;
-        const int N_TYPE3;
-        const int N_TYPE4;
 
         //The total number of particles and connections
         const int N_PARTICLES;

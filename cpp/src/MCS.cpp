@@ -4,14 +4,27 @@
 //Constructor
 MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):   
     N_ROWS(n_rows),N_COLS(n_cols),N_STACKS(n_stacks),
-    N_TYPE1((N_ROWS-1)*N_COLS),
-    N_TYPE2((N_ROWS-1)*(N_COLS-1)),
-    N_TYPE3(N_ROWS*(N_COLS-1)),
-    N_TYPE4(N_TYPE2),
+
+    N_TYPE0(n_rows*(n_cols-1)*n_stacks),
+    N_TYPE1((n_rows-1)*n_cols*n_stacks),
+    N_TYPE2(n_rows*n_cols*(n_stacks-1)),
+    N_TYPE3((n_rows-1)*(n_cols-1)*n_stacks),
+    N_TYPE4((n_rows-1)*(n_cols-1)*n_stacks),
+    N_TYPE5(n_rows*(n_cols-1)*(n_stacks-1)),
+    N_TYPE6(n_rows*(n_cols-1)*(n_stacks-1)),
+    N_TYPE7((n_rows-1)*n_cols*(n_stacks-1)),
+    N_TYPE8((n_rows-1)*n_cols*(n_stacks-1)),
+    N_TYPE9((n_rows-1)*(n_cols-1)*(n_stacks-1)),
+    N_TYPE10((n_rows-1)*(n_cols-1)*(n_stacks-1)),
+    N_TYPE11((n_rows-1)*(n_cols-1)*(n_stacks-1)),
+    N_TYPE12((n_rows-1)*(n_cols-1)*(n_stacks-1)),
+
     N_PARTICLES(N_ROWS*N_COLS*N_STACKS),
-    N_CONNECTIONS(N_TYPE1+N_TYPE2+N_TYPE3+N_TYPE4),
+    N_CONNECTIONS(N_TYPE0 + N_TYPE1 + N_TYPE2 + N_TYPE3 + N_TYPE4 + N_TYPE5 + N_TYPE6 + N_TYPE7 + N_TYPE8 + N_TYPE9 + N_TYPE10 + N_TYPE11 + N_TYPE12),
+
     particles(n_rows*n_cols*n_stacks)
 {
+
 	initParticles();
     initConnections();
 }
@@ -27,25 +40,33 @@ void MCS::initParticles(){
 
         // starting position from 3D index, vel. = 0
         particles[i] = Particle(1.0f, glm::vec3(row,col,stack)); 
-
     }
-    particles[0].storeForce(glm::vec3(0,0,1000));
+    //particles[0].storeForce(glm::vec3(0,0,1000));
 }
 
 void MCS::initConnections(){
     std::vector<Connection> c_tmp(N_CONNECTIONS);
     connections = c_tmp;
 
+    int n_length_1 = N_TYPE0+N_TYPE1+N_TYPE2;
+    int n_length_sqrt2 = N_TYPE3 + N_TYPE4 + N_TYPE5 + N_TYPE6 + N_TYPE7 + N_TYPE8;
+    int n_length_sqrt3 = N_TYPE9 + N_TYPE10 + N_TYPE11 + N_TYPE12;
+
     // Calculate connections
     int p_index1;
     int p_index2;
     for (int i = 0; i < N_CONNECTIONS; ++i){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
-
         connections[i] = Connection(&particles[p_index1], &particles[p_index2]);
-        connections[i].setSpringConstant(2000.f);
-        connections[i].setDamperConstant(5.f);
-
+        connections[i].setSpringConstant(100.f);
+        connections[i].setDamperConstant(5.0f);
+        connections[i].setConnectionLength(1.0f);
+        if (n_length_1 <= i && i < n_length_1 + n_length_sqrt2){
+            connections[i].setConnectionLength(sqrt(2.0f));
+        }
+        else if (n_length_1 + n_length_sqrt2 <= i && i < N_CONNECTIONS){
+            connections[i].setConnectionLength(sqrt(3.0f));
+        }
     }
 }
 
