@@ -18,6 +18,7 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
   # Find the OpenGl Framework
 find_library(OPENGL_FRAMEWORK OpenGL)
+find_library(COCOA_FRAMEWORK Cocoa)
 
 # Add glew and glfw to the include directories, now these can be included in the code 
 include_directories(${GLEW_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS})
@@ -49,7 +50,7 @@ add_executable(ElasticMaterials src/main.cpp)
 set_target_properties(ElasticMaterials_lib PROPERTIES COMPILE_FLAGS "-std=c++11")
 set_target_properties(ElasticMaterials PROPERTIES COMPILE_FLAGS "-std=c++11")
 
-target_link_libraries(ElasticMaterials ElasticMaterials_lib ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_FRAMEWORK})
+target_link_libraries(ElasticMaterials ElasticMaterials_lib ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_FRAMEWORK} ${COCOA_FRAMEWORK})
 
 
 
