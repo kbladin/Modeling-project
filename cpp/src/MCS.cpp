@@ -13,26 +13,15 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
 
 
 void MCS::initParticles(){
-    // Set starting values to masses, positions velocities and forces
-    int numberOfParticles = N_COLS*N_ROWS*N_STACKS;
-    float X = N_COLS;
-    float Y = N_ROWS;
-    float Z = N_STACKS;
-
-
-    for (int i = 0; i < numberOfParticles; ++i)
-    {
+    for (int i = 0; i < N_COLS*N_ROWS*N_STACKS; ++i){
         float x = i%N_COLS;
         float y = (i/N_COLS)%N_ROWS;
         float z = i/(N_COLS*N_ROWS);
-
         particles[i] = Particle(1.0f, glm::vec3(x,y,z)); 
     }
 
-    glm::vec3 axisOfRotation = glm::vec3(0.3f,1,0);
-    addRotation(axisOfRotation,10.0f);
+    //particles[0].storeForce(glm::vec3(0,50000,50000));
 
-    //particles[0].storeForce(glm::vec3(0,1000,1000));
 }
 
 void MCS::initConnections(){
@@ -57,8 +46,7 @@ void MCS::initConnections(){
         numberOfConnections += numberOfConnectionsOfType[i];
     }
 
-    std::vector<Connection> c_tmp(numberOfConnections);
-    connections = c_tmp;
+    connections = std::vector<Connection>(numberOfConnections);
 
     // Calculate connections
     int p_index1;
@@ -66,7 +54,7 @@ void MCS::initConnections(){
     for (int i = 0; i < numberOfConnections; ++i){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         connections[i] = Connection(&particles[p_index1], &particles[p_index2]);
-        connections[i].setSpringConstant(10000.f);
+        connections[i].setSpringConstant(1500.f);
         connections[i].setDamperConstant(5.0f);
         connections[i].setConnectionLength(1.0f);
     }
@@ -96,7 +84,7 @@ void MCS::rotate(glm::vec3 axisOfRotation, float degrees){
 
     for (int i = 0; i < particles.size(); ++i){
         Particle& p = particles[i];
-        //Cant rotate with glm???
+        //Cant rotate with glm::rotate???
         
     }
 }
@@ -119,6 +107,22 @@ void MCS::addRotation(glm::vec3 axisOfRotation, float amount){
     }
 }
 
+void MCS::setAvgPosition(glm::vec3 pos){
+    glm::vec3 avgPos = averagePosition();
+    glm::vec3 toAdd = pos - avgPos;
+    for (int i = 0; i < particles.size(); ++i){
+        particles[i].writePosition(particles[i].readPosition() + toAdd);
+    }
+}
+
+void MCS::setAvgVelocity(glm::vec3 vel){
+    glm::vec3 avgVel = averageVelocity();
+    glm::vec3 toAdd = vel - avgVel;
+    for (int i = 0; i < particles.size(); ++i){
+        particles[i].writeVelocity(particles[i].readVelocity() + toAdd);
+    }
+}
+
 glm::vec3 MCS::centerOfMass() const{
     glm::vec3 weightedSum(0,0,0);
     float totalMass;
@@ -127,6 +131,14 @@ glm::vec3 MCS::centerOfMass() const{
         totalMass += particles[i].getMass();
     }
     return weightedSum/totalMass;
+}
+
+glm::vec3 MCS::averagePosition() const{
+    glm::vec3 sum(0,0,0);
+    for (int i = 0; i < particles.size(); ++i){
+        sum += particles[i].readPosition();
+    }
+    return sum/(float)particles.size();
 }
 
 glm::vec3 MCS::averageVelocity() const{
@@ -138,7 +150,7 @@ glm::vec3 MCS::averageVelocity() const{
 }
 
 //Get-functions
-const Particle& MCS::getParticle(int index) const{
+Particle& MCS::getParticle(int index){
     return particles[index];
 }
 
