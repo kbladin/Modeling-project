@@ -34,7 +34,7 @@ int main(void){
     testConnection();
     testMCS();
 
-    MCS mcs(3,3,3);
+    MCS mcs(2,2,2);
 
     /* INIT GLFW */
     GLFWwindow* window;
@@ -48,11 +48,11 @@ int main(void){
     }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-    float scale = (float) fmax(mcs.N_ROWS, mcs.N_COLS);
+    float scale = 5;//(float) fmax(mcs.N_ROWS, mcs.N_COLS) * 2;
 
     /* INIT SIMULATION */
-    int simulations_per_frame = 20;
-    float T = 0.1f * 1.0f/(60.0f*simulations_per_frame);
+    int simulations_per_frame = 40;
+    float T = 1.0f/(60.0f*simulations_per_frame);
     float current_time;
 
     //Init gl points
@@ -129,8 +129,10 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, 1.f * scale, -1.f * scale);
-        glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
+        float zNear = 0.f;
+        float zFar = -20.f;
+        glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, zNear, zFar);
+        //glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
         //Draw masses
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
@@ -143,17 +145,17 @@ int main(void){
         //Draw connections
         glBegin(GL_LINES);
         glColor3f(0.0f, 1.f, 0.f);
-        int start = mcs.N_TYPE0 + mcs.N_TYPE1 + mcs.N_TYPE2 + mcs.N_TYPE3 + mcs.N_TYPE4 + mcs.N_TYPE5 + mcs.N_TYPE6 + mcs.N_TYPE7 + mcs.N_TYPE8 + mcs.N_TYPE9;
-        int end = mcs.N_TYPE0 + mcs.N_TYPE1 + mcs.N_TYPE2 + mcs.N_TYPE3 + mcs.N_TYPE4 + mcs.N_TYPE5 + mcs.N_TYPE6 + mcs.N_TYPE7 + mcs.N_TYPE8 + mcs.N_TYPE9 + mcs.N_TYPE10;
-        for (int i = start; i < end; ++i){
+        //int start = mcs.N_TYPE0 + mcs.N_TYPE1 + mcs.N_TYPE2 + mcs.N_TYPE3 + mcs.N_TYPE4 + mcs.N_TYPE5 + mcs.N_TYPE6 + mcs.N_TYPE7 + mcs.N_TYPE8;
+        //int end = mcs.N_TYPE0 + mcs.N_TYPE1 + mcs.N_TYPE2 + mcs.N_TYPE3 + mcs.N_TYPE4 + mcs.N_TYPE5 + mcs.N_TYPE6 + mcs.N_TYPE7 + mcs.N_TYPE8 + mcs.N_TYPE9;
+        for (int i = 0; i < mcs.numberOfConnections(); ++i){
             const Connection& c = mcs.getConnection(i);
             const glm::vec3& p1 = c.getParticle_1().readPosition();
             const glm::vec3& p2 = c.getParticle_2().readPosition();
             const glm::vec3& delta_p = p1 - p2;
             
             float r = glm::abs(glm::length(delta_p)-c.getConnectionLength());
-            if (r > 0.1)
-                std::cout << i << "                     start : " << start << std::endl;
+            //if (r > 0.1)
+                //std::cout << i << "                     start : " << start << std::endl;
             glColor3f(r,1-r,0.0f);
             glVertex3f(p1[0], p1[1], p1[2]);
             glVertex3f(p2[0], p2[1], p2[2]);

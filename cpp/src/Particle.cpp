@@ -52,9 +52,9 @@ void Particle::applyForce(float dt){
 	glm::vec3 v = _velocity[read_buffer_index] + a*dt;
 	glm::vec3 p = _position[read_buffer_index] + v*dt;
 
-	if (p[1] < -3.0f)
+	if (p[1] < -5.0f)
 	{
-		p[1] = -3.0f;
+		p[1] = -5.0f;
 		v = -v;
 	}
 
