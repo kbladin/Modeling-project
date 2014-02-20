@@ -21,8 +21,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-const int N_ROWS = 100;
-const int N_COLS = 100;
+const int N_ROWS = 5;
+const int N_COLS = 5;
 
 const int N_TYPE1 = (N_ROWS-1)*N_COLS; // |
 const int N_TYPE2 = (N_ROWS-1)*(N_COLS-1); // /
