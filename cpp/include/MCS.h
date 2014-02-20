@@ -18,8 +18,11 @@ class MCS{
 
         void update(float dt);
 
+        void rotate(glm::vec3 axisOfRotation, float amount);
         void addRotation(glm::vec3 axisOfRotation, float amount);
-        glm::vec3 centerPointOfMass() const;
+        
+        glm::vec3 centerOfMass() const;
+        glm::vec3 averageVelocity() const;
 
         //The dimensions variables for the MCS
         const int N_ROWS;

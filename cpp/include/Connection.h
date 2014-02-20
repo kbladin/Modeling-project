@@ -20,6 +20,7 @@ public:
 	float getSpringConstant() const;
 	float getDamperConstant() const;
 
+
 	const Particle& getParticle_1() const;
 	const Particle& getParticle_2() const;
 

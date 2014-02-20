@@ -1,11 +1,13 @@
 #include "Particle.h"
 
 // Static variables
+//IS THIS FUNCTIONALITY EVEN NEEDED ANYMORE?
 int Particle::read_buffer_index = 0;
-int Particle::write_buffer_index = 1;
+int Particle::write_buffer_index = 0;
 
 // Static function
 void Particle::swapBuffers(){
+	return;
 	write_buffer_index = read_buffer_index;
 	read_buffer_index = (read_buffer_index+1)%2;
 }
@@ -55,7 +57,9 @@ void Particle::applyForce(float dt){
 	if (p[1] < -5.0f)
 	{
 		p[1] = -5.0f;
-		v = -v;
+		v[1] = -v[1];
+		v[0] *= 0.9f;
+		v[2] *= 0.9f;
 	}
 
 	_velocity[write_buffer_index] = v;

@@ -30,7 +30,7 @@ const float g = 9.82f;
 int main(void){
 
     //Test
-    testParticle();
+    //testParticle();
     testConnection();
     testMCS();
 
@@ -52,7 +52,7 @@ int main(void){
 
     /* INIT SIMULATION */
     int simulations_per_frame = 40;
-    float T = 0.01*1.0f/(60.0f*simulations_per_frame);
+    float T = 1.0f/(60.0f*simulations_per_frame);
     float current_time;
 
     //Init gl points
@@ -129,9 +129,10 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        float zNear = 20.f;
-        float zFar = -20.f;
+        float zNear = 200.f;
+        float zFar = -200.f;
         glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, zNear, zFar);
+        
         //glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
         //Draw masses
         glBegin(GL_POINTS);
