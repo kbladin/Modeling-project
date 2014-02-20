@@ -67,6 +67,7 @@ glm::vec3 Connection::calcForce(const glm::vec3& delta_p_offset, const glm::vec3
 	glm::vec3 delta_v = getDeltaVelocity() + delta_v_offset;
 	glm::vec3 delta_p_hat = glm::normalize(delta_p);
 	float spring_elongation = glm::length(delta_p) - _l;
+	//float sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
 	return (-_k*spring_elongation - _b*glm::dot(delta_v,delta_p_hat))*delta_p_hat;
 }
 

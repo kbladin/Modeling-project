@@ -36,7 +36,7 @@ int main(void){
     testConnection();
     testMCS();
 
-    MCS mcs(10,10,1);
+    MCS mcs(10,10,2);
 
     /* INIT GLFW */
     GLFWwindow* window;
@@ -53,7 +53,7 @@ int main(void){
     float scale = (float) fmax(mcs.N_ROWS, mcs.N_COLS);
 
     /* INIT SIMULATION */
-    int simulations_per_frame = 40;
+    int simulations_per_frame = 4;
     float T = 1/(60.0f*simulations_per_frame);
     float current_time;
 
@@ -132,7 +132,7 @@ int main(void){
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, 1.f * scale, -1.f * scale);
-        //glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         //Draw masses
         glBegin(GL_POINTS);
         glColor3f(1.f, 0.f, 0.f);
@@ -144,7 +144,7 @@ int main(void){
 
         //Draw connections
         glBegin(GL_LINES);
-        glColor3f(0.f, 1.f, 0.f);
+        glColor3f(0.0f, 1.f, 0.f);
         for (int i = 0; i < mcs.numberOfConnections(); ++i){
             const Connection& c = mcs.getConnection(i);
             const glm::vec3& p1 = c.getParticle_1().readPosition();

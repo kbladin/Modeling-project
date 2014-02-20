@@ -22,11 +22,14 @@ void MCS::initParticles(){
     for (int i = 0; i < N_PARTICLES; ++i)
     {
         int row = i%N_COLS;                         //x
-        int col = floor(i/N_COLS);                  //y
-        int stack = floor(i/(N_COLS*N_ROWS));       //z
-        particles[i] = Particle(1.0f, glm::vec3(row,col,stack));    // starting position from 3D index, vel. = 0
+        int col = (i/N_COLS)%N_ROWS;              //y
+        int stack = i/(N_COLS*N_ROWS);              //z
+
+        // starting position from 3D index, vel. = 0
+        particles[i] = Particle(1.0f, glm::vec3(row,col,stack)); 
+
     }
-    //particles[0].storeForce(glm::vec3(0,0,1000));
+    particles[0].storeForce(glm::vec3(0,0,1000));
 }
 
 void MCS::initConnections(){
@@ -40,7 +43,9 @@ void MCS::initConnections(){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
 
         connections[i] = Connection(&particles[p_index1], &particles[p_index2]);
-        connections[i].setSpringConstant(200.f);
+        connections[i].setSpringConstant(2000.f);
+        connections[i].setDamperConstant(5.f);
+
     }
 }
 
