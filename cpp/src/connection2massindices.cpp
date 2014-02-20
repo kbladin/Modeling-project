@@ -208,9 +208,10 @@ void connection2massIndices3D(const int connection_index, int &mass_index1, int 
 			stack_m1 = stackOfFirstMass(connection_index, prev_num_springs[type], one_stack_of_connections);
 			row_m1 = rowOfFirstMass(connection_index, prev_num_springs[type], one_row_of_connections, one_stack_of_connections);
 
-			mass_index1 = connection_index - prev_num_springs[type] + row_m1 + stack_m1*(n_rows + n_cols - 2);
+			mass_index1 = connection_index - prev_num_springs[type] + row_m1 + stack_m1*(n_rows + n_cols - 1);
 			mass_index2 = mass_index1 + one_stack_of_masses + one_row_of_masses + 1;
 			break;
+
 		}
 		case 10: {
 			one_row_of_connections = n_cols-1;
@@ -219,7 +220,7 @@ void connection2massIndices3D(const int connection_index, int &mass_index1, int 
 			stack_m1 = stackOfFirstMass(connection_index, prev_num_springs[type], one_stack_of_connections) + 1;
 			row_m1 = rowOfFirstMass(connection_index, prev_num_springs[type], one_row_of_connections, one_stack_of_connections);
 
-			mass_index1 = connection_index - prev_num_springs[type] + row_m1 + (stack_m1-1)*(n_rows + n_cols - 2) + one_stack_of_masses;
+			mass_index1 = connection_index - prev_num_springs[type] + row_m1 + (stack_m1-1)*(n_rows + n_cols - 1) + one_stack_of_masses;
 			mass_index2 = mass_index1 - one_stack_of_masses + one_row_of_masses + 1;
 			break;
 		}

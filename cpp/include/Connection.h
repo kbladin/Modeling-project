@@ -16,7 +16,13 @@ public:
 	void setSpringConstant(float k);
 	void setDamperConstant(float b);
 
-	
+	float getConnectionLength() const;
+	float getSpringConstant() const;
+	float getDamperConstant() const;
+
+	const Particle& getParticle_1() const;
+	const Particle& getParticle_2() const;
+
 	//The particle p1 will be affected by a force f which
 	//is calculated by calcForce(float). The particle p2
 	//will be affected by the force -f. This method applies
