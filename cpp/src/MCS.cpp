@@ -94,6 +94,65 @@ void MCS::update(float dt){
         particles[i].applyForce(dt);
     }
 */
+
+
+    glm::vec3 delta_p;
+    glm::vec3 delta_v;
+    glm::vec3 delta_p_hat;
+    float k ;
+    float l;
+    float b;
+    float spring_elongation;
+    glm::vec3 force;
+
+    // Calculate the forces of the springs
+    for (int i = 0; i < getNumberOfConnections(); ++i){
+        delta_p = particles.positions[connections.particle1[i]] - particles.positions[connections.particle2[i]]; //getDeltaPosition() + delta_p_offset;
+        delta_v = particles.velocities[connections.particle1[i]] - particles.velocities[connections.particle2[i]]; //getDeltaVelocity() + delta_v_offset;
+        delta_p_hat = glm::normalize(delta_p);
+
+        k = connections.springConstants[i];
+        l = connections.lengths[i];
+        b = connections.damperConstants[i];
+
+        spring_elongation = glm::length(delta_p) - l;
+
+        force = (-k*spring_elongation - b*glm::dot(delta_v,delta_p_hat))*delta_p_hat;
+
+        particles.forces[connections.particle1[i]] += force;
+        particles.forces[connections.particle2[i]] -= force;
+
+        //float sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
+    }
+
+
+    float m;
+    glm::vec3 a;
+    glm::vec3 v;
+    glm::vec3 p;
+
+    // Apply the forces on the particles
+    for (int i = 0; i < getNumberOfParticles(); ++i){
+        m = particles.masses[i];
+        force = particles.forces[i];
+
+        a = force/m - glm::vec3(0.0f, 1.0f, 0.0f)*9.81f;
+        v = particles.velocities[i] + a*dt;
+        p = particles.positions[i] + v*dt;
+
+        if (p[1] < -10.0f){
+            p[1] = -10.0f;
+            v[1] = -v[1];
+
+            v[0] *= 0.9f;
+            v[2] *= 0.9f;
+        }
+
+        // Update data
+        particles.velocities[i] = v;
+        particles.positions[i] = p;
+        particles.forces[i] = glm::vec3(0,0,0);
+    }
 }
 
 void MCS::rotate(glm::vec3 axisOfRotation, float degrees){

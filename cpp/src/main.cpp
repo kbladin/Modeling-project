@@ -92,7 +92,7 @@ int main(void){
             //velocities[0][write_buffer] = glm::vec2(0.0f, 0.0f);
 
             float scalex = scale*ratio;
-            //mcs->update(T);
+            mcs->update(T);
         }
 
         // DRAW
