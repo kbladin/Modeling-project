@@ -63,10 +63,10 @@ int main(void){
     scale = 10;// (float) fmax(N_ROWS,N_COLS);
     ratio = width / (float) height;
 
-    mcs = new MCS(3,3,3);
-    mcs->addRotation(glm::vec3(0.5,0.5,0.5),25.0f);
-    mcs->setAvgPosition(glm::vec3(-10,-2,30));
-    mcs->setAvgVelocity(glm::vec3(3,6,0));
+    mcs = new MCS(20,4,2);
+    mcs->addRotation(glm::vec3(0.0,0.5,0.0),35.0f);
+    mcs->setAvgPosition(glm::vec3(0,0,30));
+    mcs->setAvgVelocity(glm::vec3(0,0,0));
 
     // INIT SIMULATION 
     int simulations_per_frame = 10;
@@ -93,7 +93,6 @@ int main(void){
 
             float scalex = scale*ratio;
             mcs->update(T);
-            Particle::swapBuffers();
         }
 
         // DRAW

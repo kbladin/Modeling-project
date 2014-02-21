@@ -6,7 +6,6 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
     N_ROWS(n_rows),N_COLS(n_cols),N_STACKS(n_stacks),
     particles(n_rows*n_cols*n_stacks)
 {
-
 	initParticles();
     initConnections();
 }
@@ -54,7 +53,7 @@ void MCS::initConnections(){
     for (int i = 0; i < numberOfConnections; ++i){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         connections[i] = Connection(&particles[p_index1], &particles[p_index2]);
-        connections[i].setSpringConstant(1500.f);
+        connections[i].setSpringConstant(500.f);
         connections[i].setDamperConstant(5.0f);
         connections[i].setConnectionLength(1.0f);
     }
@@ -95,15 +94,15 @@ void MCS::addRotation(glm::vec3 axisOfRotation, float amount){
     glm::vec3 mid = centerOfMass();
     for (int i = 0; i < particles.size(); ++i){
         Particle& p = particles[i];
-        glm::vec3 midToParticle = p.readPosition() - mid;
-        glm::vec3 rotDir = glm::cross(-midToParticle,glm::normalize(axisOfRotation));
+        glm::vec3 midToParticle = -p.readPosition() + mid;
+        glm::vec3 rotDir = glm::cross(midToParticle, glm::normalize(axisOfRotation));
         p.writeVelocity(p.readVelocity() + rotDir*amount);
     }
 
     glm::vec3 avgVelAfter = averageVelocity();
     glm::vec3 avgVelError = avgVelAfter - avgVelBefore;
     for (int i = 0; i < particles.size(); ++i){
-        particles[i].writeVelocity(particles[i].readVelocity()-avgVelError);
+        //particles[i].writeVelocity(particles[i].readVelocity()-avgVelError);
     }
 }
 

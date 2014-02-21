@@ -41,19 +41,25 @@ float Connection::getDamperConstant() const{
 void Connection::applyForcesToConnectedParticles(float dt){
 	glm::vec3 force = calcForce();
 
-	/*
 	//RK4
+	/*
+	glm::vec3 tmp_force;
+
 	glm::vec3 a0 = getDeltaVelocity();
-	glm::vec3 a1 = calcForce();
+	tmp_force = calcForce();
+	glm::vec3 a1 = tmp_force/_p1->getMass() + tmp_force/_p2->getMass();
 
-	glm::vec3 b0 = (dt/2) * (a1/_p1->getMass() + a1/_p2->getMass());
-	glm::vec3 b1 = calcForce((dt/2)*a0, (dt/2)*a1);
+	glm::vec3 b0 = (dt/2) * a1;
+	tmp_force = calcForce((dt/2)*a0, (dt/2)*a1);
+	glm::vec3 b1 = tmp_force/_p1->getMass() + tmp_force/_p2->getMass();
 
-	glm::vec3 c0 = (dt/2) * (b1/_p1->getMass() + b1/_p2->getMass());
-	glm::vec3 c1 = calcForce((dt/2)*b0, (dt/2)*b1);
+	glm::vec3 c0 = (dt/2) * b1;
+	tmp_force = calcForce((dt/2)*b0, (dt/2)*b1);
+	glm::vec3 c1 = tmp_force/_p1->getMass() + tmp_force/_p2->getMass();
 
 	glm::vec3 d0 = dt * (c1/_p1->getMass() + c1/_p2->getMass());
-	glm::vec3 d1 = calcForce(dt*c0, dt*c1);
+	tmp_force = calcForce((dt/2)*c0, (dt/2)*c1);
+	glm::vec3 d1 = tmp_force/_p1->getMass() + tmp_force/_p2->getMass();
 
 	glm::vec3 force = (1/6.0f)*(a1 + 2.0f*b1 + 2.0f*c1 + d1);
 	*/
