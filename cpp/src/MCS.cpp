@@ -19,7 +19,6 @@ void MCS::initParticles(){
         particles[i] = Particle(1.0f, glm::vec3(x,y,z)); 
     }
 
-
     //particles[0].storeForce(glm::vec3(0,50000,50000));
 
 }

@@ -41,19 +41,20 @@ class MCS{
         std::vector<glm::vec3> particleForces;
         std::vector<glm::vec3> particleMasses;
 
-        struct Particles{
+        typedef struct{
             std::vector<glm::vec3> positions;
             std::vector<glm::vec3> velocities;
             std::vector<glm::vec3> accelerations;
             std::vector<glm::vec3> forces;
             std::vector<glm::vec3> masses;
-        };
+        } particlesFoo;
 
-        struct Connections{
+
+        typedef struct{
             std::vector<float> lengths;
             std::vector<float> springConstants;
             std::vector<float> damperConstants;    
-        };
+        } connectionsFoo;
 
         
         
