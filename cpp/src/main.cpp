@@ -48,7 +48,7 @@ std::vector<glm::vec3> vertex_position_data;
 // Colordata
 std::vector<glm::vec3> vertex_color_data;
 
-MCS mcs = MCS(20,4,2);
+MCS mcs = MCS(3,3,3);
 
 int main(void){
 
@@ -64,9 +64,9 @@ int main(void){
     ratio = width / (float) height;
 
     
-    //mcs.addRotation(glm::vec3(0.0,0.5,0.0),35.0f);
-    //mcs.setAvgPosition(glm::vec3(0,0,30));
-    //mcs.setAvgVelocity(glm::vec3(0,0,0));
+    mcs.addRotation(glm::vec3(1.0,0.5,0.0),25.0f);
+    mcs.setAvgPosition(glm::vec3(-10,0,-30));
+    mcs.setAvgVelocity(glm::vec3(5,5,0));
 
     // INIT SIMULATION 
     int simulations_per_frame = 40;
@@ -356,7 +356,8 @@ void draw(){
 
     float speed = 50.0f;
 
-    glm::mat4 MVP = glm::ortho(-10.f, 10.f, -10.f, 10.f);//glm::rotate(glm::mat4(1), speed * (float) glfwGetTime(), glm::vec3(0,0,1));
+    //glm::mat4 MVP = glm::ortho(-10.f, 10.f, -10.f, 10.f);//glm::rotate(glm::mat4(1), speed * (float) glfwGetTime(), glm::vec3(0,0,1));
+    glm::mat4 MVP = glm::perspective(45.0f, ratio, 0.1f, 100.f);
  
     //BIND SHADER HERE
     glUseProgram(programID);
