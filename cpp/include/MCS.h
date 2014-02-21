@@ -28,33 +28,27 @@ class MCS{
         glm::vec3 averagePosition() const;
         glm::vec3 averageVelocity() const;
 
-        Particle& getParticle(int index);
-        const Connection& getConnection(int index) const;
-
         //Get-functions to access the protected variables in the MCS class
-        int getNumberOfParticles();
-        int getNumberOfConnections();
+        int getNumberOfParticles() const;
+        int getNumberOfConnections() const;
 
-        std::vector<glm::vec3> particlePositions;
-        std::vector<glm::vec3> particleVelocities;
-        std::vector<glm::vec3> particleAccelerations;
-        std::vector<glm::vec3> particleForces;
-        std::vector<glm::vec3> particleMasses;
-
-        struct Particles{
+        typedef struct{
             std::vector<glm::vec3> positions;
             std::vector<glm::vec3> velocities;
             std::vector<glm::vec3> accelerations;
             std::vector<glm::vec3> forces;
-            std::vector<glm::vec3> masses;
-        };
+            std::vector<float> masses;
+        } Particles;
+        Particles particles;
 
-        struct Connections{
+        typedef struct{
             std::vector<float> lengths;
             std::vector<float> springConstants;
-            std::vector<float> damperConstants;    
-        };
-
+            std::vector<float> damperConstants;
+            std::vector<int> particle1;
+            std::vector<int> particle2;
+        } Connections;
+        Connections connections;
         
         
         //The number of connections of each type/direction
@@ -79,8 +73,5 @@ class MCS{
         //int rowOfFirstMass(const int connection_index, const int prev_num_springs, const int one_row_of_connections, const int one_stack_of_connections);
         void initParticles();
         void initConnections();
-        
-        std::vector<Particle> particles;
-        std::vector<Connection> connections;
 };
 #endif

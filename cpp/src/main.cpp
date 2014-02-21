@@ -64,9 +64,9 @@ int main(void){
     ratio = width / (float) height;
 
     mcs = new MCS(20,4,2);
-    mcs->addRotation(glm::vec3(0.0,0.5,0.0),35.0f);
-    mcs->setAvgPosition(glm::vec3(0,0,30));
-    mcs->setAvgVelocity(glm::vec3(0,0,0));
+    //mcs->addRotation(glm::vec3(0.0,0.5,0.0),35.0f);
+    //mcs->setAvgPosition(glm::vec3(0,0,30));
+    //mcs->setAvgVelocity(glm::vec3(0,0,0));
 
     // INIT SIMULATION 
     int simulations_per_frame = 40;
@@ -92,7 +92,7 @@ int main(void){
             //velocities[0][write_buffer] = glm::vec2(0.0f, 0.0f);
 
             float scalex = scale*ratio;
-            mcs->update(T);
+            //mcs->update(T);
         }
 
         // DRAW
@@ -284,7 +284,7 @@ void draw(){
     glColor3f(1.f, 0.f, 0.f);
     for (int i = 0; i < mcs->getNumberOfParticles(); ++i){
         break;
-        glm::vec3 pos = mcs->getParticle(i).readPosition();
+        glm::vec3 pos = mcs->particles.positions[i];
         glVertex3f(pos[0],pos[1],pos[2]);
     }
     glEnd();
@@ -295,12 +295,13 @@ void draw(){
 
     glColor3f(0.0f, 1.f, 0.f);        
     for (int i = 0; i < mcs->getNumberOfConnections(); ++i){
-        const Connection& c = mcs->getConnection(i);
-        const glm::vec3& p1 = c.getParticle_1().readPosition();
-        const glm::vec3& p2 = c.getParticle_2().readPosition();
+        int index_p1 = mcs->connections.particle1[i];
+        int index_p2 = mcs->connections.particle2[i];
+        const glm::vec3& p1 = mcs->particles.positions[index_p1];
+        const glm::vec3& p2 = mcs->particles.positions[index_p2];
         const glm::vec3& delta_p = p1 - p2;
         
-        float r = 5.0f*glm::abs(glm::length(delta_p)-c.getConnectionLength());
+        float r = 5.0f*glm::abs(glm::length(delta_p)-mcs->connections.lengths[i]);
         glColor3f(r,1-r,0.0f);
         glVertex3f(p1[0], p1[1], p1[2]);
         glVertex3f(p2[0], p2[1], p2[2]);
