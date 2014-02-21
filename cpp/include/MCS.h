@@ -28,8 +28,8 @@ class MCS{
         glm::vec3 averagePosition() const;
         glm::vec3 averageVelocity() const;
 
-        //Particle& getParticle(int index);
-        //const Connection& getConnection(int index) const;
+        Particle& getParticle(int index);
+        const Connection& getConnection(int index) const;
 
         //Get-functions to access the protected variables in the MCS class
         int getNumberOfParticles();
@@ -70,17 +70,17 @@ class MCS{
         friend void testMCS();
 
 
-        void connection2massIndices3D(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols, const int n_stacks);
+        //void connection2massIndices3D(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols, const int n_stacks);
 
         // Calculate the stack in which the first mass (not necessary mass 1) of the pair is positioned
-        int stackOfFirstMass(const int connection_index, const int prev_num_springs, const int one_stack_of_connections);
+        //int stackOfFirstMass(const int connection_index, const int prev_num_springs, const int one_stack_of_connections);
 
         // Calculate the row in which first mass (not necessary mass 1) of the pair is positioned
-        int rowOfFirstMass(const int connection_index, const int prev_num_springs, const int one_row_of_connections, const int one_stack_of_connections);
-        //void initParticles();
-        //void initConnections();
+        //int rowOfFirstMass(const int connection_index, const int prev_num_springs, const int one_row_of_connections, const int one_stack_of_connections);
+        void initParticles();
+        void initConnections();
         
-        //std::vector<Particle> particles;
-        //std::vector<Connection> connections;
+        std::vector<Particle> particles;
+        std::vector<Connection> connections;
 };
 #endif
