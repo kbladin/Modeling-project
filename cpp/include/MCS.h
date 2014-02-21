@@ -28,31 +28,38 @@ class MCS{
         glm::vec3 averagePosition() const;
         glm::vec3 averageVelocity() const;
 
-        //The dimensions variables for the MCS
-        const int N_ROWS;
-        const int N_COLS;
-        const int N_STACKS;
-
-        Particle& getParticle(int index);
-        const Connection& getConnection(int index) const;
+        //Particle& getParticle(int index);
+        //const Connection& getConnection(int index) const;
 
         //Get-functions to access the protected variables in the MCS class
         int getNumberOfParticles();
         int getNumberOfConnections();
 
-        //The number of connections of each type/direction
+        std::vector<glm::vec3> particlePositions;
+        std::vector<glm::vec3> particleVelocities;
+        std::vector<glm::vec3> particleAccelerations;
+        std::vector<glm::vec3> particleMasses;
+
+        std::vector<glm::vec3> connectionLengths;
+        std::vector<glm::vec3> connectionSpringConstants;
+        std::vector<glm::vec3> connectionDamperConstants;
         
+        //The number of connections of each type/direction
         int numberOfConnectionsOfType[13];
         int startOfConnectionOfType[13];
         
+        //The dimensions variables for the MCS
+        const int N_ROWS;
+        const int N_COLS;
+        const int N_STACKS;
 
     protected:
         friend void testMCS();
 
-        void initParticles();
-        void initConnections();
+        //void initParticles();
+        //void initConnections();
         
-        std::vector<Particle> particles;
-        std::vector<Connection> connections;
+        //std::vector<Particle> particles;
+        //std::vector<Connection> connections;
 };
 #endif
