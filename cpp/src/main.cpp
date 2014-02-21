@@ -10,8 +10,6 @@
 
 #include <shader.h>
 #include "connection2massindices.h"
-#include "Particle.h"
-#include "Connection.h"
 #include "test.h"
 
 static void error_callback(int error, const char* description);
@@ -48,13 +46,11 @@ std::vector<glm::vec3> vertex_position_data;
 // Colordata
 std::vector<glm::vec3> vertex_color_data;
 
-MCS mcs = MCS(3,3,3);
+MCS mcs = MCS(2,10,2);
 
 int main(void){
 
     //Test
-    //testParticle();
-    testConnection();
     testMCS();
 
 

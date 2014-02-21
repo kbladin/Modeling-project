@@ -3,8 +3,6 @@
 
 #include <vector>
 #include <glm/glm.hpp>
-#include "Particle.h"
-#include "Connection.h"
 #include "connection2massindices.h"
 
 /** Classes **/
