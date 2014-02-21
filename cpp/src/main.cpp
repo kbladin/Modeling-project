@@ -34,7 +34,6 @@ float scale;
 GLFWwindow* window;
 
 
-
 // THIS IS USED ONLY FOR MODERN OPENGL
 GLuint vertexArray = GL_FALSE;
 GLuint vertexPositionBuffer = GL_FALSE;
@@ -49,22 +48,25 @@ std::vector<glm::vec3> vertex_position_data;
 // Colordata
 std::vector<glm::vec3> vertex_color_data;
 
-
 MCS* mcs;
 
 int main(void){
 
     //Test
-    testParticle();
+    //testParticle();
     testConnection();
     testMCS();
+
 
     initGLFW();
     initOpenGL();
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     ratio = width / (float) height;
 
-    mcs = new MCS(4,4,4);
+    mcs = new MCS(20,4,2);
+    mcs->addRotation(glm::vec3(0.0,0.5,0.0),35.0f);
+    mcs->setAvgPosition(glm::vec3(0,0,30));
+    mcs->setAvgVelocity(glm::vec3(0,0,0));
 
     // INIT SIMULATION 
     int simulations_per_frame = 40;
@@ -79,18 +81,18 @@ int main(void){
         for (int i = 0; i < simulations_per_frame; ++i)
         {   
             // Moving one mass 
-            //double x_mouse;
-            //double y_mouse;
+            double x_mouse;
+            double y_mouse;
 
-            //glfwGetCursorPos(window, &x_mouse, &y_mouse);
-            //positions[0][write_buffer] = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+            glfwGetCursorPos(window, &x_mouse, &y_mouse);
+            glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+            //mcs->setAvgPosition(glm::vec3(pos2d[0],pos2d[1],10));
+            //mcs->getParticle(0).writePosition(glm::vec3(pos2d[0],pos2d[1],10.0f));
+            //mcs->getParticle(5).writePosition(glm::vec3(pos2d[0],pos2d[1],16.0f));
             //velocities[0][write_buffer] = glm::vec2(0.0f, 0.0f);
 
             float scalex = scale*ratio;
-
             mcs->update(T);
-
-            Particle::swapBuffers();
         }
 
         // DRAW
@@ -100,7 +102,7 @@ int main(void){
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
+    delete mcs;
     cleanUpGLFW();
     cleanUpOpenGl();
 }
@@ -281,8 +283,9 @@ void draw(){
     glBegin(GL_POINTS);
     glColor3f(1.f, 0.f, 0.f);
     for (int i = 0; i < mcs->getNumberOfParticles(); ++i){
-        //glVertex3f(positions[i][read_buffer][0],
-        //           positions[i][read_buffer][1], 0.f);
+        break;
+        glm::vec3 pos = mcs->getParticle(i).readPosition();
+        glVertex3f(pos[0],pos[1],pos[2]);
     }
     glEnd();
 
@@ -297,7 +300,7 @@ void draw(){
         const glm::vec3& p2 = c.getParticle_2().readPosition();
         const glm::vec3& delta_p = p1 - p2;
         
-        float r = glm::abs(glm::length(delta_p)-c.getConnectionLength());
+        float r = 5.0f*glm::abs(glm::length(delta_p)-c.getConnectionLength());
         glColor3f(r,1-r,0.0f);
         glVertex3f(p1[0], p1[1], p1[2]);
         glVertex3f(p2[0], p2[1], p2[2]);

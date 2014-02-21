@@ -23,14 +23,12 @@ public:
 
 private:
 	friend void testConnection();
+	friend class MCS;
 
 	float _mass;
-	glm::vec3 _position[2];
-	glm::vec3 _velocity[2];
+	glm::vec3 _position;
+	glm::vec3 _velocity;
 	glm::vec3 _force;
-
-	static int read_buffer_index;
-	static int write_buffer_index;
 
 };
 
