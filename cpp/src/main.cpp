@@ -46,7 +46,7 @@ std::vector<glm::vec3> vertex_position_data;
 // Colordata
 std::vector<glm::vec3> vertex_color_data;
 
-MCS mcs = MCS(2,10,2);
+MCS mcs = MCS(3,3,3);
 
 int main(void){
 
@@ -61,13 +61,16 @@ int main(void){
 
     
     mcs.addRotation(glm::vec3(1.0,0.5,0.0),25.0f);
-    mcs.setAvgPosition(glm::vec3(-10,0,-30));
+    mcs.setAvgPosition(glm::vec3(-10,0,-50));
     mcs.setAvgVelocity(glm::vec3(5,5,0));
-    mcs.addCollisionPlane(glm::vec3(0,1,0), -10.0f, 0.9f);
+    mcs.addCollisionPlane(glm::vec3(0,1,0), //normal of the plane
+                                   -10.0f,  //positions the plane on normal
+                                    0.9f,   //elasticity
+                                    0.9f);  //friction
 
     // INIT SIMULATION 
     int simulations_per_frame = 40;
-    float T = 0.1f*1.0f/(60.0f*simulations_per_frame);
+    float T = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
 

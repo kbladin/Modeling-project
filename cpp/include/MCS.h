@@ -26,6 +26,7 @@ typedef struct{
 typedef struct{
     glm::vec3 normal;
     float position;
+    float elasticity;
     float friction;
 } CollisionPlane;
 
@@ -54,7 +55,18 @@ class MCS{
 
         Particles particles;
         Connections connections;
-        void addCollisionPlane(glm::vec3 normal, float position, float friction = 0.0f);
+
+        /**
+        Adds a local collision plane for particles in this system to collide with
+        @argument normal     - specifies normal to the plane
+                  position   - specifies the position on the norm on which the plane is defined
+                  elasticity - set elasticity of the collision
+                  friction   - set friction of the collision
+        */
+        void addCollisionPlane(glm::vec3 normal, 
+                               float position, 
+                               float elasticity = 0.0f,
+                               float friction = 0.0f);
         
         
         //The number of connections of each type/direction

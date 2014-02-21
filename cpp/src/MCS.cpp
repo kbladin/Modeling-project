@@ -85,7 +85,7 @@ void MCS::initConnections(){
     }
 }
 
-void MCS::addCollisionPlane(glm::vec3 normal, float position, float friction){
+void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, float friction){
     CollisionPlane cp; 
     cp.normal = glm::normalize(normal);
     cp.position = position;
@@ -175,11 +175,16 @@ void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
         float p_dot_n = glm::dot(p,n);
 
         if (p_dot_n < pos){
-            glm::vec3 p_parallel_n = (p_dot_n)*n;
+            glm::vec3 p_offset = (p_dot_n - pos)*n;
             glm::vec3 v_parallel_n = glm::dot(v,n)*n;
+            glm::vec3 v_orthogonal_n = v - v_parallel_n;
+            //std::cout << "--" << std::endl;
+            //std::cout << "           v: " << v[0] << " " << v[1] << " " << v[2] << std::endl;
+            //std::cout << "v_parallel_n: "<< v_parallel_n[0] << " " << v_parallel_n[1] << " " << v_parallel_n[2] << std::endl;
 
-            p -= p_parallel_n;
-            v -= v_parallel_n*2.0f*collisionPlanes[i].friction;
+            p -= p_offset;
+            v -= v_parallel_n*(1.0f+collisionPlanes[i].elasticity);
+            v -= v_orthogonal_n*collisionPlanes[i].friction;
         }
     }
 }
