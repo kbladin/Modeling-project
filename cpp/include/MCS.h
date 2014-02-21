@@ -7,6 +7,22 @@
 
 /** Classes **/
 
+typedef struct{
+    std::vector<glm::vec3> positions;
+    std::vector<glm::vec3> velocities;
+    std::vector<glm::vec3> accelerations;
+    std::vector<glm::vec3> forces;
+    std::vector<float> masses;
+} Particles;
+
+typedef struct{
+    std::vector<float> lengths;
+    std::vector<float> springConstants;
+    std::vector<float> damperConstants;
+    std::vector<int> particle1;
+    std::vector<int> particle2;
+} Connections;
+
 // The MCS - Mass Connection System
 class MCS{
 
@@ -30,22 +46,8 @@ class MCS{
         int getNumberOfParticles() const;
         int getNumberOfConnections() const;
 
-        typedef struct{
-            std::vector<glm::vec3> positions;
-            std::vector<glm::vec3> velocities;
-            std::vector<glm::vec3> accelerations;
-            std::vector<glm::vec3> forces;
-            std::vector<float> masses;
-        } Particles;
-        Particles particles;
 
-        typedef struct{
-            std::vector<float> lengths;
-            std::vector<float> springConstants;
-            std::vector<float> damperConstants;
-            std::vector<int> particle1;
-            std::vector<int> particle2;
-        } Connections;
+        Particles particles;
         Connections connections;
         
         
@@ -58,10 +60,12 @@ class MCS{
         const int N_COLS;
         const int N_STACKS;
 
-    protected:
         friend void testMCS();
 
 
+    private:
+        void calcConnectionForcesOnParticles();
+        void applyForcesOnParticles(float dt, glm::vec3 externalForce = glm::vec3(0,0,0), glm::vec3 externalAcceleration = glm::vec3(0,0,0));
         //void connection2massIndices3D(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols, const int n_stacks);
 
         // Calculate the stack in which the first mass (not necessary mass 1) of the pair is positioned
