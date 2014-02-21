@@ -48,7 +48,7 @@ std::vector<glm::vec3> vertex_position_data;
 // Colordata
 std::vector<glm::vec3> vertex_color_data;
 
-MCS* mcs;
+MCS mcs = MCS(20,4,2);
 
 int main(void){
 
@@ -63,10 +63,10 @@ int main(void){
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     ratio = width / (float) height;
 
-    mcs = new MCS(20,4,2);
-    mcs->addRotation(glm::vec3(0.0,0.5,0.0),35.0f);
-    mcs->setAvgPosition(glm::vec3(0,0,30));
-    mcs->setAvgVelocity(glm::vec3(0,0,0));
+    
+    //mcs.addRotation(glm::vec3(0.0,0.5,0.0),35.0f);
+    //mcs.setAvgPosition(glm::vec3(0,0,30));
+    //mcs.setAvgVelocity(glm::vec3(0,0,0));
 
     // INIT SIMULATION 
     int simulations_per_frame = 40;
@@ -86,13 +86,13 @@ int main(void){
 
             glfwGetCursorPos(window, &x_mouse, &y_mouse);
             glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
-            //mcs->setAvgPosition(glm::vec3(pos2d[0],pos2d[1],10));
-            //mcs->getParticle(0).writePosition(glm::vec3(pos2d[0],pos2d[1],10.0f));
-            //mcs->getParticle(5).writePosition(glm::vec3(pos2d[0],pos2d[1],16.0f));
+            //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],10));
+            //mcs.getParticle(0).writePosition(glm::vec3(pos2d[0],pos2d[1],10.0f));
+            //mcs.getParticle(5).writePosition(glm::vec3(pos2d[0],pos2d[1],16.0f));
             //velocities[0][write_buffer] = glm::vec2(0.0f, 0.0f);
 
             float scalex = scale*ratio;
-            mcs->update(T);
+            //mcs.update(T);
         }
 
         // DRAW
@@ -102,7 +102,6 @@ int main(void){
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    delete mcs;
     cleanUpGLFW();
     cleanUpOpenGl();
 }
@@ -118,7 +117,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 void initGLFW(){
     
     // INITIALISATION OF GLFW FOR GLBEGIN
-
+/*
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -135,8 +134,8 @@ void initGLFW(){
     glfwGetFramebufferSize(window, &width, &height);
     
     glfwSetCursorPos(window, 0,0);
+*/
 
-/*
     // INITIALISATION OF GLFW FOR MODERN OPENGL
 
     glfwSetErrorCallback(error_callback);
@@ -158,7 +157,7 @@ void initGLFW(){
     }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-*/
+
 }
 
 bool initOpenGL(){
@@ -169,13 +168,13 @@ bool initOpenGL(){
     glEnable( GL_POINT_SMOOTH );
     //glEnable( GL_BLEND );
     //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glPointSize( 15.0 );
+    glPointSize( 5.0 );
 
     //Init gl lines
     //glEnable( GL_LINE_SMOOTH );
     
 
-/*
+
     // INITIALISATION OF MODERN OPENGL
 
     // Initialize GLEW (Create OpenGL context)
@@ -188,15 +187,15 @@ bool initOpenGL(){
     // Current OpenGL version    
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
-    for (int i = 0; i < N_MASSES; ++i){
-        vertex_position_data.push_back(glm::vec3(positions[i][0].x, positions[i][0].y, 0.f));
+    for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
+        vertex_position_data.push_back(mcs.particles.positions[i]);
         vertex_color_data.push_back(glm::vec3(1.f, 0.f, 0.f));
     }
 
-    std::cout <<
-        vertex_position_data[0] << std::endl <<
-        vertex_position_data[1] << std::endl <<
-        vertex_position_data[2] << std::endl;
+    std::cout 
+        << vertex_position_data[0] << std::endl 
+        << vertex_position_data[1] << std::endl
+        << vertex_position_data[2] << std::endl;
 
     vertex_position_data[0] = glm::vec3(50.f, 50.f, 1);
     vertex_position_data[1] = glm::vec3(0.f, 0.f, 1);
@@ -257,16 +256,13 @@ bool initOpenGL(){
     // ------
 
     return true;
-    */
-
-    return true;
 
 }
 
 void draw(){
 
     // DRAW OLD OPENGL
-
+/*
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
@@ -282,38 +278,38 @@ void draw(){
 
     glBegin(GL_POINTS);
     glColor3f(1.f, 0.f, 0.f);
-    for (int i = 0; i < mcs->getNumberOfParticles(); ++i){
+    for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
         break;
-        glm::vec3 pos = mcs->getParticle(i).readPosition();
+        glm::vec3 pos = mcs.particles.positions[i];
         glVertex3f(pos[0],pos[1],pos[2]);
     }
     glEnd();
 
+
     //Draw connections
     glBegin(GL_LINES);
-
-
-    glColor3f(0.0f, 1.f, 0.f);        
-    for (int i = 0; i < mcs->getNumberOfConnections(); ++i){
-        const Connection& c = mcs->getConnection(i);
-        const glm::vec3& p1 = c.getParticle_1().readPosition();
-        const glm::vec3& p2 = c.getParticle_2().readPosition();
+    for (int i = 0; i < mcs.getNumberOfConnections(); ++i){
+        int index_p1 = mcs.connections.particle1[i];
+        int index_p2 = mcs.connections.particle2[i];
+        const glm::vec3& p1 = mcs.particles.positions[index_p1];
+        const glm::vec3& p2 = mcs.particles.positions[index_p2];
         const glm::vec3& delta_p = p1 - p2;
         
-        float r = 5.0f*glm::abs(glm::length(delta_p)-c.getConnectionLength());
+        float r = 5.0f*glm::abs(glm::length(delta_p)-mcs.connections.lengths[i]);
         glColor3f(r,1-r,0.0f);
         glVertex3f(p1[0], p1[1], p1[2]);
         glVertex3f(p2[0], p2[1], p2[2]);
     }
     glEnd();    
+*/
 
 
-/*
     //DRAW WITH MODERN OPENGL
 
-    for (int i = 0; i < N_MASSES; ++i){
-        vertex_position_data[i] = glm::vec3(positions[i][0].x, positions[i][0].y, 1);
+    for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
+        vertex_position_data[i] = mcs.particles.positions[i];
     }
+
 
 
 
@@ -381,7 +377,7 @@ void draw(){
     
     //UNBIND SHADER HERE
     glUseProgram(0);
-*/
+
 
 }
 
