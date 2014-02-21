@@ -63,10 +63,11 @@ int main(void){
     mcs.addRotation(glm::vec3(1.0,0.5,0.0),25.0f);
     mcs.setAvgPosition(glm::vec3(-10,0,-30));
     mcs.setAvgVelocity(glm::vec3(5,5,0));
+    mcs.addCollisionPlane(glm::vec3(0,1,0), -10.0f, 0.9f);
 
     // INIT SIMULATION 
     int simulations_per_frame = 40;
-    float T = 1.0f/(60.0f*simulations_per_frame);
+    float T = 0.1f*1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
 
