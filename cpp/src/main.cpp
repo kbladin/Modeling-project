@@ -61,13 +61,13 @@ int main(void){
 
     initGLFW();
     initOpenGL();
-    scale = 10;// (float) fmax(N_ROWS,N_COLS);
+    scale = 11;// (float) fmax(N_ROWS,N_COLS);
     ratio = width / (float) height;
 
-    mcs = new MCS(5,5,5);
+    mcs = new MCS(4,4,4);
 
     // INIT SIMULATION 
-    int simulations_per_frame = 10;
+    int simulations_per_frame = 40;
     float T = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
