@@ -89,6 +89,7 @@ void MCS::update(float dt){
     for (int i = 0; i < connections.lengths.size(); ++i){
         connections[i].applyForcesToConnectedParticles(dt);
     }
+    
 
     for (int i = 0; i < getNumberOfParticles(); ++i){
         particles[i].applyForce(dt);
