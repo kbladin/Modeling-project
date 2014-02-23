@@ -1,12 +1,12 @@
 #include "MCS.h"
 
-
 //Constructor
 MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):   
     N_ROWS(n_rows),N_COLS(n_cols),N_STACKS(n_stacks)
 {
 	initParticles();
     initConnections();
+    initTriangles();
 }
 
 void MCS::initParticles(){
@@ -85,6 +85,22 @@ void MCS::initConnections(){
     }
 }
 
+void MCS::initTriangles(){
+    const int n_plane1 = 2*((N_ROWS-1)*(N_COLS-1));
+    const int n_plane2 = n_plane1;
+    const int n_plane3 = 2*((N_ROWS-1)*(N_STACKS-1));
+    const int n_plane4 = n_plane3;
+    const int n_plane5 = 2*((N_COLS-1)*(N_STACKS-1));
+    const int n_plane6 = n_plane5;
+
+    const int n_triangles =
+        n_plane1 + n_plane2 + 
+        n_plane3 + n_plane4 + 
+        n_plane5 + n_plane6;
+
+    triangles.triangleIndices = std::vector<IndexedTriangle>(n_triangles);
+}
+
 void MCS::update(float dt){
 
     calcConnectionForcesOnParticles();
@@ -138,8 +154,8 @@ void MCS::applyForcesOnParticles(float dt, glm::vec3 externalForce, glm::vec3 ex
         v = particles.velocities[i] + a*dt;
         p = particles.positions[i] + v*dt;
 
-        if (p[1] < -10.0f){
-            p[1] = -10.0f;
+        if (p[1] < -5.0f){
+            p[1] = -5.0f;
             v[1] = -v[1];
 
             v[0] *= 0.9f;

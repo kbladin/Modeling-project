@@ -6,6 +6,11 @@
 #include "connection2massindices.h"
 
 /** Classes **/
+typedef struct{
+    int idx1;
+    int idx2;
+    int idx3;
+} IndexedTriangle;
 
 typedef struct{
     std::vector<glm::vec3> positions;
@@ -22,6 +27,10 @@ typedef struct{
     std::vector<int> particle1;
     std::vector<int> particle2;
 } Connections;
+
+typedef struct{
+    std::vector<IndexedTriangle> triangleIndices;
+} Triangles;
 
 // The MCS - Mass Connection System
 class MCS{
@@ -49,6 +58,7 @@ class MCS{
 
         Particles particles;
         Connections connections;
+        Triangles triangles;
         
         
         //The number of connections of each type/direction
@@ -75,5 +85,7 @@ class MCS{
         //int rowOfFirstMass(const int connection_index, const int prev_num_springs, const int one_row_of_connections, const int one_stack_of_connections);
         void initParticles();
         void initConnections();
+        void initTriangles();
+
 };
 #endif
