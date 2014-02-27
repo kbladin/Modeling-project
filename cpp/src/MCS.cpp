@@ -54,7 +54,6 @@ void MCS::initConnections(){
         numberOfConnections += numberOfConnectionsOfType[i];
     }
 
-
     connections.lengths = std::vector<float>(numberOfConnections);
     connections.springConstants = std::vector<float>(numberOfConnections);
     connections.damperConstants = std::vector<float>(numberOfConnections);
@@ -69,7 +68,7 @@ void MCS::initConnections(){
         
         connections.lengths[i] = 1.0f;
         connections.springConstants[i] = 500.0f;
-        connections.damperConstants[i] = 5.0f;
+        connections.damperConstants[i] = 15.0f;
         connections.particle1[i] = p_index1;
         connections.particle2[i] = p_index2;
     }
@@ -84,6 +83,18 @@ void MCS::initConnections(){
         connections.lengths[i] = sqrt(3.0f);
     }
 }
+
+
+void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, float friction){
+    CollisionPlane cp; 
+    cp.normal = glm::normalize(normal);
+    cp.position = position;
+    cp.elasticity = elasticity;
+    cp.friction = friction;
+    collisionPlanes.push_back(cp);
+}
+
+
 
 void MCS::initTriangles(){
     const int n_plane1 = 2*((N_ROWS-1)*(N_COLS-1));
@@ -101,14 +112,13 @@ void MCS::initTriangles(){
     triangles.triangleIndices = std::vector<IndexedTriangle>(n_triangles);
 }
 
-void MCS::update(float dt){
-
+void MCS::update(float dt, glm::vec3 externalAcceleration){
     calcConnectionForcesOnParticles();
-    applyForcesOnParticles(dt, glm::vec3(0,0,0), glm::vec3(0,-1,0)*9.82f);
-    
+    calcAccelerationOfParticles(glm::vec3(0,-1,0)*9.82f);
+    updateParticles(dt);
 }
 
-void MCS::calcConnectionForcesOnParticles(){
+void MCS::calcConnectionForcesOnParticles(glm::vec3 delta_p_offset, glm::vec3 delta_v_offset){
     glm::vec3 delta_p;
     glm::vec3 delta_v;
     glm::vec3 delta_p_hat;
@@ -125,9 +135,13 @@ void MCS::calcConnectionForcesOnParticles(){
         l = connections.lengths[i];
         b = connections.damperConstants[i];
 
-        delta_p = particles.positions[connections.particle1[i]] - particles.positions[connections.particle2[i]]; //getDeltaPosition() + delta_p_offset;
-        delta_v = particles.velocities[connections.particle1[i]] - particles.velocities[connections.particle2[i]]; //getDeltaVelocity() + delta_v_offset;
+        delta_p = particles.positions[connections.particle1[i]] - particles.positions[connections.particle2[i]]; 
+        delta_p += delta_p_offset;
         delta_p_hat = glm::normalize(delta_p);
+
+        delta_v = particles.velocities[connections.particle1[i]] - particles.velocities[connections.particle2[i]]; 
+        delta_v += delta_v_offset;
+        
 
         spring_elongation = glm::length(delta_p) - l;
         //float sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
@@ -138,41 +152,62 @@ void MCS::calcConnectionForcesOnParticles(){
     }
 }
 
-void MCS::applyForcesOnParticles(float dt, glm::vec3 externalForce, glm::vec3 externalAcceleration){
-    float m;
-    glm::vec3 a;
-    glm::vec3 v;
-    glm::vec3 p;
-    glm::vec3 force;
-
-    // Apply the forces on the particles
+void MCS::calcAccelerationOfParticles(glm::vec3 externalAcceleration, glm::vec3 externalForce){
     for (int i = 0; i < getNumberOfParticles(); ++i){
-        m = particles.masses[i];
-        force = particles.forces[i];
+        particles.accelerations[i] = 
+            (particles.forces[i] + externalForce)/particles.masses[i] + 
+            externalAcceleration;
 
-        a = (force + externalForce)/m + externalAcceleration;
-        v = particles.velocities[i] + a*dt;
-        p = particles.positions[i] + v*dt;
-
-        if (p[1] < -5.0f){
-            p[1] = -5.0f;
-            v[1] = -v[1];
-
-            v[0] *= 0.9f;
-            v[2] *= 0.9f;
-        }
-
-        // Update data
-        particles.velocities[i] = v;
-        particles.positions[i] = p;
-
-        // Reset stored forces on particles
+        //Reset forces
         particles.forces[i][0] = 0.0f;
         particles.forces[i][1] = 0.0f;
         particles.forces[i][2] = 0.0f;
     }
 }
 
+
+void MCS::updateParticles(float dt){
+    //Allocate memory for two new position and velocity
+    glm::vec3 new_position;
+    glm::vec3 new_velocity;
+
+
+    for (int i = 0; i < getNumberOfParticles(); ++i){
+        //Calc new position and velocity
+        new_velocity = particles.velocities[i] + particles.accelerations[i] * dt;
+        new_position = particles.positions[i] + new_velocity * dt;
+
+        //Check collisions with collision planes
+        checkCollisions(new_position, new_velocity);
+
+        //Set new position and velocity
+        particles.velocities[i] = new_velocity;
+        particles.positions[i] = new_position;
+    }
+}
+
+void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
+    glm::vec3 n;
+    float pos;
+    for (int i = 0; i < collisionPlanes.size(); ++i){
+        n = collisionPlanes[i].normal;
+        pos = collisionPlanes[i].position;
+        float p_dot_n = glm::dot(p,n);
+
+        if (p_dot_n < pos){
+            glm::vec3 p_offset = (p_dot_n - pos)*n;
+            glm::vec3 v_parallel_n = glm::dot(v,n)*n;
+            glm::vec3 v_orthogonal_n = v - v_parallel_n;
+            //std::cout << "--" << std::endl;
+            //std::cout << "           v: " << v[0] << " " << v[1] << " " << v[2] << std::endl;
+            //std::cout << "v_parallel_n: "<< v_parallel_n[0] << " " << v_parallel_n[1] << " " << v_parallel_n[2] << std::endl;
+
+            p -= p_offset;
+            v -= v_parallel_n*(1.0f+collisionPlanes[i].elasticity);
+            v -= v_orthogonal_n*collisionPlanes[i].friction;
+        }
+    }
+}
 
 void MCS::rotate(glm::vec3 axisOfRotation, float degrees){
     for (int i = 0; i < getNumberOfParticles(); ++i){

@@ -45,6 +45,7 @@ GLuint programID;
 // Vertex color data
 std::vector<glm::vec3> vertex_color_data;
 
+
 // Cube data
 const float cube_vertices[] = {
     // front
@@ -99,18 +100,32 @@ MCS mcs = MCS(4,4,4);
 int main(void){
 
     //Test
+    testMCS();
     //testMCS();
 
     initGLFW();
     initOpenGL();
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
+
+    ratio = width / (float) height;
     
-    mcs.addRotation(glm::vec3(1.0,0.5,0.0),15.0f);
-    mcs.setAvgPosition(glm::vec3(0,10,0));
-    mcs.setAvgVelocity(glm::vec3(0,2,-2));
+    mcs.addRotation(glm::vec3(0.0,1.0,1.0),-15.0f);
+    mcs.setAvgPosition(glm::vec3(0,20,0));
+    mcs.setAvgVelocity(glm::vec3(0,5,0));
+    mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
+                                   -15.0f,      //positions the plane on normal
+                                    0.0f,      //elasticity
+                                    0.0f);      //friction
+
+    mcs.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                                   -10.0f,      //positions the plane on normal
+                                    0.9f,      //elasticity
+                                    0.3f);      //friction
+
+    
 
     // INIT SIMULATION 
-    int simulations_per_frame = 100;
+    int simulations_per_frame = 10;
     float T = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
@@ -118,11 +133,16 @@ int main(void){
     while (!glfwWindowShouldClose(window)){
         glfwGetFramebufferSize(window, &width, &height);
 
-        for (int i = 0; i < simulations_per_frame; ++i)
-        {   
+        for (int i = 0; i < simulations_per_frame; ++i){   
             // Moving one mass 
             double x_mouse;
             double y_mouse;
+
+            glfwGetCursorPos(window, &x_mouse, &y_mouse);
+            glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+            //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
+            //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
+            //mcs.particles.velocities[0] = glm::vec3(0);
 
             //glfwGetCursorPos(window, &x_mouse, &y_mouse);
             //glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
@@ -340,7 +360,6 @@ void draw(){
     }
     glEnd();    
 */
-
 
     //DRAW WITH MODERN OPENGL
 
