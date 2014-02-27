@@ -163,12 +163,9 @@ void MCS::update(float dt){
             }
         }
 
-        //Calc accelerations
-
         calcConnectionForcesOnParticles(delta_v_offsets, delta_p_offsets);
-        calcAccelerationOfParticles();
-
         for (int i = 0; i < getNumberOfParticles(); ++i){
+            calcAccelerationOfParticle(i);
             ka[k][i] = particles.accelerations[i];
             kv[k][i] = particles.velocities[i] + ka[k][i] * dt;
         }
@@ -240,17 +237,16 @@ void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset,
     }
 }
 
-void MCS::calcAccelerationOfParticles(){
-    for (int i = 0; i < getNumberOfParticles(); ++i){
-        particles.accelerations[i] = 
-            (particles.forces[i] + externalForce)/particles.masses[i] + 
-            externalAcceleration;
+void MCS::calcAccelerationOfParticle(int i){
+    particles.accelerations[i] = 
+        (particles.forces[i] + externalForce)/particles.masses[i] + 
+        externalAcceleration;
 
-        //Reset forces
-        particles.forces[i][0] = 0.0f;
-        particles.forces[i][1] = 0.0f;
-        particles.forces[i][2] = 0.0f;
-    }
+    //Reset forces
+    particles.forces[i][0] = 0.0f;
+    particles.forces[i][1] = 0.0f;
+    particles.forces[i][2] = 0.0f;
+
 }
 
 
