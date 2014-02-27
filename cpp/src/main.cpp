@@ -99,7 +99,7 @@ MCS mcs = MCS(4,4,4);
 
 int main(void){
     //Test
-    testMCS();
+    //testMCS();
     //testMCS();
 
     initGLFW();
@@ -367,9 +367,10 @@ void draw(){
     // Do the matrix stuff
     float speed = 50.0f;
 
+
     glm::mat4 M = glm::mat4(1.0f);
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
-    glm::mat4 translate = glm::mat4(1.0f);//glm::translate(0.0f,0.0f,0.0f);
+    glm::mat4 translate = /*glm::mat4(1.0f);*/glm::translate(glm::vec3(0.0f,0.0f,-20.0f));
     glm::mat4 V = translate * rotate;
     glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
 

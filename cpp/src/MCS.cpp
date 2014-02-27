@@ -306,6 +306,7 @@ void MCS::triangle2particleIndices(int triangleIndex, int &particleIndex1, int &
     int oneStackOfParticles = N_ROWS*N_COLS;
     int newTriangleIndex;
     int row_p1 = floor(triangleIndex/floor(Ntype0/(N_ROWS-1)));
+    assert(Ntype0/(N_ROWS-1)>0);
     if(triangleIndex < Ntype0){                                     //back
         if(triangleIndex%2==0){     //even
             particleIndex1=triangleIndex/2+row_p1;
