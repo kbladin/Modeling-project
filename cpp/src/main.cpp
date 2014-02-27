@@ -37,7 +37,6 @@ GLuint vertexArray = GL_FALSE;
 GLuint vertexPositionBuffer = GL_FALSE;
 GLuint vertexColorBuffer = GL_FALSE;
 GLuint elementBuffer = GL_FALSE;
-GLuint elementBuffer2 = GL_FALSE;
 
 GLint MVP_loc = -1;
 
@@ -46,56 +45,7 @@ GLuint programID;
 // Vertex color data
 std::vector<glm::vec3> vertex_color_data;
 
-
-// Cube data
-const float cube_vertices[] = {
-    // front
-    -1.0, -1.0,  1.0,
-     1.0, -1.0,  1.0,
-     1.0,  1.0,  1.0,
-    -1.0,  1.0,  1.0,
-    // back
-    -1.0, -1.0, -1.0,
-     1.0, -1.0, -1.0,
-     1.0,  1.0, -1.0,
-    -1.0,  1.0, -1.0,
-};
-
-const float cube_colors[] = {
-    // front colors
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0,
-    1.0, 1.0, 1.0,
-    // back colors
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0,
-    1.0, 1.0, 1.0,
-};
-
-const int cube_elements[] = {
-    // front
-    0, 1, 2,
-    2, 3, 0,
-    // top
-    3, 2, 6,
-    6, 7, 3,
-    // back
-    7, 6, 5,
-    5, 4, 7,
-    // bottom
-    4, 5, 1,
-    1, 0, 4,
-    // left
-    4, 0, 3,
-    3, 7, 4,
-    // right
-    1, 5, 6,
-    6, 2, 1,
-};
-
-MCS mcs = MCS(4,4,4);
+MCS mcs = MCS(100,2,2);
 
 
 int main(void){
@@ -105,13 +55,13 @@ int main(void){
 
     initGLFW();
     initOpenGL();
-    scale = 11;// (float) fmax(N_ROWS,N_COLS);
+    //scale = 11;// (float) fmax(N_ROWS,N_COLS);
 
     ratio = width / (float) height;
-    
-    mcs.addRotation(glm::vec3(0.0,1.0,1.0),-15.0f);
-    mcs.setAvgPosition(glm::vec3(0,2,0));
-    //mcs.setAvgVelocity(glm::vec3(0,5,0));
+
+    //mcs.addRotation(glm::vec3(0.0,1.0,1.0),-1.0f);
+    mcs.setAvgPosition(glm::vec3(0,40,0));
+    mcs.setAvgVelocity(glm::vec3(0,0,0));
     mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
                                    -15.0f,      //positions the plane on normal
                                     0.0f,      //elasticity
@@ -125,12 +75,13 @@ int main(void){
     
 
     // INIT SIMULATION 
-    int simulations_per_frame = 10;
+    int simulations_per_frame = 5;
     float T = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
 
     while (!glfwWindowShouldClose(window)){
+        current_time = glfwGetTime();
         glfwGetFramebufferSize(window, &width, &height);
 
         for (int i = 0; i < simulations_per_frame; ++i){   
@@ -161,6 +112,15 @@ int main(void){
         //Swap draw buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+
+        std::string title = "Elastic materials, ";
+        std::ostringstream ss;
+        ss << 1/(glfwGetTime() - current_time);
+        std::string s(ss.str());
+        title.append(s);
+        title.append(" FPS");
+        glfwSetWindowTitle (window,  title.c_str());
     }
     cleanUpGLFW();
     cleanUpOpenGl();
@@ -225,10 +185,10 @@ bool initOpenGL(){
     // INITIALISATION OF OLD OPENGL
 
     //Init gl points
-    glEnable( GL_POINT_SMOOTH );
+    //glEnable( GL_POINT_SMOOTH );
     //glEnable( GL_BLEND );
     //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glPointSize( 15.0 );
+    //glPointSize( 5.0 );
 
     //Init gl lines
     //glEnable( GL_LINE_SMOOTH );
@@ -254,11 +214,6 @@ bool initOpenGL(){
     // Generate the element buffer
     glGenBuffers(1, &elementBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(int), cube_elements, GL_STATIC_DRAW);
-
-    // Generate the element buffer
-    glGenBuffers(1, &elementBuffer2);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer2);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.triangles.triangleIndices[0], GL_STATIC_DRAW);
 
     //generate the VAO
@@ -370,7 +325,7 @@ void draw(){
     ratio = width / (float) height;
 
     // Do the matrix stuff
-    float speed = 50.0f;
+    float speed = 0.0f;
 
     glm::mat4 M = glm::mat4(1.0f);
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
@@ -380,6 +335,7 @@ void draw(){
 
 
     glm::mat4 MVP = P*V*M;
+    
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(vertexArray);
@@ -402,7 +358,6 @@ void draw(){
     glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
   
     glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Draw the triangles !
     glDrawArrays(GL_POINTS, 0, mcs.particles.positions.size());
@@ -417,53 +372,7 @@ void draw(){
 
 
 
-
-
-
-
-
-
-
-
-
-    //TESTING TO DRAW A CUBE WITH ELEMENT ARRAY 
-
-    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
-    glBindVertexArray(vertexArray);
- 
-    // Bind position buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
-    //upload data to GPU
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    // (Not needed for cube but done anyway since this is how it will be done)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * 8, cube_vertices, GL_STATIC_DRAW);
- 
-    // Bind color buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
-    //upload data to GPU
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * 8, cube_colors, GL_STATIC_DRAW);
-    
-    //BIND SHADER HERE
-    glUseProgram(programID);
- 
-    glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
-
-    // Index buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-
-    // Draw the triangles !
-    glDrawElements(
-     GL_TRIANGLES,      // mode
-     36,    // count
-     GL_UNSIGNED_INT,   // type
-     (void*)0           // element array buffer offset
-    );
-
-
-
-
-
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(vertexArray);
@@ -487,7 +396,7 @@ void draw(){
     glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
 
     // Index buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer2);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 
     // Draw the triangles !
     glDrawElements(
@@ -496,10 +405,6 @@ void draw(){
      GL_UNSIGNED_INT,   // type
      (void*)0           // element array buffer offset
     );
-
-
-
-
 
 
  
