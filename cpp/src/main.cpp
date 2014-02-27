@@ -46,55 +46,6 @@ GLuint programID;
 // Vertex color data
 std::vector<glm::vec3> vertex_color_data;
 
-
-// Cube data
-const float cube_vertices[] = {
-    // front
-    -1.0, -1.0,  1.0,
-     1.0, -1.0,  1.0,
-     1.0,  1.0,  1.0,
-    -1.0,  1.0,  1.0,
-    // back
-    -1.0, -1.0, -1.0,
-     1.0, -1.0, -1.0,
-     1.0,  1.0, -1.0,
-    -1.0,  1.0, -1.0,
-};
-
-const float cube_colors[] = {
-    // front colors
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0,
-    1.0, 1.0, 1.0,
-    // back colors
-    1.0, 0.0, 0.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0,
-    1.0, 1.0, 1.0,
-};
-
-const int cube_elements[] = {
-    // front
-    0, 1, 2,
-    2, 3, 0,
-    // top
-    3, 2, 6,
-    6, 7, 3,
-    // back
-    7, 6, 5,
-    5, 4, 7,
-    // bottom
-    4, 5, 1,
-    1, 0, 4,
-    // left
-    4, 0, 3,
-    3, 7, 4,
-    // right
-    1, 5, 6,
-    6, 2, 1,
-};
-
 MCS mcs = MCS(2,2,2);
 
 
@@ -383,43 +334,7 @@ void draw(){
     glm::mat4 V = translate * rotate;
     glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
 
-
     glm::mat4 MVP = P*V*M;
-    
-
-    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
-    glBindVertexArray(vertexArray);
- 
-    // Bind position buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
-    //upload data to GPU
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.particles.positions.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
- 
-    // Bind color buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
-    //upload data to GPU
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertex_color_data.size(), &vertex_color_data[0], GL_STATIC_DRAW);
- 
-    //BIND SHADER HERE
-    glUseProgram(programID);
- 
-    glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
-  
-    glViewport(0, 0, width, height);
-
-    // Draw the triangles !
-    glDrawArrays(GL_POINTS, 0, mcs.particles.positions.size());
- 
-    //unbind
-    glBindVertexArray(0);
-    
-    //UNBIND SHADER HERE
-    glUseProgram(0);
-
-
-
 
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
