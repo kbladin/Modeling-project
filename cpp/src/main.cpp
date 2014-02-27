@@ -10,6 +10,7 @@
 
 #include <shader.h>
 #include "connection2massindices.h"
+#include "NumericalMethods.h"
 #include "test.h"
 
 static void error_callback(int error, const char* description);
@@ -94,7 +95,7 @@ const int cube_elements[] = {
     6, 2, 1,
 };
 
-MCS mcs = MCS(2,2,2);
+MCS mcs = MCS(3,3,3);
 
 
 int main(void){
@@ -104,7 +105,7 @@ int main(void){
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     ratio = width / (float) height;
     
-
+    
     mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-1.0f);
     mcs.setAvgPosition(glm::vec3(0,5,-30));
@@ -116,14 +117,23 @@ int main(void){
 
     mcs.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -10.0f,      //positions the plane on normal
-                                    0.9f,      //elasticity
+                                    1.0f,      //elasticity
                                     0.3f);      //friction
 
     
 
+    std::vector<float> w;
+    w.push_back(1.0f);
+    w.push_back(3.0f);
+    w.push_back(3.0f);
+    w.push_back(1.0f);
+
+    RungeKutta rk4(w);
+    
+
     // INIT SIMULATION 
     int simulations_per_frame = 1;
-    float T = 1.0f/(60.0f*simulations_per_frame);
+    float dt = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
 
@@ -132,24 +142,14 @@ int main(void){
 
         for (int i = 0; i < simulations_per_frame; ++i){   
             // Moving one mass 
-            double x_mouse;
-            double y_mouse;
-
+            double x_mouse, y_mouse;
             glfwGetCursorPos(window, &x_mouse, &y_mouse);
             glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
             //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
             //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
             //mcs.particles.velocities[0] = glm::vec3(0);
 
-            //glfwGetCursorPos(window, &x_mouse, &y_mouse);
-            //glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
-            //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],10));
-            //mcs.getParticle(0).writePosition(glm::vec3(pos2d[0],pos2d[1],10.0f));
-            //mcs.getParticle(5).writePosition(glm::vec3(pos2d[0],pos2d[1],16.0f));
-            //velocities[0][write_buffer] = glm::vec2(0.0f, 0.0f);
-
-            //float scalex = scale*ratio;
-            mcs.update(T);
+            rk4.update(mcs,dt);
         }
 
         // DRAW
