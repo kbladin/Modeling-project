@@ -104,9 +104,12 @@ class MCS{
         void initParticles();
         void initConnections();
 
+        void triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int &particleIndex3);
+
         std::vector<CollisionPlane> collisionPlanes;
 
         void initTriangles();
+
 
 };
 #endif

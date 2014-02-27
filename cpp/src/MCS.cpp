@@ -29,7 +29,7 @@ void MCS::initParticles(){
         particles.accelerations[i] = glm::vec3(0.f,0.f,0.f);
         particles.forces[i] = glm::vec3(0.f,0.f,0.f);
         particles.masses[i] = 1.0f;    
-    }
+    } 
 }
 
 void MCS::initConnections(){
@@ -110,6 +110,13 @@ void MCS::initTriangles(){
         n_plane5 + n_plane6;
 
     triangles.triangleIndices = std::vector<IndexedTriangle>(n_triangles);
+    for(int ti = 0; ti < n_triangles; ++ti){
+        triangle2particleIndices(
+            ti,
+            triangles.triangleIndices[ti].idx1,
+            triangles.triangleIndices[ti].idx2,
+            triangles.triangleIndices[ti].idx3);
+    }
 }
 
 void MCS::update(float dt, glm::vec3 externalAcceleration){
@@ -360,3 +367,119 @@ int MCS::getNumberOfParticles() const{
 int MCS::getNumberOfConnections() const{
     return connections.lengths.size();
 }
+
+void MCS::triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int &particleIndex3){
+ 
+    int Ntype0 = 2*(N_ROWS-1)*(N_COLS-1);         //back
+    int Ntype1 = Ntype0;                          //front
+    int Ntype2 = 2*(N_ROWS-1)*(N_STACKS-1);       //right
+    int Ntype3 = Ntype2;                          //left
+    int Ntype4 = 2*(N_STACKS-1)*(N_COLS-1);       //top
+    int Ntype5 = Ntype4;                          //bottom
+    int TotNtype = Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4 + Ntype5;
+
+    assert(triangleIndex < TotNtype);
+
+    int oneRowOfParticles = N_COLS;
+    int oneStackOfParticles = N_ROWS*N_COLS;
+    int newTriangleIndex;
+    int row_p1 = floor(triangleIndex/floor(Ntype0/(N_ROWS-1)));
+    if(triangleIndex < Ntype0){                                     //back
+        if(triangleIndex%2==0){     //even
+            particleIndex1=triangleIndex/2+row_p1;
+            particleIndex2=particleIndex1+oneRowOfParticles;
+            particleIndex3=particleIndex2+1;
+        }
+        else{                       //odd
+            particleIndex1=(triangleIndex-1)/2+row_p1;
+            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex3=particleIndex1+1;
+        }
+    }
+
+    else if(triangleIndex < Ntype0+Ntype1){                         //front
+        newTriangleIndex = triangleIndex-Ntype0;
+        if(newTriangleIndex%2==0){  //even
+            particleIndex1=newTriangleIndex/2+row_p1;
+            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex3=particleIndex2-1;
+        }
+        else{                       //odd
+            particleIndex1=(newTriangleIndex-1)/2+row_p1;
+            particleIndex2=particleIndex1+1;
+            particleIndex3=particleIndex2+oneRowOfParticles;
+        }
+        particleIndex1+=N_COLS*N_ROWS*(N_STACKS-1);
+        particleIndex2+=N_COLS*N_ROWS*(N_STACKS-1);
+        particleIndex3+=N_COLS*N_ROWS*(N_STACKS-1);
+    }
+
+    else if(triangleIndex < Ntype0+Ntype1+Ntype2){                  //right
+        newTriangleIndex=triangleIndex-(Ntype0+Ntype1);
+        if(newTriangleIndex%2==0){  //even
+            particleIndex1=triangleIndex/2+row_p1;
+            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex3=particleIndex2-1;
+        }
+        else{                       //odd
+            particleIndex1=(triangleIndex-1)/2+row_p1;
+            particleIndex2=particleIndex1+1;
+            particleIndex3=particleIndex2+oneRowOfParticles;
+        }
+        particleIndex1 = (particleIndex1%N_STACKS)*oneStackOfParticles+(particleIndex1/N_STACKS)*oneRowOfParticles;
+        particleIndex2 = (particleIndex2%N_STACKS)*oneStackOfParticles+(particleIndex2/N_STACKS)*oneRowOfParticles;
+        particleIndex3 = (particleIndex3%N_STACKS)*oneStackOfParticles+(particleIndex3/N_STACKS)*oneRowOfParticles;
+    }
+
+    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3){           //left
+        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2);
+        if(newTriangleIndex%2==0){     //even
+            particleIndex1=newTriangleIndex/2+row_p1;
+            particleIndex2=newTriangleIndex+oneRowOfParticles;
+            particleIndex3=newTriangleIndex+1;
+        }
+        else{                       //odd
+            particleIndex1=(newTriangleIndex-1)/2+row_p1;
+            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex3=particleIndex1+1;
+        }
+        particleIndex1 = (particleIndex1%N_STACKS)*oneStackOfParticles+(particleIndex1/N_STACKS)*oneRowOfParticles;
+        particleIndex2 = (particleIndex2%N_STACKS)*oneStackOfParticles+(particleIndex2/N_STACKS)*oneRowOfParticles;
+        particleIndex3 = (particleIndex3%N_STACKS)*oneStackOfParticles+(particleIndex3/N_STACKS)*oneRowOfParticles;
+    }
+
+    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3+Ntype4){    //bottom
+        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3);
+        if(newTriangleIndex%2==0){  //even
+            particleIndex1=newTriangleIndex/2+row_p1;
+            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex3=particleIndex2-1;
+        }
+        else{                       //odd
+            particleIndex1 = (newTriangleIndex-1)/2+row_p1;
+            particleIndex2 = particleIndex1+1;
+            particleIndex3 = particleIndex2+oneRowOfParticles;
+        }
+        particleIndex1 += (particleIndex1%N_STACKS)*oneStackOfParticles;
+        particleIndex2 += (particleIndex2%N_STACKS)*oneStackOfParticles;
+        particleIndex3 += (particleIndex3%N_STACKS)*oneStackOfParticles;
+    }
+
+    else if(triangleIndex < TotNtype){                              //top
+        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3+Ntype4);
+        if(newTriangleIndex%2==0){     //even
+            particleIndex1=newTriangleIndex/2+row_p1;
+            particleIndex2=newTriangleIndex+oneRowOfParticles;
+            particleIndex3=newTriangleIndex+1;
+        }
+        else{                       //odd
+            particleIndex1=(newTriangleIndex-1)/2+row_p1;
+            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex3=particleIndex1+1;
+        }
+        particleIndex1 += (particleIndex1%N_STACKS)*oneStackOfParticles;
+        particleIndex2 += (particleIndex2%N_STACKS)*oneStackOfParticles;
+        particleIndex3 += (particleIndex3%N_STACKS)*oneStackOfParticles;
+    }
+}
+

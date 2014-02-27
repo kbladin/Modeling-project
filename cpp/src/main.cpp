@@ -98,7 +98,6 @@ MCS mcs = MCS(4,4,4);
 
 
 int main(void){
-
     //Test
     testMCS();
     //testMCS();
@@ -370,12 +369,12 @@ void draw(){
 
     glm::mat4 M = glm::mat4(1.0f);
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
-    glm::mat4 translate = glm::translate(0.0f,0.0f,-20.0f);
+    glm::mat4 translate = glm::mat4(1.0f);//glm::translate(0.0f,0.0f,0.0f);
     glm::mat4 V = translate * rotate;
     glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
 
-    glm::mat4 MVP = P*V*M;
 
+    glm::mat4 MVP = P*V*M;
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(vertexArray);
@@ -408,6 +407,7 @@ void draw(){
     
     //UNBIND SHADER HERE
     glUseProgram(0);
+
 
 
 
