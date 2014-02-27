@@ -123,9 +123,9 @@ void MCS::update(float dt, glm::vec3 externalAcceleration){
 
     std::vector<float> w;
     w.push_back(1.0f);
-    //w.push_back(3.0f);
-    //w.push_back(3.0f);
-    //w.push_back(1.0f);
+    w.push_back(3.0f);
+    w.push_back(3.0f);
+    w.push_back(1.0f);
 
     float wSum = 0.0f;
     for (int i = 0; i < w.size(); ++i){

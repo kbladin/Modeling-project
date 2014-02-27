@@ -99,7 +99,7 @@ MCS mcs = MCS(4,4,4);
 
 int main(void){
     //Test
-    testMCS();
+    //testMCS();
     //testMCS();
 
     initGLFW();
@@ -109,7 +109,7 @@ int main(void){
     ratio = width / (float) height;
 
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-1.0f);
-    mcs.setAvgPosition(glm::vec3(0,5,-10));
+    mcs.setAvgPosition(glm::vec3(0,5,-30));
     mcs.setAvgVelocity(glm::vec3(0,10,0));
     mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
                                    -15.0f,      //positions the plane on normal
