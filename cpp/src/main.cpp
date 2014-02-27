@@ -37,6 +37,7 @@ GLuint vertexArray = GL_FALSE;
 GLuint vertexPositionBuffer = GL_FALSE;
 GLuint vertexColorBuffer = GL_FALSE;
 GLuint elementBuffer = GL_FALSE;
+GLuint elementBuffer2 = GL_FALSE;
 
 GLint MVP_loc = -1;
 
@@ -98,9 +99,8 @@ MCS mcs = MCS(4,4,4);
 
 
 int main(void){
-
     //Test
-    testMCS();
+    //testMCS();
     //testMCS();
 
     initGLFW();
@@ -110,8 +110,8 @@ int main(void){
     ratio = width / (float) height;
     
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-15.0f);
-    mcs.setAvgPosition(glm::vec3(0,20,0));
-    mcs.setAvgVelocity(glm::vec3(0,5,0));
+    mcs.setAvgPosition(glm::vec3(0,2,0));
+    //mcs.setAvgVelocity(glm::vec3(0,5,0));
     mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
                                    -15.0f,      //positions the plane on normal
                                     0.0f,      //elasticity
@@ -248,7 +248,7 @@ bool initOpenGL(){
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-        vertex_color_data.push_back(glm::vec3(1.f, 0.f, 0.f));
+        vertex_color_data.push_back(glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX));
     }
 
     // Generate the element buffer
@@ -256,6 +256,10 @@ bool initOpenGL(){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(int), cube_elements, GL_STATIC_DRAW);
 
+    // Generate the element buffer
+    glGenBuffers(1, &elementBuffer2);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer2);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.triangles.triangleIndices[0], GL_STATIC_DRAW);
 
     //generate the VAO
     glGenVertexArrays(1, &vertexArray);
@@ -370,9 +374,10 @@ void draw(){
 
     glm::mat4 M = glm::mat4(1.0f);
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
-    glm::mat4 translate = glm::translate(0.0f,0.0f,-20.0f);
+    glm::mat4 translate = glm::translate(0.0f,5.0f,-20.0f);
     glm::mat4 V = translate * rotate;
     glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
+
 
     glm::mat4 MVP = P*V*M;
 
@@ -413,6 +418,14 @@ void draw(){
 
 
 
+
+
+
+
+
+
+
+
     //TESTING TO DRAW A CUBE WITH ELEMENT ARRAY 
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
@@ -446,6 +459,49 @@ void draw(){
      GL_UNSIGNED_INT,   // type
      (void*)0           // element array buffer offset
     );
+
+
+
+
+
+
+    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
+    glBindVertexArray(vertexArray);
+ 
+    // Bind position buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
+    //upload data to GPU
+    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
+    // (Not needed for cube but done anyway since this is how it will be done)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
+ 
+    // Bind color buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
+    //upload data to GPU
+    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * vertex_color_data.size(), &vertex_color_data[0], GL_STATIC_DRAW);
+    
+    //BIND SHADER HERE
+    glUseProgram(programID);
+ 
+    glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
+
+    // Index buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer2);
+
+    // Draw the triangles !
+    glDrawElements(
+     GL_TRIANGLES,      // mode
+     mcs.triangles.triangleIndices.size()*3,    // count
+     GL_UNSIGNED_INT,   // type
+     (void*)0           // element array buffer offset
+    );
+
+
+
+
+
+
  
     //unbind
     glBindVertexArray(0);
