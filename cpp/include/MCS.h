@@ -6,6 +6,31 @@
 #include "connection2massindices.h"
 
 /** Classes **/
+typedef struct{
+    int idx1;
+    int idx2;
+    int idx3;
+} IndexedTriangle;
+
+typedef struct{
+    std::vector<glm::vec3> positions;
+    std::vector<glm::vec3> velocities;
+    std::vector<glm::vec3> accelerations;
+    std::vector<glm::vec3> forces;
+    std::vector<float> masses;
+} Particles;
+
+typedef struct{
+    std::vector<float> lengths;
+    std::vector<float> springConstants;
+    std::vector<float> damperConstants;
+    std::vector<int> particle1;
+    std::vector<int> particle2;
+} Connections;
+
+typedef struct{
+    std::vector<IndexedTriangle> triangleIndices;
+} Triangles;
 
 // The MCS - Mass Connection System
 class MCS{
@@ -30,23 +55,10 @@ class MCS{
         int getNumberOfParticles() const;
         int getNumberOfConnections() const;
 
-        typedef struct{
-            std::vector<glm::vec3> positions;
-            std::vector<glm::vec3> velocities;
-            std::vector<glm::vec3> accelerations;
-            std::vector<glm::vec3> forces;
-            std::vector<float> masses;
-        } Particles;
-        Particles particles;
 
-        typedef struct{
-            std::vector<float> lengths;
-            std::vector<float> springConstants;
-            std::vector<float> damperConstants;
-            std::vector<int> particle1;
-            std::vector<int> particle2;
-        } Connections;
+        Particles particles;
         Connections connections;
+        Triangles triangles;
         
         
         //The number of connections of each type/direction
@@ -58,10 +70,12 @@ class MCS{
         const int N_COLS;
         const int N_STACKS;
 
-    protected:
         friend void testMCS();
 
 
+    private:
+        void calcConnectionForcesOnParticles();
+        void applyForcesOnParticles(float dt, glm::vec3 externalForce = glm::vec3(0,0,0), glm::vec3 externalAcceleration = glm::vec3(0,0,0));
         //void connection2massIndices3D(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols, const int n_stacks);
 
         // Calculate the stack in which the first mass (not necessary mass 1) of the pair is positioned
@@ -72,6 +86,11 @@ class MCS{
         void initParticles();
         void initConnections();
 
+
         void triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int&particleIndex3);
+
+        void initTriangles();
+
+
 };
 #endif
