@@ -36,30 +36,81 @@ GLFWwindow* window;
 GLuint vertexArray = GL_FALSE;
 GLuint vertexPositionBuffer = GL_FALSE;
 GLuint vertexColorBuffer = GL_FALSE;
+GLuint elementBuffer = GL_FALSE;
 
 GLint MVP_loc = -1;
 
 GLuint programID;
 
-// Vertexdata
-std::vector<glm::vec3> vertex_position_data;
-// Colordata
+// Vertex color data
 std::vector<glm::vec3> vertex_color_data;
 
-MCS mcs = MCS(1,10,2);
+
+// Cube data
+const float cube_vertices[] = {
+    // front
+    -1.0, -1.0,  1.0,
+     1.0, -1.0,  1.0,
+     1.0,  1.0,  1.0,
+    -1.0,  1.0,  1.0,
+    // back
+    -1.0, -1.0, -1.0,
+     1.0, -1.0, -1.0,
+     1.0,  1.0, -1.0,
+    -1.0,  1.0, -1.0,
+};
+
+const float cube_colors[] = {
+    // front colors
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,
+    1.0, 1.0, 1.0,
+    // back colors
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,
+    1.0, 1.0, 1.0,
+};
+
+const int cube_elements[] = {
+    // front
+    0, 1, 2,
+    2, 3, 0,
+    // top
+    3, 2, 6,
+    6, 7, 3,
+    // back
+    7, 6, 5,
+    5, 4, 7,
+    // bottom
+    4, 5, 1,
+    1, 0, 4,
+    // left
+    4, 0, 3,
+    3, 7, 4,
+    // right
+    1, 5, 6,
+    6, 2, 1,
+};
+
+MCS mcs = MCS(4,4,4);
+
 
 int main(void){
 
     //Test
     testMCS();
+    //testMCS();
 
     initGLFW();
     initOpenGL();
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
+
     ratio = width / (float) height;
     
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-15.0f);
-    mcs.setAvgPosition(glm::vec3(-10,30,-50));
+    mcs.setAvgPosition(glm::vec3(0,20,0));
     mcs.setAvgVelocity(glm::vec3(0,5,0));
     mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
                                    -15.0f,      //positions the plane on normal
@@ -71,6 +122,8 @@ int main(void){
                                     0.9f,      //elasticity
                                     0.3f);      //friction
 
+    
+
     // INIT SIMULATION 
     int simulations_per_frame = 10;
     float T = 1.0f/(60.0f*simulations_per_frame);
@@ -79,10 +132,8 @@ int main(void){
 
     while (!glfwWindowShouldClose(window)){
         glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float) height;
 
-        for (int i = 0; i < simulations_per_frame; ++i)
-        {   
+        for (int i = 0; i < simulations_per_frame; ++i){   
             // Moving one mass 
             double x_mouse;
             double y_mouse;
@@ -93,7 +144,14 @@ int main(void){
             //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
             //mcs.particles.velocities[0] = glm::vec3(0);
 
-            float scalex = scale*ratio;
+            //glfwGetCursorPos(window, &x_mouse, &y_mouse);
+            //glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+            //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],10));
+            //mcs.getParticle(0).writePosition(glm::vec3(pos2d[0],pos2d[1],10.0f));
+            //mcs.getParticle(5).writePosition(glm::vec3(pos2d[0],pos2d[1],16.0f));
+            //velocities[0][write_buffer] = glm::vec2(0.0f, 0.0f);
+
+            //float scalex = scale*ratio;
             mcs.update(T);
         }
 
@@ -170,7 +228,7 @@ bool initOpenGL(){
     glEnable( GL_POINT_SMOOTH );
     //glEnable( GL_BLEND );
     //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glPointSize( 5.0 );
+    glPointSize( 15.0 );
 
     //Init gl lines
     //glEnable( GL_LINE_SMOOTH );
@@ -190,18 +248,13 @@ bool initOpenGL(){
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-        vertex_position_data.push_back(mcs.particles.positions[i]);
         vertex_color_data.push_back(glm::vec3(1.f, 0.f, 0.f));
     }
 
-    std::cout 
-        << vertex_position_data[0] << std::endl 
-        << vertex_position_data[1] << std::endl
-        << vertex_position_data[2] << std::endl;
-
-    vertex_position_data[0] = glm::vec3(50.f, 50.f, 1);
-    vertex_position_data[1] = glm::vec3(0.f, 0.f, 1);
-    vertex_position_data[2] = glm::vec3(0.f, 50.f, 1);
+    // Generate the element buffer
+    glGenBuffers(1, &elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(int), cube_elements, GL_STATIC_DRAW);
 
 
     //generate the VAO
@@ -217,7 +270,7 @@ bool initOpenGL(){
     glGenBuffers(1, &vertexPositionBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
     //upload data to GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertex_position_data.size(), &vertex_position_data[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.particles.positions.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(
         0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -252,6 +305,9 @@ bool initOpenGL(){
     //GET UNIFORM LOCATION FOR MVP MATRIX HERE
     //Matrix_Loc = sgct::ShaderManager::instance()->getShaderProgram( "xform").getUniformLocation( "MVP" );
     MVP_loc = glGetUniformLocation( programID, "MVP");
+
+    
+    glEnable(GL_DEPTH_TEST);
 
 
     //UNBIND SHADER HERE
@@ -305,75 +361,92 @@ void draw(){
     glEnd();    
 */
 
-
     //DRAW WITH MODERN OPENGL
 
-    for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-        vertex_position_data[i] = mcs.particles.positions[i];
-    }
+    ratio = width / (float) height;
+
+    // Do the matrix stuff
+    float speed = 50.0f;
+
+    glm::mat4 M = glm::mat4(1.0f);
+    glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
+    glm::mat4 translate = glm::translate(0.0f,0.0f,-20.0f);
+    glm::mat4 V = translate * rotate;
+    glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
+
+    glm::mat4 MVP = P*V*M;
 
 
-
-
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(vertexArray);
  
-    //generate VBO for vertex positions
-    glGenBuffers(1, &vertexPositionBuffer);
+    // Bind position buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
     //upload data to GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertex_position_data.size(), &vertex_position_data[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-        3,                  // size
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        0,                  // stride
-        reinterpret_cast<void*>(0) // array buffer offset
-    );
+    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.particles.positions.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
  
-    //generate VBO for vertex colors
-    glGenBuffers(1, &vertexColorBuffer);
+    // Bind color buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
     //upload data to GPU
+    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertex_color_data.size(), &vertex_color_data[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(
-        1,                  // attribute 1. No particular reason for 1, but must match the layout in the shader.
-        3,                  // size
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        0,                  // stride
-        reinterpret_cast<void*>(0) // array buffer offset
-    );
-    
-    // Unbind the current VAO
-    glBindVertexArray(0);
-
-
-
-
-
-    float speed = 50.0f;
-
-    //glm::mat4 MVP = glm::ortho(-10.f, 10.f, -10.f, 10.f);//glm::rotate(glm::mat4(1), speed * (float) glfwGetTime(), glm::vec3(0,0,1));
-    glm::mat4 MVP = glm::perspective(45.0f, ratio, 0.1f, 100.f);
  
     //BIND SHADER HERE
     glUseProgram(programID);
  
     glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
+  
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Draw the triangles !
+    glDrawArrays(GL_POINTS, 0, mcs.particles.positions.size());
  
+    //unbind
+    glBindVertexArray(0);
+    
+    //UNBIND SHADER HERE
+    glUseProgram(0);
+
+
+
+
+
+
+    //TESTING TO DRAW A CUBE WITH ELEMENT ARRAY 
+
+    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(vertexArray);
  
-    ratio = width / (float) height;
-    glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT);
+    // Bind position buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
+    //upload data to GPU
+    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
+    // (Not needed for cube but done anyway since this is how it will be done)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * 8, cube_vertices, GL_STATIC_DRAW);
+ 
+    // Bind color buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
+    //upload data to GPU
+    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * 8, cube_colors, GL_STATIC_DRAW);
+    
+    //BIND SHADER HERE
+    glUseProgram(programID);
+ 
+    glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
 
-    // Draw the triangle !
-    glDrawArrays(GL_POINTS, 0, vertex_position_data.size());
+    // Index buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+
+    // Draw the triangles !
+    glDrawElements(
+     GL_TRIANGLES,      // mode
+     36,    // count
+     GL_UNSIGNED_INT,   // type
+     (void*)0           // element array buffer offset
+    );
  
     //unbind
     glBindVertexArray(0);

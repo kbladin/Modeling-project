@@ -6,6 +6,11 @@
 #include "connection2massindices.h"
 
 /** Classes **/
+typedef struct{
+    int idx1;
+    int idx2;
+    int idx3;
+} IndexedTriangle;
 
 typedef struct{
     std::vector<glm::vec3> positions;
@@ -29,6 +34,11 @@ typedef struct{
     float elasticity;
     float friction;
 } CollisionPlane;
+
+typedef struct {
+    std::vector<IndexedTriangle> triangleIndices;
+} Triangles;
+
 
 // The MCS - Mass Connection System
 class MCS{
@@ -56,17 +66,12 @@ class MCS{
         Particles particles;
         Connections connections;
 
-        /**
-        Adds a local collision plane for particles in this system to collide with
-        @argument normal     - specifies normal to the plane
-                  position   - specifies the position on the norm on which the plane is defined
-                  elasticity - a float between 0 and 1
-                  friction   - a float between 0 and 1
-        */
         void addCollisionPlane(glm::vec3 normal, 
                                float position, 
                                float elasticity = 0.0f,
                                float friction = 0.0f);
+
+        Triangles triangles;
         
         
         //The number of connections of each type/direction
@@ -98,5 +103,8 @@ class MCS{
         void initConnections();
 
         std::vector<CollisionPlane> collisionPlanes;
+
+        void initTriangles();
+
 };
 #endif

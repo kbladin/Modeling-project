@@ -1,12 +1,12 @@
 #include "MCS.h"
 
-
 //Constructor
 MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):   
     N_ROWS(n_rows),N_COLS(n_cols),N_STACKS(n_stacks)
 {
 	initParticles();
     initConnections();
+    initTriangles();
 }
 
 void MCS::initParticles(){
@@ -84,6 +84,7 @@ void MCS::initConnections(){
     }
 }
 
+
 void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, float friction){
     CollisionPlane cp; 
     cp.normal = glm::normalize(normal);
@@ -93,12 +94,28 @@ void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, 
     collisionPlanes.push_back(cp);
 }
 
-void MCS::update(float dt, glm::vec3 externalAcceleration){
 
+
+void MCS::initTriangles(){
+    const int n_plane1 = 2*((N_ROWS-1)*(N_COLS-1));
+    const int n_plane2 = n_plane1;
+    const int n_plane3 = 2*((N_ROWS-1)*(N_STACKS-1));
+    const int n_plane4 = n_plane3;
+    const int n_plane5 = 2*((N_COLS-1)*(N_STACKS-1));
+    const int n_plane6 = n_plane5;
+
+    const int n_triangles =
+        n_plane1 + n_plane2 + 
+        n_plane3 + n_plane4 + 
+        n_plane5 + n_plane6;
+
+    triangles.triangleIndices = std::vector<IndexedTriangle>(n_triangles);
+}
+
+void MCS::update(float dt, glm::vec3 externalAcceleration){
     calcConnectionForcesOnParticles();
     calcAccelerationOfParticles(glm::vec3(0,-1,0)*9.82f);
     updateParticles(dt);
-
 }
 
 void MCS::calcConnectionForcesOnParticles(glm::vec3 delta_p_offset, glm::vec3 delta_v_offset){
@@ -148,10 +165,12 @@ void MCS::calcAccelerationOfParticles(glm::vec3 externalAcceleration, glm::vec3 
     }
 }
 
+
 void MCS::updateParticles(float dt){
     //Allocate memory for two new position and velocity
     glm::vec3 new_position;
     glm::vec3 new_velocity;
+
 
     for (int i = 0; i < getNumberOfParticles(); ++i){
         //Calc new position and velocity
