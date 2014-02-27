@@ -7,6 +7,9 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
 	initParticles();
     initConnections();
     initTriangles();
+
+    externalAcceleration = glm::vec3(0,0,0);
+    externalForce = glm::vec3(0,0,0);
 }
 
 void MCS::initParticles(){
@@ -67,7 +70,7 @@ void MCS::initConnections(){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         
         connections.lengths[i] = 1.0f;
-        connections.springConstants[i] = 1170.0f;
+        connections.springConstants[i] = 1000.0f;
         connections.damperConstants[i] = 5.0f;
         connections.particle1[i] = p_index1;
         connections.particle2[i] = p_index2;
@@ -119,7 +122,7 @@ void MCS::initTriangles(){
     }
 }
 
-void MCS::update(float dt, glm::vec3 externalAcceleration){
+void MCS::update(float dt){
 
     std::vector<float> w;
     w.push_back(1.0f);
@@ -163,7 +166,7 @@ void MCS::update(float dt, glm::vec3 externalAcceleration){
         //Calc accelerations
 
         calcConnectionForcesOnParticles(delta_v_offsets, delta_p_offsets);
-        calcAccelerationOfParticles(glm::vec3(0,-1,0)*9.82f);
+        calcAccelerationOfParticles();
 
         for (int i = 0; i < getNumberOfParticles(); ++i){
             ka[k][i] = particles.accelerations[i];
@@ -237,7 +240,7 @@ void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset,
     }
 }
 
-void MCS::calcAccelerationOfParticles(glm::vec3 externalAcceleration, glm::vec3 externalForce){
+void MCS::calcAccelerationOfParticles(){
     for (int i = 0; i < getNumberOfParticles(); ++i){
         particles.accelerations[i] = 
             (particles.forces[i] + externalForce)/particles.masses[i] + 

@@ -94,20 +94,18 @@ const int cube_elements[] = {
     6, 2, 1,
 };
 
-MCS mcs = MCS(4,4,4);
+MCS mcs = MCS(2,2,2);
 
 
 int main(void){
-    //Test
-    //testMCS();
-    //testMCS();
 
     initGLFW();
     initOpenGL();
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
-
     ratio = width / (float) height;
+    
 
+    mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-1.0f);
     mcs.setAvgPosition(glm::vec3(0,5,-30));
     mcs.setAvgVelocity(glm::vec3(0,10,0));

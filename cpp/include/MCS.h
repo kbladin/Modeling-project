@@ -47,7 +47,7 @@ class MCS{
         // Constructor
         MCS(const int n_rows, const int n_cols, const int n_stacks);
 
-        void update(float dt, glm::vec3 externalAcceleration = glm::vec3(0,0,0));
+        void update(float dt);
 
         void rotate(glm::vec3 axisOfRotation, float amount);
         void addRotation(glm::vec3 axisOfRotation, float amount);
@@ -85,12 +85,15 @@ class MCS{
 
         friend void testMCS();
 
+        glm::vec3 externalAcceleration;
+        glm::vec3 externalForce;
+
 
     private:
         void calcConnectionForcesOnParticles(
             std::vector<glm::vec3> delta_v_offset,// = std::vector<glm::vec3>(getNumberOfConnections(), glm::vec3(0,0,0)),
             std::vector<glm::vec3> delta_p_offset);// = std::vector<glm::vec3>(getNumberOfConnections(), glm::vec3(0,0,0)));
-        void calcAccelerationOfParticles(glm::vec3 externalAcceleration = glm::vec3(0,0,0), glm::vec3 externalForce = glm::vec3(0,0,0));
+        void calcAccelerationOfParticles();
         void updateParticles(float dt);
         void checkCollisions(glm::vec3& pos, glm::vec3& vel) const;
         
