@@ -29,8 +29,16 @@ typedef struct{
 } Connections;
 
 typedef struct{
+    glm::vec3 normal;
+    float position;
+    float elasticity;
+    float friction;
+} CollisionPlane;
+
+typedef struct {
     std::vector<IndexedTriangle> triangleIndices;
 } Triangles;
+
 
 // The MCS - Mass Connection System
 class MCS{
@@ -39,11 +47,10 @@ class MCS{
         // Constructor
         MCS(const int n_rows, const int n_cols, const int n_stacks);
 
-        void update(float dt);
+        void update(float dt, glm::vec3 externalAcceleration = glm::vec3(0,0,0));
 
         void rotate(glm::vec3 axisOfRotation, float amount);
         void addRotation(glm::vec3 axisOfRotation, float amount);
-        
         void setAvgPosition(glm::vec3 pos);
         void setAvgVelocity(glm::vec3 pos);
 
@@ -58,6 +65,12 @@ class MCS{
 
         Particles particles;
         Connections connections;
+
+        void addCollisionPlane(glm::vec3 normal, 
+                               float position, 
+                               float elasticity = 0.0f,
+                               float friction = 0.0f);
+
         Triangles triangles;
         
         
@@ -74,8 +87,11 @@ class MCS{
 
 
     private:
-        void calcConnectionForcesOnParticles();
-        void applyForcesOnParticles(float dt, glm::vec3 externalForce = glm::vec3(0,0,0), glm::vec3 externalAcceleration = glm::vec3(0,0,0));
+        void calcConnectionForcesOnParticles(glm::vec3 delta_p_offset = glm::vec3(0,0,0), glm::vec3 delta_v_offset = glm::vec3(0,0,0));
+        void calcAccelerationOfParticles(glm::vec3 externalAcceleration = glm::vec3(0,0,0), glm::vec3 externalForce = glm::vec3(0,0,0));
+        void updateParticles(float dt);
+        void checkCollisions(glm::vec3& pos, glm::vec3& vel) const;
+        
         //void connection2massIndices3D(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols, const int n_stacks);
 
         // Calculate the stack in which the first mass (not necessary mass 1) of the pair is positioned
@@ -86,8 +102,9 @@ class MCS{
         void initParticles();
         void initConnections();
 
-
         void triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int &particleIndex3);
+
+        std::vector<CollisionPlane> collisionPlanes;
 
         void initTriangles();
 
