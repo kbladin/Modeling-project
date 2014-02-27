@@ -29,7 +29,7 @@ void MCS::initParticles(){
         particles.accelerations[i] = glm::vec3(0.f,0.f,0.f);
         particles.forces[i] = glm::vec3(0.f,0.f,0.f);
         particles.masses[i] = 1.0f;    
-    }
+    } 
 }
 
 void MCS::initConnections(){
@@ -229,3 +229,54 @@ int MCS::getNumberOfParticles() const{
 int MCS::getNumberOfConnections() const{
     return connections.lengths.size();
 }
+
+void MCS::triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int &particleIndex3){
+ 
+    int Ntype1 = 2*(N_ROWS-1)*(N_COLS-1);         //back
+    int Ntype2 = 2*(N_ROWS-1)*(N_COLS-1);         //front
+    int Ntype3 = 2*(N_ROWS-1)*(N_STACKS-1);       //right
+    int Ntype4 = 2*(N_ROWS-1)*(N_STACKS-1);       //left
+    int Ntype5 = 2*(N_STACKS-1)*(N_COLS-1);       //top
+    int Ntype6 = 2*(N_STACKS-1)*(N_COLS-1);       //bottom
+    int TotNtype = Ntype1 + Ntype2 + Ntype3 + Ntype4 + Ntype5 + Ntype6;
+
+    if(triangleIndex < Ntype1){                                     //back
+        int row_p1 = floor(triangleIndex/floor(Ntype1/(N_ROWS-1)));
+        if(triangleIndex%2==0){     //even
+            particleIndex1=triangleIndex/2+row_p1;
+            particleIndex2=particleIndex1+N_COLS;
+            particleIndex3=particleIndex2+1;
+        }
+        else{                       //odd
+            particleIndex1=(triangleIndex-1)/2+row_p1;
+            particleIndex2=particleIndex1+N_COLS+1;
+            particleIndex3=particleIndex1+1;
+        }
+    }
+
+    else if(triangleIndex < Ntype1+Ntype2){                         //front
+
+    }
+
+    else if(triangleIndex < Ntype1+Ntype2+Ntype3){                  //right
+
+    }
+
+    else if(triangleIndex < Ntype1+Ntype2+Ntype3+Ntype4){           //left
+
+    }
+
+    else if(triangleIndex < Ntype1+Ntype2+Ntype3+Ntype4+Ntype5){    //bottom
+
+    }
+
+    else if(triangleIndex < TotNtype){                              //top
+
+    }
+    else{
+        assert(triangleIndex < TotNtype);
+    }
+
+
+}
+

@@ -71,5 +71,7 @@ class MCS{
         //int rowOfFirstMass(const int connection_index, const int prev_num_springs, const int one_row_of_connections, const int one_stack_of_connections);
         void initParticles();
         void initConnections();
+
+        void triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int&particleIndex3);
 };
 #endif

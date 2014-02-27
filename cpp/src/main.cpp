@@ -49,7 +49,6 @@ std::vector<glm::vec3> vertex_color_data;
 MCS mcs = MCS(2,10,2);
 
 int main(void){
-
     //Test
     testMCS();
 
