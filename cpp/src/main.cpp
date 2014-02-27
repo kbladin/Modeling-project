@@ -376,7 +376,6 @@ void draw(){
 
     glm::mat4 MVP = P*V*M;
 
-
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(vertexArray);
  
