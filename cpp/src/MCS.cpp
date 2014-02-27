@@ -70,7 +70,7 @@ void MCS::initConnections(){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         
         connections.lengths[i] = 1.0f;
-        connections.springConstants[i] = 20000.0f;
+        connections.springConstants[i] = 5000.0f;
         connections.damperConstants[i] = 5.0f;
         connections.particle1[i] = p_index1;
         connections.particle2[i] = p_index2;
@@ -113,6 +113,7 @@ void MCS::initTriangles(){
 
     triangles.triangleIndices = std::vector<IndexedTriangle>(n_triangles);
     for(int ti = 0; ti < n_triangles; ++ti){
+        
         triangle2particleIndices(
             ti,
             triangles.triangleIndices[ti].idx1,
@@ -268,114 +269,133 @@ void MCS::triangle2particleIndices(int triangleIndex, int &particleIndex1, int &
  
     int Ntype0 = 2*(N_ROWS-1)*(N_COLS-1);         //back
     int Ntype1 = Ntype0;                          //front
-    int Ntype2 = 2*(N_ROWS-1)*(N_STACKS-1);       //right
-    int Ntype3 = Ntype2;                          //left
-    int Ntype4 = 2*(N_STACKS-1)*(N_COLS-1);       //top
-    int Ntype5 = Ntype4;                          //bottom
+    int Ntype2 = 2*(N_ROWS-1)*(N_STACKS-1);       //left
+    int Ntype3 = Ntype2;                          //right
+    int Ntype4 = 2*(N_STACKS-1)*(N_COLS-1);       //bottom
+    int Ntype5 = Ntype4;                          //top
     int TotNtype = Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4 + Ntype5;
 
     assert(triangleIndex < TotNtype);
 
     int oneRowOfParticles = N_COLS;
+    int oneRowOfParticlesLocal;
+    //int oneColumnOfParticles = N_ROWS;
     int oneStackOfParticles = N_ROWS*N_COLS;
     int newTriangleIndex;
-    int row_p1 = floor(triangleIndex/floor(Ntype0/(N_ROWS-1)));
-    if(triangleIndex < Ntype0){                                     //back
+    if(triangleIndex < Ntype0){
+        oneRowOfParticlesLocal = N_COLS;
+        int row_p1 = floor(triangleIndex/floor(Ntype0/(N_ROWS-1)));//back
+
         if(triangleIndex%2==0){     //even
             particleIndex1=triangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticles;
+            particleIndex2=particleIndex1+oneRowOfParticlesLocal;
             particleIndex3=particleIndex2+1;
         }
         else{                       //odd
             particleIndex1=(triangleIndex-1)/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
             particleIndex3=particleIndex1+1;
         }
     }
 
     else if(triangleIndex < Ntype0+Ntype1){                         //front
-        newTriangleIndex = triangleIndex-Ntype0;
+        oneRowOfParticlesLocal = N_COLS;
+        newTriangleIndex = triangleIndex - Ntype0;
+        int row_p1 = floor(newTriangleIndex/floor(Ntype1/(N_ROWS-1)));
+
         if(newTriangleIndex%2==0){  //even
             particleIndex1=newTriangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
             particleIndex3=particleIndex2-1;
         }
         else{                       //odd
             particleIndex1=(newTriangleIndex-1)/2+row_p1;
             particleIndex2=particleIndex1+1;
-            particleIndex3=particleIndex2+oneRowOfParticles;
+            particleIndex3=particleIndex2+oneRowOfParticlesLocal;
         }
         particleIndex1+=N_COLS*N_ROWS*(N_STACKS-1);
         particleIndex2+=N_COLS*N_ROWS*(N_STACKS-1);
         particleIndex3+=N_COLS*N_ROWS*(N_STACKS-1);
     }
 
-    else if(triangleIndex < Ntype0+Ntype1+Ntype2){                  //right
+    else if(triangleIndex < Ntype0+Ntype1+Ntype2){                  //left
+        oneRowOfParticlesLocal = N_STACKS;
         newTriangleIndex=triangleIndex-(Ntype0+Ntype1);
+        int row_p1 = floor(newTriangleIndex/floor(Ntype2/(N_ROWS-1)));
+
         if(newTriangleIndex%2==0){  //even
-            particleIndex1=triangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex1=newTriangleIndex/2+row_p1;
+            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
             particleIndex3=particleIndex2-1;
         }
         else{                       //odd
-            particleIndex1=(triangleIndex-1)/2+row_p1;
+            particleIndex1=(newTriangleIndex-1)/2+row_p1;
             particleIndex2=particleIndex1+1;
-            particleIndex3=particleIndex2+oneRowOfParticles;
+            particleIndex3=particleIndex2+oneRowOfParticlesLocal;
         }
-        particleIndex1 = (particleIndex1%N_STACKS)*oneStackOfParticles+(particleIndex1/N_STACKS)*oneRowOfParticles;
-        particleIndex2 = (particleIndex2%N_STACKS)*oneStackOfParticles+(particleIndex2/N_STACKS)*oneRowOfParticles;
-        particleIndex3 = (particleIndex3%N_STACKS)*oneStackOfParticles+(particleIndex3/N_STACKS)*oneRowOfParticles;
+        particleIndex1 = (particleIndex1 % N_STACKS)*oneStackOfParticles + (particleIndex1/N_STACKS)*oneRowOfParticles;
+        particleIndex2 = (particleIndex2 % N_STACKS)*oneStackOfParticles + (particleIndex2/N_STACKS)*oneRowOfParticles;
+        particleIndex3 = (particleIndex3 % N_STACKS)*oneStackOfParticles + (particleIndex3/N_STACKS)*oneRowOfParticles;
     }
 
-    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3){           //left
+    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3){           //right
+        oneRowOfParticlesLocal = N_STACKS;
         newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2);
+        int row_p1 = floor(newTriangleIndex/floor(Ntype3/(N_ROWS-1)));
+
         if(newTriangleIndex%2==0){     //even
             particleIndex1=newTriangleIndex/2+row_p1;
-            particleIndex2=newTriangleIndex+oneRowOfParticles;
-            particleIndex3=newTriangleIndex+1;
+            particleIndex2=particleIndex1+oneRowOfParticlesLocal;
+            particleIndex3=particleIndex2+1;
         }
         else{                       //odd
             particleIndex1=(newTriangleIndex-1)/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
             particleIndex3=particleIndex1+1;
         }
-        particleIndex1 = (particleIndex1%N_STACKS)*oneStackOfParticles+(particleIndex1/N_STACKS)*oneRowOfParticles;
-        particleIndex2 = (particleIndex2%N_STACKS)*oneStackOfParticles+(particleIndex2/N_STACKS)*oneRowOfParticles;
-        particleIndex3 = (particleIndex3%N_STACKS)*oneStackOfParticles+(particleIndex3/N_STACKS)*oneRowOfParticles;
+        particleIndex1 = (particleIndex1 % N_STACKS)*oneStackOfParticles + (particleIndex1/N_STACKS)*oneRowOfParticles + oneRowOfParticles-1;
+        particleIndex2 = (particleIndex2 % N_STACKS)*oneStackOfParticles + (particleIndex2/N_STACKS)*oneRowOfParticles + oneRowOfParticles-1;
+        particleIndex3 = (particleIndex3 % N_STACKS)*oneStackOfParticles + (particleIndex3/N_STACKS)*oneRowOfParticles + oneRowOfParticles-1;
     }
 
     else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3+Ntype4){    //bottom
+        oneRowOfParticlesLocal = N_COLS;
         newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3);
+        int row_p1 = floor(newTriangleIndex/floor(Ntype4/(N_STACKS-1)));
         if(newTriangleIndex%2==0){  //even
             particleIndex1=newTriangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
             particleIndex3=particleIndex2-1;
         }
         else{                       //odd
-            particleIndex1 = (newTriangleIndex-1)/2+row_p1;
-            particleIndex2 = particleIndex1+1;
-            particleIndex3 = particleIndex2+oneRowOfParticles;
+            particleIndex1=(newTriangleIndex-1)/2+row_p1;
+            particleIndex2=particleIndex1+1;
+            particleIndex3=particleIndex2+oneRowOfParticlesLocal;
         }
-        particleIndex1 += (particleIndex1%N_STACKS)*oneStackOfParticles;
-        particleIndex2 += (particleIndex2%N_STACKS)*oneStackOfParticles;
-        particleIndex3 += (particleIndex3%N_STACKS)*oneStackOfParticles;
+        particleIndex1 = (particleIndex1 / N_COLS)*oneStackOfParticles + particleIndex1 % N_COLS;
+        particleIndex2 = (particleIndex2 / N_COLS)*oneStackOfParticles + particleIndex2 % N_COLS;
+        particleIndex3 = (particleIndex3 / N_COLS)*oneStackOfParticles + particleIndex3 % N_COLS;
     }
 
     else if(triangleIndex < TotNtype){                              //top
+        oneRowOfParticlesLocal = N_COLS;
         newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3+Ntype4);
+        int row_p1 = floor(newTriangleIndex/floor(Ntype5/(N_STACKS-1)));
         if(newTriangleIndex%2==0){     //even
             particleIndex1=newTriangleIndex/2+row_p1;
-            particleIndex2=newTriangleIndex+oneRowOfParticles;
-            particleIndex3=newTriangleIndex+1;
+            particleIndex2=particleIndex1+oneRowOfParticlesLocal;
+            particleIndex3=particleIndex2+1;
         }
         else{                       //odd
             particleIndex1=(newTriangleIndex-1)/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticles+1;
+            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
             particleIndex3=particleIndex1+1;
         }
-        particleIndex1 += (particleIndex1%N_STACKS)*oneStackOfParticles;
-        particleIndex2 += (particleIndex2%N_STACKS)*oneStackOfParticles;
-        particleIndex3 += (particleIndex3%N_STACKS)*oneStackOfParticles;
+        particleIndex1 = (particleIndex1 / N_COLS)*oneStackOfParticles + particleIndex1 % N_COLS + (N_ROWS-1)*N_COLS;
+        particleIndex2 = (particleIndex2 / N_COLS)*oneStackOfParticles + particleIndex2 % N_COLS + (N_ROWS-1)*N_COLS;
+        particleIndex3 = (particleIndex3 / N_COLS)*oneStackOfParticles + particleIndex3 % N_COLS + (N_ROWS-1)*N_COLS;
+
+
     }
 }
 

@@ -95,24 +95,27 @@ const int cube_elements[] = {
     6, 2, 1,
 };
 
-MCS mcs = MCS(3,3,3);
+MCS mcs = MCS(2,2,2);
+
 
 
 int main(void){
 
     initGLFW();
     initOpenGL();
+
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     ratio = width / (float) height;
     
     
     mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    mcs.addRotation(glm::vec3(0.0,1.0,1.0),-1.0f);
-    mcs.setAvgPosition(glm::vec3(0,5,-30));
-    mcs.setAvgVelocity(glm::vec3(0,10,0));
+
+    mcs.addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
+    mcs.setAvgPosition(glm::vec3(0,0,0));
+    mcs.setAvgVelocity(glm::vec3(0,0,0));
     mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
                                    -15.0f,      //positions the plane on normal
-                                    0.0f,      //elasticity
+                                    1.0f,      //elasticity
                                     0.0f);      //friction
 
     mcs.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
@@ -120,7 +123,6 @@ int main(void){
                                     1.0f,      //elasticity
                                     0.3f);      //friction
 
-    
 
     std::vector<float> w;
     w.push_back(1.0f);
@@ -132,12 +134,14 @@ int main(void){
     
 
     // INIT SIMULATION 
-    int simulations_per_frame = 40;
+
+    int simulations_per_frame = 20;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
 
     while (!glfwWindowShouldClose(window)){
+        current_time = glfwGetTime();
         glfwGetFramebufferSize(window, &width, &height);
 
         for (int i = 0; i < simulations_per_frame; ++i){   
@@ -158,6 +162,15 @@ int main(void){
         //Swap draw buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+
+        std::string title = "Elastic materials, ";
+        std::ostringstream ss;
+        ss << 1/(glfwGetTime() - current_time);
+        std::string s(ss.str());
+        title.append(s);
+        title.append(" FPS");
+        glfwSetWindowTitle (window,  title.c_str());
     }
     cleanUpGLFW();
     cleanUpOpenGl();
@@ -222,10 +235,10 @@ bool initOpenGL(){
     // INITIALISATION OF OLD OPENGL
 
     //Init gl points
-    glEnable( GL_POINT_SMOOTH );
+    //glEnable( GL_POINT_SMOOTH );
     //glEnable( GL_BLEND );
     //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glPointSize( 5.0 );
+    //glPointSize( 5.0 );
 
     //Init gl lines
     //glEnable( GL_LINE_SMOOTH );
@@ -234,7 +247,7 @@ bool initOpenGL(){
 
     // INITIALISATION OF MODERN OPENGL
 
-    // Initialize GLEW (Create OpenGL context)
+    // Initialize GLEW
     glewExperimental=true; // Needed in core profile
     if (glewInit() != GLEW_OK) {
         fprintf(stderr, "Failed to initialize GLEW\n");
@@ -245,14 +258,13 @@ bool initOpenGL(){
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-        vertex_color_data.push_back(glm::vec3(1.f, 0.f, 0.f));
+        vertex_color_data.push_back(glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX));
     }
 
     // Generate the element buffer
     glGenBuffers(1, &elementBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(int), cube_elements, GL_STATIC_DRAW);
-
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.triangles.triangleIndices[0], GL_STATIC_DRAW);
 
     //generate the VAO
     glGenVertexArrays(1, &vertexArray);
@@ -367,12 +379,13 @@ void draw(){
 
     glm::mat4 M = glm::mat4(1.0f);
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
-    glm::mat4 translate = glm::mat4(1.0f);//glm::translate(0.0f,0.0f,0.0f);
+    glm::mat4 translate = glm::translate(0.0f,5.0f,-20.0f);
     glm::mat4 V = translate * rotate;
     glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
 
 
     glm::mat4 MVP = P*V*M;
+    
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(vertexArray);
@@ -395,7 +408,6 @@ void draw(){
     glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
   
     glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Draw the triangles !
     glDrawArrays(GL_POINTS, 0, mcs.particles.positions.size());
@@ -410,10 +422,8 @@ void draw(){
 
 
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-    //TESTING TO DRAW A CUBE WITH ELEMENT ARRAY 
-    /*
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(vertexArray);
  
@@ -422,13 +432,13 @@ void draw(){
     //upload data to GPU
     // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
     // (Not needed for cube but done anyway since this is how it will be done)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * 8, cube_vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
  
     // Bind color buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
     //upload data to GPU
     // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * 8, cube_colors, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * vertex_color_data.size(), &vertex_color_data[0], GL_STATIC_DRAW);
     
     //BIND SHADER HERE
     glUseProgram(programID);
@@ -441,17 +451,19 @@ void draw(){
     // Draw the triangles !
     glDrawElements(
      GL_TRIANGLES,      // mode
-     36,    // count
+     mcs.triangles.triangleIndices.size()*3,    // count
      GL_UNSIGNED_INT,   // type
      (void*)0           // element array buffer offset
     );
+
+
  
     //unbind
     glBindVertexArray(0);
     
     //UNBIND SHADER HERE
     glUseProgram(0);
-*/
+
 
 }
 
