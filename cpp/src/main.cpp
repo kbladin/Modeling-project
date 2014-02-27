@@ -217,7 +217,7 @@ bool initOpenGL(){
 
     // INITIALISATION OF MODERN OPENGL
 
-    // Initialize GLEW (Create OpenGL context)
+    // Initialize GLEW
     glewExperimental=true; // Needed in core profile
     if (glewInit() != GLEW_OK) {
         fprintf(stderr, "Failed to initialize GLEW\n");
