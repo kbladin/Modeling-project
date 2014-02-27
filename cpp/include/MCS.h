@@ -87,7 +87,7 @@ class MCS{
         void initConnections();
 
 
-        void triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int&particleIndex3);
+        void triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int &particleIndex3);
 
         void initTriangles();
 
