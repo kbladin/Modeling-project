@@ -108,10 +108,10 @@ int main(void){
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
 
     ratio = width / (float) height;
-    
-    mcs.addRotation(glm::vec3(0.0,1.0,1.0),-15.0f);
-    mcs.setAvgPosition(glm::vec3(0,20,0));
-    mcs.setAvgVelocity(glm::vec3(0,5,0));
+
+    mcs.addRotation(glm::vec3(0.0,1.0,1.0),-1.0f);
+    mcs.setAvgPosition(glm::vec3(0,5,-10));
+    mcs.setAvgVelocity(glm::vec3(0,10,0));
     mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
                                    -15.0f,      //positions the plane on normal
                                     0.0f,      //elasticity
@@ -125,7 +125,7 @@ int main(void){
     
 
     // INIT SIMULATION 
-    int simulations_per_frame = 10;
+    int simulations_per_frame = 1;
     float T = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
@@ -228,7 +228,7 @@ bool initOpenGL(){
     glEnable( GL_POINT_SMOOTH );
     //glEnable( GL_BLEND );
     //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glPointSize( 15.0 );
+    glPointSize( 5.0 );
 
     //Init gl lines
     //glEnable( GL_LINE_SMOOTH );
@@ -366,7 +366,7 @@ void draw(){
     ratio = width / (float) height;
 
     // Do the matrix stuff
-    float speed = 50.0f;
+    float speed = 0.0f;
 
     glm::mat4 M = glm::mat4(1.0f);
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
@@ -415,7 +415,7 @@ void draw(){
 
 
     //TESTING TO DRAW A CUBE WITH ELEMENT ARRAY 
-
+    /*
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(vertexArray);
  
@@ -453,7 +453,7 @@ void draw(){
     
     //UNBIND SHADER HERE
     glUseProgram(0);
-
+*/
 
 }
 
