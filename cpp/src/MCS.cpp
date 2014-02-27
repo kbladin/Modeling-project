@@ -71,7 +71,7 @@ void MCS::initConnections(){
         
         connections.lengths[i] = 1.0f;
         connections.springConstants[i] = 5000.0f;
-        connections.damperConstants[i] = 5.0f;
+        connections.damperConstants[i] = 20.0f;
         connections.particle1[i] = p_index1;
         connections.particle2[i] = p_index2;
     }
