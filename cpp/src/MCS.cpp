@@ -70,7 +70,7 @@ void MCS::initConnections(){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         
         connections.lengths[i] = 1.0f;
-        connections.springConstants[i] = 500.0f;
+        connections.springConstants[i] = 20000.0f;
         connections.damperConstants[i] = 5.0f;
         connections.particle1[i] = p_index1;
         connections.particle2[i] = p_index2;

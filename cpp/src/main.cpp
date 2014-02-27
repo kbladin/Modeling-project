@@ -132,7 +132,7 @@ int main(void){
     
 
     // INIT SIMULATION 
-    int simulations_per_frame = 1;
+    int simulations_per_frame = 40;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
