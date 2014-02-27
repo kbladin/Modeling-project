@@ -54,7 +54,6 @@ void MCS::initConnections(){
         numberOfConnections += numberOfConnectionsOfType[i];
     }
 
-
     connections.lengths = std::vector<float>(numberOfConnections);
     connections.springConstants = std::vector<float>(numberOfConnections);
     connections.damperConstants = std::vector<float>(numberOfConnections);
@@ -69,7 +68,7 @@ void MCS::initConnections(){
         
         connections.lengths[i] = 1.0f;
         connections.springConstants[i] = 500.0f;
-        connections.damperConstants[i] = 5.0f;
+        connections.damperConstants[i] = 15.0f;
         connections.particle1[i] = p_index1;
         connections.particle2[i] = p_index2;
     }
@@ -89,6 +88,8 @@ void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, 
     CollisionPlane cp; 
     cp.normal = glm::normalize(normal);
     cp.position = position;
+    cp.elasticity = elasticity;
+    cp.friction = friction;
     collisionPlanes.push_back(cp);
 }
 

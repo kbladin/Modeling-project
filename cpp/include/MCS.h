@@ -60,8 +60,8 @@ class MCS{
         Adds a local collision plane for particles in this system to collide with
         @argument normal     - specifies normal to the plane
                   position   - specifies the position on the norm on which the plane is defined
-                  elasticity - set elasticity of the collision
-                  friction   - set friction of the collision
+                  elasticity - a float between 0 and 1
+                  friction   - a float between 0 and 1
         */
         void addCollisionPlane(glm::vec3 normal, 
                                float position, 

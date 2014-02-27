@@ -46,30 +46,33 @@ std::vector<glm::vec3> vertex_position_data;
 // Colordata
 std::vector<glm::vec3> vertex_color_data;
 
-MCS mcs = MCS(3,3,3);
+MCS mcs = MCS(1,10,2);
 
 int main(void){
 
     //Test
     testMCS();
 
-
     initGLFW();
     initOpenGL();
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     ratio = width / (float) height;
-
     
-    mcs.addRotation(glm::vec3(1.0,0.5,0.0),25.0f);
-    mcs.setAvgPosition(glm::vec3(-10,0,-50));
-    mcs.setAvgVelocity(glm::vec3(5,5,0));
-    mcs.addCollisionPlane(glm::vec3(0,1,0), //normal of the plane
-                                   -10.0f,  //positions the plane on normal
-                                    0.9f,   //elasticity
-                                    0.9f);  //friction
+    mcs.addRotation(glm::vec3(0.0,1.0,1.0),-15.0f);
+    mcs.setAvgPosition(glm::vec3(-10,30,-50));
+    mcs.setAvgVelocity(glm::vec3(0,5,0));
+    mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
+                                   -15.0f,      //positions the plane on normal
+                                    0.0f,      //elasticity
+                                    0.0f);      //friction
+
+    mcs.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                                   -10.0f,      //positions the plane on normal
+                                    0.9f,      //elasticity
+                                    0.3f);      //friction
 
     // INIT SIMULATION 
-    int simulations_per_frame = 40;
+    int simulations_per_frame = 10;
     float T = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time;
@@ -86,10 +89,9 @@ int main(void){
 
             glfwGetCursorPos(window, &x_mouse, &y_mouse);
             glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
-            //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],10));
-            //mcs.getParticle(0).writePosition(glm::vec3(pos2d[0],pos2d[1],10.0f));
-            //mcs.getParticle(5).writePosition(glm::vec3(pos2d[0],pos2d[1],16.0f));
-            //velocities[0][write_buffer] = glm::vec2(0.0f, 0.0f);
+            //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
+            //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
+            //mcs.particles.velocities[0] = glm::vec3(0);
 
             float scalex = scale*ratio;
             mcs.update(T);
