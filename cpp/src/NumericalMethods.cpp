@@ -13,7 +13,23 @@ glm::vec3 calculateRungeKutta(){
 
 //EulerExplicit
 void EulerExplicit::update(MCS& mcs, float dt){
-	
+	glm::vec3 new_velocity, new_position;
+	glm::vec3 delta_v, delta_p;
+
+	mcs.calcConnectionForcesOnParticles();
+	for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
+		mcs.calcAccelerationOfParticle(i);
+
+		new_velocity = mcs.particles.velocities[i] + mcs.particles.accelerations[i] * dt;
+        new_position = mcs.particles.positions[i] + new_velocity * dt;
+
+        //Check collisions with collision planes
+        mcs.checkCollisions(new_position, new_velocity);
+
+        //Set new position and velocity
+        mcs.particles.velocities[i] = new_velocity;
+        mcs.particles.positions[i] = new_position;
+	}
 }
 
 //RungeKutta

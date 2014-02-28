@@ -82,6 +82,7 @@ int main(void){
     w.push_back(1.0f);
 
     RungeKutta rk4(w);
+    EulerExplicit ee;
     
 
     // INIT SIMULATION 
@@ -102,7 +103,7 @@ int main(void){
             //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
             //mcs.particles.velocities[0] = glm::vec3(0);
 
-            rk4.update(mcs,dt);
+            ee.update(mcs,dt);
         }
 
         // DRAW

@@ -122,7 +122,7 @@ void MCS::initTriangles(){
     }
 }
 
-void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset, std::vector<glm::vec3> delta_p_offset){
+void MCS::calcConnectionForcesOnParticles(const std::vector<glm::vec3>& delta_v_offset, const std::vector<glm::vec3>& delta_p_offset){
     glm::vec3 delta_p;
     glm::vec3 delta_v;
     glm::vec3 delta_p_hat;
@@ -146,7 +146,6 @@ void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset,
         delta_v = particles.velocities[connections.particle1[i]] - particles.velocities[connections.particle2[i]]; 
         delta_v += delta_v_offset[i];
         
-
         spring_elongation = glm::length(delta_p) - l;
         //float sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
 
@@ -155,6 +154,38 @@ void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset,
         particles.forces[connections.particle2[i]] -= force;
     }
 }
+
+void MCS::calcConnectionForcesOnParticles(){
+    glm::vec3 delta_p;
+    glm::vec3 delta_v;
+    glm::vec3 delta_p_hat;
+    glm::vec3 force;
+
+    float k;
+    float l;
+    float b;
+    float spring_elongation;
+
+    // Calculate the forces of the springs
+    for (int i = 0; i < getNumberOfConnections(); ++i){
+        k = connections.springConstants[i];
+        l = connections.lengths[i];
+        b = connections.damperConstants[i];
+
+        delta_v = particles.velocities[connections.particle1[i]] - particles.velocities[connections.particle2[i]]; 
+        delta_p = particles.positions[connections.particle1[i]] - particles.positions[connections.particle2[i]]; 
+        delta_p_hat = glm::normalize(delta_p);
+        
+        spring_elongation = glm::length(delta_p) - l;
+        //float sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
+
+        force = (-k*spring_elongation - b*glm::dot(delta_v,delta_p_hat))*delta_p_hat;
+        particles.forces[connections.particle1[i]] += force;
+        particles.forces[connections.particle2[i]] -= force;
+    }
+}
+
+
 
 void MCS::calcAccelerationOfParticle(int i){
     particles.accelerations[i] = 
