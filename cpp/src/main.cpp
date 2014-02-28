@@ -13,6 +13,9 @@
 #include "NumericalMethods.h"
 #include "test.h"
 
+#include "Drawable.h"
+#include "MCS.h"
+
 static void error_callback(int error, const char* description);
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
@@ -35,38 +38,7 @@ GLFWwindow* window;
 
 
 // THIS IS USED ONLY FOR MODERN OPENGL
-class OpenGL_drawable {
-public:
-    OpenGL_drawable(){
-        vertexArray = GL_FALSE;
-        vertexPositionBuffer = GL_FALSE;
-        vertexColorBuffer = GL_FALSE;
-        elementBuffer = GL_FALSE;
 
-        MVP_loc = -1;
-    }
-
-    ~OpenGL_drawable(){
-        // Release memory
-        if(vertexPositionBuffer)
-            glDeleteBuffers(1, &vertexPositionBuffer);
-        if(vertexColorBuffer)
-            glDeleteBuffers(1, &vertexColorBuffer);
-        if(vertexArray)
-            glDeleteVertexArrays(1, &vertexArray);
-    }
-
-    GLuint vertexArray;
-    GLuint vertexPositionBuffer;
-    GLuint vertexColorBuffer;
-    GLuint elementBuffer;
-
-    GLint MVP_loc;
-
-    GLuint programID;
-    // Vertex color data
-    std::vector<glm::vec3> vertex_color_data;    
-};
 
 bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs);
 void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
