@@ -46,6 +46,16 @@ public:
         MVP_loc = -1;
     }
 
+    ~OpenGL_drawable(){
+        // Release memory
+        if(vertexPositionBuffer)
+            glDeleteBuffers(1, &vertexPositionBuffer);
+        if(vertexColorBuffer)
+            glDeleteBuffers(1, &vertexColorBuffer);
+        if(vertexArray)
+            glDeleteVertexArrays(1, &vertexArray);
+    }
+
     GLuint vertexArray;
     GLuint vertexPositionBuffer;
     GLuint vertexColorBuffer;
@@ -60,7 +70,7 @@ public:
 
 bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs);
 void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
-void cleanUpOpenGl(OpenGL_drawable& openGL_drawable);
+
 
 
 
@@ -78,7 +88,6 @@ int main(void){
     
     
     mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
     mcs.setAvgPosition(glm::vec3(-5,0,-10));
     mcs.setAvgVelocity(glm::vec3(0,0,0));
@@ -147,7 +156,7 @@ int main(void){
 
     }
     cleanUpGLFW();
-    cleanUpOpenGl(openGL_drawable);
+    
 }
 
 static void error_callback(int error, const char* description){
@@ -412,17 +421,6 @@ void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     glUseProgram(0);
 
 
-}
-
-void cleanUpOpenGl(OpenGL_drawable& openGL_drawable)
-{
-    // Release memory
-    if(openGL_drawable.vertexPositionBuffer)
-        glDeleteBuffers(1, &openGL_drawable.vertexPositionBuffer);
-    if(openGL_drawable.vertexColorBuffer)
-        glDeleteBuffers(1, &openGL_drawable.vertexColorBuffer);
-    if(openGL_drawable.vertexArray)
-        glDeleteVertexArrays(1, &openGL_drawable.vertexArray);
 }
 
 void cleanUpGLFW()
