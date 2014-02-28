@@ -87,7 +87,9 @@ class MCS{
 
 
     private:
-        void calcConnectionForcesOnParticles(glm::vec3 delta_p_offset = glm::vec3(0,0,0), glm::vec3 delta_v_offset = glm::vec3(0,0,0));
+        void calcConnectionForcesOnParticles(
+            std::vector<glm::vec3> delta_v_offset,// = std::vector<glm::vec3>(getNumberOfConnections(), glm::vec3(0,0,0)),
+            std::vector<glm::vec3> delta_p_offset);// = std::vector<glm::vec3>(getNumberOfConnections(), glm::vec3(0,0,0)));
         void calcAccelerationOfParticles(glm::vec3 externalAcceleration = glm::vec3(0,0,0), glm::vec3 externalForce = glm::vec3(0,0,0));
         void updateParticles(float dt);
         void checkCollisions(glm::vec3& pos, glm::vec3& vel) const;

@@ -20,21 +20,21 @@ void connection2massIndices(const int connection_index, int &mass_index1, int &m
 	else if (connection_index < (n_type1 + n_type2)) //Direction /
 	{
 	    prev_num_springs = n_type1;
-	    row_m1 = glm::floor((connection_index - prev_num_springs)/(n_cols-1));
+	    row_m1 = ((connection_index - prev_num_springs)/(n_cols-1));
 	    mass_index1 = connection_index - prev_num_springs + row_m1;
 	    mass_index2 = mass_index1 + n_cols + 1;
 	}
 	else if (connection_index < (n_type1 + n_type2 + n_type3)) //Direction _
 	{
 	    prev_num_springs = n_type1 + n_type2;
-	    row_m1 = glm::floor((connection_index - prev_num_springs)/(n_cols-1));
+	    row_m1 = ((connection_index - prev_num_springs)/(n_cols-1));
 	    mass_index1 = connection_index - prev_num_springs + row_m1;
 	    mass_index2 = mass_index1 + 1;
 	}
 	else // Direction \ .
 	{
 		prev_num_springs = n_type1 + n_type2 + n_type3;
-	    row_m1 = glm::floor((connection_index - prev_num_springs)/(n_cols-1));
+	    row_m1 = ((connection_index - prev_num_springs)/(n_cols-1));
 	    mass_index1 = connection_index - prev_num_springs + row_m1 + 1;
 	    mass_index2 = mass_index1 + n_cols - 1;
 	}
