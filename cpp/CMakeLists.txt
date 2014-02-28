@@ -14,8 +14,8 @@ project(${PROJECT_NAME})
 find_package(GLEW REQUIRED)
   # glfw3 requires pkconfig which contains the function pkg_search_module().
   # This way glfw3 can also be found.
-find_package(PkgConfig REQUIRED)
-pkg_search_module(GLFW REQUIRED glfw3)
+find_package(GLFW REQUIRED)
+#pkg_search_module(GLFW REQUIRED glfw3)
   # Find the OpenGl Framework
 find_library(OPENGL_FRAMEWORK OpenGL)
 find_library(COCOA_FRAMEWORK Cocoa)

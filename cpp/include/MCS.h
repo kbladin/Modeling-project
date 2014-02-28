@@ -47,8 +47,6 @@ class MCS{
         // Constructor
         MCS(const int n_rows, const int n_cols, const int n_stacks);
 
-        void update(float dt, glm::vec3 externalAcceleration = glm::vec3(0,0,0));
-
         void rotate(glm::vec3 axisOfRotation, float amount);
         void addRotation(glm::vec3 axisOfRotation, float amount);
         void setAvgPosition(glm::vec3 pos);
@@ -83,33 +81,26 @@ class MCS{
         const int N_COLS;
         const int N_STACKS;
 
+        //Applied during update
+        glm::vec3 externalAcceleration;
+        glm::vec3 externalForce;
+
+
+        void calcConnectionForcesOnParticles(
+            std::vector<glm::vec3> delta_v_offset,
+            std::vector<glm::vec3> delta_p_offset);
+        void calcAccelerationOfParticle(int i);
+        void checkCollisions(glm::vec3& pos, glm::vec3& vel) const;
+
         friend void testMCS();
 
-
-    private:
-        void calcConnectionForcesOnParticles(
-            std::vector<glm::vec3> delta_v_offset,// = std::vector<glm::vec3>(getNumberOfConnections(), glm::vec3(0,0,0)),
-            std::vector<glm::vec3> delta_p_offset);// = std::vector<glm::vec3>(getNumberOfConnections(), glm::vec3(0,0,0)));
-        void calcAccelerationOfParticles(glm::vec3 externalAcceleration = glm::vec3(0,0,0), glm::vec3 externalForce = glm::vec3(0,0,0));
-        void updateParticles(float dt);
-        void checkCollisions(glm::vec3& pos, glm::vec3& vel) const;
-        
-        //void connection2massIndices3D(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols, const int n_stacks);
-
-        // Calculate the stack in which the first mass (not necessary mass 1) of the pair is positioned
-        //int stackOfFirstMass(const int connection_index, const int prev_num_springs, const int one_stack_of_connections);
-
-        // Calculate the row in which first mass (not necessary mass 1) of the pair is positioned
-        //int rowOfFirstMass(const int connection_index, const int prev_num_springs, const int one_row_of_connections, const int one_stack_of_connections);
+    private:        
         void initParticles();
         void initConnections();
-
+        void initTriangles();
+        
         void triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int &particleIndex3);
 
         std::vector<CollisionPlane> collisionPlanes;
-
-        void initTriangles();
-
-
 };
 #endif

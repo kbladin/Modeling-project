@@ -10,6 +10,7 @@
 
 #include <shader.h>
 #include "connection2massindices.h"
+#include "NumericalMethods.h"
 #include "test.h"
 
 static void error_callback(int error, const char* description);
@@ -45,65 +46,63 @@ GLuint programID;
 // Vertex color data
 std::vector<glm::vec3> vertex_color_data;
 
-MCS mcs = MCS(100,2,2);
+
+MCS mcs = MCS(2,2,2);
 
 
 int main(void){
-    //Test
-    //testMCS();
-    //testMCS();
 
     initGLFW();
     initOpenGL();
-    //scale = 11;// (float) fmax(N_ROWS,N_COLS);
 
+    scale = 11;// (float) fmax(N_ROWS,N_COLS);
     ratio = width / (float) height;
+    
+    
+    mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
 
-    //mcs.addRotation(glm::vec3(0.0,1.0,1.0),-1.0f);
-    mcs.setAvgPosition(glm::vec3(0,40,0));
+    mcs.addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
+    mcs.setAvgPosition(glm::vec3(-5,0,0));
     mcs.setAvgVelocity(glm::vec3(0,0,0));
     mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
                                    -15.0f,      //positions the plane on normal
-                                    0.0f,      //elasticity
+                                    1.0f,      //elasticity
                                     0.0f);      //friction
 
     mcs.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -10.0f,      //positions the plane on normal
-                                    0.9f,      //elasticity
+                                    1.0f,      //elasticity
                                     0.3f);      //friction
 
+
+    std::vector<float> w;
+    w.push_back(1.0f);
+    w.push_back(3.0f);
+    w.push_back(3.0f);
+    w.push_back(1.0f);
+
+    RungeKutta rk4(w);
     
 
     // INIT SIMULATION 
+
     int simulations_per_frame = 5;
-    float T = 1.0f/(60.0f*simulations_per_frame);
+    float dt = 1.0f/(60.0f*simulations_per_frame);
 
-    float current_time;
-
+    float current_time = glfwGetTime();;
+    int FPS = 0;
     while (!glfwWindowShouldClose(window)){
-        current_time = glfwGetTime();
         glfwGetFramebufferSize(window, &width, &height);
-
         for (int i = 0; i < simulations_per_frame; ++i){   
             // Moving one mass 
-            double x_mouse;
-            double y_mouse;
-
+            double x_mouse, y_mouse;
             glfwGetCursorPos(window, &x_mouse, &y_mouse);
             glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
             //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
             //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
             //mcs.particles.velocities[0] = glm::vec3(0);
 
-            //glfwGetCursorPos(window, &x_mouse, &y_mouse);
-            //glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
-            //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],10));
-            //mcs.getParticle(0).writePosition(glm::vec3(pos2d[0],pos2d[1],10.0f));
-            //mcs.getParticle(5).writePosition(glm::vec3(pos2d[0],pos2d[1],16.0f));
-            //velocities[0][write_buffer] = glm::vec2(0.0f, 0.0f);
-
-            //float scalex = scale*ratio;
-            mcs.update(T);
+            rk4.update(mcs,dt);
         }
 
         // DRAW
@@ -113,14 +112,20 @@ int main(void){
         glfwSwapBuffers(window);
         glfwPollEvents();
 
+        // Print FPS
+        ++FPS;
+        if((glfwGetTime() - current_time) > 1){
+            std::string title = "Elastic materials, ";
+            std::ostringstream ss;
+            ss << FPS;
+            std::string s(ss.str());
+            title.append(s);
+            title.append(" FPS");
+            glfwSetWindowTitle (window,  title.c_str());
+            FPS = 0;
+            current_time = glfwGetTime();
+        }
 
-        std::string title = "Elastic materials, ";
-        std::ostringstream ss;
-        ss << 1/(glfwGetTime() - current_time);
-        std::string s(ss.str());
-        title.append(s);
-        title.append(" FPS");
-        glfwSetWindowTitle (window,  title.c_str());
     }
     cleanUpGLFW();
     cleanUpOpenGl();
@@ -169,7 +174,7 @@ void initGLFW(){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create window
-    window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "Elastic materials", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -336,43 +341,7 @@ void draw(){
     glm::mat4 V = translate * rotate;
     glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
 
-
     glm::mat4 MVP = P*V*M;
-    
-
-    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
-    glBindVertexArray(vertexArray);
- 
-    // Bind position buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
-    //upload data to GPU
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.particles.positions.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
- 
-    // Bind color buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
-    //upload data to GPU
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertex_color_data.size(), &vertex_color_data[0], GL_STATIC_DRAW);
- 
-    //BIND SHADER HERE
-    glUseProgram(programID);
- 
-    glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
-  
-    glViewport(0, 0, width, height);
-
-    // Draw the triangles !
-    glDrawArrays(GL_POINTS, 0, mcs.particles.positions.size());
- 
-    //unbind
-    glBindVertexArray(0);
-    
-    //UNBIND SHADER HERE
-    glUseProgram(0);
-
-
-
 
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

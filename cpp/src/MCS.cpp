@@ -7,6 +7,9 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
 	initParticles();
     initConnections();
     initTriangles();
+
+    externalAcceleration = glm::vec3(0,0,0);
+    externalForce = glm::vec3(0,0,0);
 }
 
 void MCS::initParticles(){
@@ -67,8 +70,8 @@ void MCS::initConnections(){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         
         connections.lengths[i] = 1.0f;
-        connections.springConstants[i] = 700.0f;
-        connections.damperConstants[i] = 5.0f;
+        connections.springConstants[i] = 5000.0f;
+        connections.damperConstants[i] = 20.0f;
         connections.particle1[i] = p_index1;
         connections.particle2[i] = p_index2;
     }
@@ -94,6 +97,7 @@ void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, 
     collisionPlanes.push_back(cp);
 }
 
+
 void MCS::initTriangles(){
     const int n_plane1 = 2*((N_ROWS-1)*(N_COLS-1));
     const int n_plane2 = n_plane1;
@@ -117,90 +121,6 @@ void MCS::initTriangles(){
             triangles.triangleIndices[ti].idx3);
     }
 }
-
-void MCS::update(float dt, glm::vec3 externalAcceleration){
-
-    std::vector<float> w;
-    w.push_back(1.0f);
-    w.push_back(3.0f);
-    w.push_back(3.0f);
-    w.push_back(1.0f);
-
-    float wSum = 0.0f;
-    for (int i = 0; i < w.size(); ++i){
-        wSum += w[i];
-    }
-
-    //Declare memory
-    int p1,p2;
-
-    std::vector<glm::vec3> delta_v_offsets(getNumberOfConnections(),glm::vec3(0,0,0));
-    std::vector<glm::vec3> delta_p_offsets(getNumberOfConnections(),glm::vec3(0,0,0));
-    std::vector<std::vector<glm::vec3> > ka(w.size());
-    std::vector<std::vector<glm::vec3> > kv(w.size());
-    for (int i = 0; i < w.size(); ++i){
-        ka[i] = std::vector<glm::vec3>(getNumberOfParticles(), glm::vec3(0,0,0));
-        kv[i] = std::vector<glm::vec3>(getNumberOfParticles(), glm::vec3(0,0,0));
-    }
-
-    /* ------------------------- */
-
-
-    // RUNGE KUTTA 4
-    for (int k = 0; k < w.size(); ++k){
-
-        //Calc offsets
-        if (k>0){
-            for (int i = 0; i < getNumberOfConnections(); ++i){
-                p1 = connections.particle1[i];
-                p2 = connections.particle2[i];
-                delta_v_offsets[i] = (ka[k-1][p1] - ka[k-1][p2]) * dt / w[k];
-                delta_p_offsets[i] = delta_v_offsets[i] * dt / w[k];
-            }
-        }
-
-        //Calc accelerations
-
-        calcConnectionForcesOnParticles(delta_v_offsets, delta_p_offsets);
-        calcAccelerationOfParticles(glm::vec3(0,-1,0)*9.82f);
-
-        for (int i = 0; i < getNumberOfParticles(); ++i){
-            ka[k][i] = particles.accelerations[i];
-            kv[k][i] = particles.velocities[i] + ka[k][i] * dt;
-        }
-    }
-
-    //Update velocities and positions
-    glm::vec3 new_position(0,0,0);
-    glm::vec3 new_velocity(0,0,0);
-    glm::vec3 delta_v(0,0,0);
-    glm::vec3 delta_p(0,0,0);
-    for (int i = 0; i < getNumberOfParticles(); ++i){
-
-        //Calc new position and velocity
-        for (int wi = 0; wi < w.size(); ++wi){
-            delta_v += ka[wi][i] * w[wi];
-            delta_p += kv[wi][i] * w[wi];
-        }
-        delta_v *= dt/wSum;
-        delta_p *= dt/wSum;
-
-        new_velocity = particles.velocities[i] + delta_v;
-        new_position = particles.positions[i] + delta_p;
-        
-
-        //Check collisions with collision planes
-        checkCollisions(new_position, new_velocity);
-
-        //Set new position and velocity
-        particles.velocities[i] = new_velocity;
-        particles.positions[i] = new_position;
-    }
-    //glm::vec3 a = particles.positions[0];
-    //std::cout << "pos: " << a[0] << ", " << a[1] << ", " << a[2] << std::endl;
-    //updateParticles(dt);
-}
-
 
 void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset, std::vector<glm::vec3> delta_p_offset){
     glm::vec3 delta_p;
@@ -236,38 +156,16 @@ void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset,
     }
 }
 
-void MCS::calcAccelerationOfParticles(glm::vec3 externalAcceleration, glm::vec3 externalForce){
-    for (int i = 0; i < getNumberOfParticles(); ++i){
-        particles.accelerations[i] = 
-            (particles.forces[i] + externalForce)/particles.masses[i] + 
-            externalAcceleration;
+void MCS::calcAccelerationOfParticle(int i){
+    particles.accelerations[i] = 
+        (particles.forces[i] + externalForce)/particles.masses[i] + 
+        externalAcceleration;
 
-        //Reset forces
-        particles.forces[i][0] = 0.0f;
-        particles.forces[i][1] = 0.0f;
-        particles.forces[i][2] = 0.0f;
-    }
-}
+    //Reset forces
+    particles.forces[i][0] = 0.0f;
+    particles.forces[i][1] = 0.0f;
+    particles.forces[i][2] = 0.0f;
 
-
-void MCS::updateParticles(float dt){
-    //Allocate memory for two new position and velocity
-    glm::vec3 new_position;
-    glm::vec3 new_velocity;
-
-
-    for (int i = 0; i < getNumberOfParticles(); ++i){
-        //Calc new position and velocity
-        new_velocity = particles.velocities[i] + particles.accelerations[i] * dt;
-        new_position = particles.positions[i] + new_velocity * dt;
-
-        //Check collisions with collision planes
-        checkCollisions(new_position, new_velocity);
-
-        //Set new position and velocity
-        particles.velocities[i] = new_velocity;
-        particles.positions[i] = new_position;
-    }
 }
 
 void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
