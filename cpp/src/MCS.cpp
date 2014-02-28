@@ -254,7 +254,7 @@ void MCS::updateNormals(){
     }
 
     for (int i = 0; i < n_particles; ++i){
-        particles.normals[i] = glm::normalize(particles.normals[i]);
+        particles.normals[i] = glm::normalize(particles.normals[i])*0.001f;
     }
 }
 

@@ -42,13 +42,16 @@ GLint M_loc = -1;
 GLint V_loc = -1;
 GLint MV_loc = -1;
 
+GLint lightPos_loc = -1;
+GLint lightColor_loc = -1;
+
 GLuint programID;
 
 // Vertex color data
 std::vector<glm::vec3> vertex_color_data;
 
 
-MCS mcs = MCS(10,2,10);
+MCS mcs = MCS(10,20,2);
 
 
 int main(void){
@@ -291,6 +294,9 @@ bool initOpenGL(){
     V_loc = glGetUniformLocation( programID, "V");
     M_loc = glGetUniformLocation( programID, "M");
 
+    lightPos_loc = glGetUniformLocation( programID, "lightPos_worldSpace");
+    lightColor_loc = glGetUniformLocation( programID, "lightColor");
+
 
     
     glEnable(GL_DEPTH_TEST);
@@ -363,6 +369,9 @@ void draw(){
 
     glm::mat4 MVP = P*V*M;
 
+    glm::vec3 lightPos = glm::vec3(10,10,0);
+    glm::vec3 lightColor = glm::vec3(1,1,1);
+
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -395,6 +404,9 @@ void draw(){
     glUniformMatrix4fv(M_loc, 1, GL_FALSE, &M[0][0]);
     glUniformMatrix4fv(MV_loc, 1, GL_FALSE, &MV[0][0]);
     glUniformMatrix4fv(V_loc, 1, GL_FALSE, &V[0][0]);
+
+    glUniform3fv(lightPos_loc, 1, &lightPos[0]);
+    glUniform3fv(lightColor_loc, 1, &lightColor[0]);
 
     // Index buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
