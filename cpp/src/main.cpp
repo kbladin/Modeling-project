@@ -47,7 +47,7 @@ GLuint programID;
 std::vector<glm::vec3> vertex_color_data;
 
 
-MCS mcs = MCS(2,2,2);
+MCS mcs = MCS(20,7,2);
 
 
 int main(void){
@@ -62,7 +62,7 @@ int main(void){
     mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
 
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
-    mcs.setAvgPosition(glm::vec3(-5,0,0));
+    mcs.setAvgPosition(glm::vec3(-5,0,-10));
     mcs.setAvgVelocity(glm::vec3(0,0,0));
     mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
                                    -15.0f,      //positions the plane on normal
@@ -103,7 +103,7 @@ int main(void){
             //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
             //mcs.particles.velocities[0] = glm::vec3(0);
 
-            ee.update(mcs,dt);
+            rk4.update(mcs,dt);
         }
 
         // DRAW
