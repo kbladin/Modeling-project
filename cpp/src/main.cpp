@@ -18,9 +18,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 void initGLFW();
 bool initOpenGL();
+
 void cleanUpGLFW();
-void cleanUpOpenGl();
-void draw();
+
+
 
 static std::ostream& operator<<(std::ostream& os, const glm::vec3& vec){
     return os << "(" << vec[0] << ", " << vec[1] << ", " << vec[2] << ")";
@@ -34,26 +35,43 @@ GLFWwindow* window;
 
 
 // THIS IS USED ONLY FOR MODERN OPENGL
-GLuint vertexArray = GL_FALSE;
-GLuint vertexPositionBuffer = GL_FALSE;
-GLuint vertexColorBuffer = GL_FALSE;
-GLuint elementBuffer = GL_FALSE;
+class OpenGL_drawable {
+public:
+    OpenGL_drawable(){
+        vertexArray = GL_FALSE;
+        vertexPositionBuffer = GL_FALSE;
+        vertexColorBuffer = GL_FALSE;
+        elementBuffer = GL_FALSE;
 
-GLint MVP_loc = -1;
+        MVP_loc = -1;
+    }
 
-GLuint programID;
+    GLuint vertexArray;
+    GLuint vertexPositionBuffer;
+    GLuint vertexColorBuffer;
+    GLuint elementBuffer;
 
-// Vertex color data
-std::vector<glm::vec3> vertex_color_data;
+    GLint MVP_loc;
 
+    GLuint programID;
+    // Vertex color data
+    std::vector<glm::vec3> vertex_color_data;    
+};
 
-MCS mcs = MCS(20,7,2);
+bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs);
+void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
+void cleanUpOpenGl(OpenGL_drawable& openGL_drawable);
+
 
 
 int main(void){
 
+    MCS mcs = MCS(20,7,2);
+    OpenGL_drawable openGL_drawable;
+
     initGLFW();
     initOpenGL();
+    initOpenGL(openGL_drawable, mcs);
 
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     ratio = width / (float) height;
@@ -107,7 +125,7 @@ int main(void){
         }
 
         // DRAW
-        draw();
+        draw(openGL_drawable, mcs);
 
         //Swap draw buffers
         glfwSwapBuffers(window);
@@ -129,7 +147,7 @@ int main(void){
 
     }
     cleanUpGLFW();
-    cleanUpOpenGl();
+    cleanUpOpenGl(openGL_drawable);
 }
 
 static void error_callback(int error, const char* description){
@@ -213,27 +231,33 @@ bool initOpenGL(){
     // Current OpenGL version    
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
+
+    return true;
+}
+
+
+bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-        vertex_color_data.push_back(glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX));
+        openGL_drawable.vertex_color_data.push_back(glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX));
     }
 
     // Generate the element buffer
-    glGenBuffers(1, &elementBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+    glGenBuffers(1, &openGL_drawable.elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGL_drawable.elementBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.triangles.triangleIndices[0], GL_STATIC_DRAW);
 
     //generate the VAO
-    glGenVertexArrays(1, &vertexArray);
+    glGenVertexArrays(1, &openGL_drawable.vertexArray);
 
     // Create and compile the shader
-    programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
+    openGL_drawable.programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
-    glBindVertexArray(vertexArray);
+    glBindVertexArray(openGL_drawable.vertexArray);
  
     //generate VBO for vertex positions
-    glGenBuffers(1, &vertexPositionBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
+    glGenBuffers(1, &openGL_drawable.vertexPositionBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexPositionBuffer);
     //upload data to GPU
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.particles.positions.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
@@ -247,10 +271,10 @@ bool initOpenGL(){
     );
  
     //generate VBO for vertex colors
-    glGenBuffers(1, &vertexColorBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
+    glGenBuffers(1, &openGL_drawable.vertexColorBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
     //upload data to GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertex_color_data.size(), &vertex_color_data[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * openGL_drawable.vertex_color_data.size(), &openGL_drawable.vertex_color_data[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(
         1,                  // attribute 1. No particular reason for 1, but must match the layout in the shader.
@@ -269,7 +293,7 @@ bool initOpenGL(){
  
     //GET UNIFORM LOCATION FOR MVP MATRIX HERE
     //Matrix_Loc = sgct::ShaderManager::instance()->getShaderProgram( "xform").getUniformLocation( "MVP" );
-    MVP_loc = glGetUniformLocation( programID, "MVP");
+    openGL_drawable.MVP_loc = glGetUniformLocation( openGL_drawable.programID, "MVP");
 
     
     glEnable(GL_DEPTH_TEST);
@@ -282,7 +306,7 @@ bool initOpenGL(){
 
 }
 
-void draw(){
+void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
 
     // DRAW OLD OPENGL
 /*
@@ -348,28 +372,28 @@ void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
-    glBindVertexArray(vertexArray);
+    glBindVertexArray(openGL_drawable.vertexArray);
  
     // Bind position buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexPositionBuffer);
     //upload data to GPU
     // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
     // (Not needed for cube but done anyway since this is how it will be done)
     glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
  
     // Bind color buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
     //upload data to GPU
     // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * vertex_color_data.size(), &vertex_color_data[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * openGL_drawable.vertex_color_data.size(), &openGL_drawable.vertex_color_data[0], GL_STATIC_DRAW);
     
     //BIND SHADER HERE
-    glUseProgram(programID);
+    glUseProgram(openGL_drawable.programID);
  
-    glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(openGL_drawable.MVP_loc, 1, GL_FALSE, &MVP[0][0]);
 
     // Index buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGL_drawable.elementBuffer);
 
     // Draw the triangles !
     glDrawElements(
@@ -390,15 +414,15 @@ void draw(){
 
 }
 
-void cleanUpOpenGl()
+void cleanUpOpenGl(OpenGL_drawable& openGL_drawable)
 {
     // Release memory
-    if(vertexPositionBuffer)
-        glDeleteBuffers(1, &vertexPositionBuffer);
-    if(vertexColorBuffer)
-        glDeleteBuffers(1, &vertexColorBuffer);
-    if(vertexArray)
-        glDeleteVertexArrays(1, &vertexArray);
+    if(openGL_drawable.vertexPositionBuffer)
+        glDeleteBuffers(1, &openGL_drawable.vertexPositionBuffer);
+    if(openGL_drawable.vertexColorBuffer)
+        glDeleteBuffers(1, &openGL_drawable.vertexColorBuffer);
+    if(openGL_drawable.vertexArray)
+        glDeleteVertexArrays(1, &openGL_drawable.vertexArray);
 }
 
 void cleanUpGLFW()
