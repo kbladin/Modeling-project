@@ -89,12 +89,10 @@ int main(void){
     int simulations_per_frame = 20;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
-    float current_time;
-
+    float current_time = glfwGetTime();;
+    int FPS = 0;
     while (!glfwWindowShouldClose(window)){
-        current_time = glfwGetTime();
         glfwGetFramebufferSize(window, &width, &height);
-
         for (int i = 0; i < simulations_per_frame; ++i){   
             // Moving one mass 
             double x_mouse, y_mouse;
@@ -114,14 +112,20 @@ int main(void){
         glfwSwapBuffers(window);
         glfwPollEvents();
 
+        // Print FPS
+        ++FPS;
+        if((glfwGetTime() - current_time) > 1){
+            std::string title = "Elastic materials, ";
+            std::ostringstream ss;
+            ss << FPS;
+            std::string s(ss.str());
+            title.append(s);
+            title.append(" FPS");
+            glfwSetWindowTitle (window,  title.c_str());
+            FPS = 0;
+            current_time = glfwGetTime();
+        }
 
-        std::string title = "Elastic materials, ";
-        std::ostringstream ss;
-        ss << 1/(glfwGetTime() - current_time);
-        std::string s(ss.str());
-        title.append(s);
-        title.append(" FPS");
-        glfwSetWindowTitle (window,  title.c_str());
     }
     cleanUpGLFW();
     cleanUpOpenGl();
@@ -170,7 +174,7 @@ void initGLFW(){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create window
-    window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "Elastic materials", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
