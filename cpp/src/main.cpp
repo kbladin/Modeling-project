@@ -47,10 +47,10 @@ void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
 
 
 int main(void){
+    int a = 0;
 
     initGLFW();
     initOpenGL();
-
 
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     
@@ -90,21 +90,19 @@ int main(void){
     int FPS = 0;
 
 
-    MCS od_mcs = mcs;
-    od_mcs.setAvgPosition(glm::vec3(-15,0,-10));
-
 
     OpenGL_Drawer od;
-    od.add(od_mcs);
-    od.vecDrawable[0].print();
+    od.add(mcs);
+    
 
 
-    OpenGL_drawable openGL_drawable;
-    initOpenGL(openGL_drawable, mcs);
-    openGL_drawable.print();
-
+    //OpenGL_drawable openGL_drawable;
+    //initOpenGL(openGL_drawable, mcs);
+    int b=0, frame = 0;
     while (!glfwWindowShouldClose(window)){
         
+        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
+
         for (int i = 0; i < simulations_per_frame; ++i){   
             // Moving one mass 
             //double x_mouse, y_mouse;
@@ -115,27 +113,32 @@ int main(void){
             //mcs.particles.velocities[0] = glm::vec3(0);
 
             rk4.update(mcs,dt);
-            rk4.update(od_mcs,dt);
         }
-        
+        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
         // DRAW
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
         glfwGetFramebufferSize(window, &width, &height);
+        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
         od.ratio = width / (float) height;
-        //od.draw();
+        od.draw();
+        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
 
         //draw(od.vecDrawable[0], od_mcs);
-        draw(od.vecDrawable[0], *od.vecMCS[0]);
-        draw(openGL_drawable, mcs);
+        //draw(od.vecDrawable[0], *od.vecMCS[0]);
+        //draw(openGL_drawable, mcs);
         //draw(openGL_drawable, od_mcs);
 
 
         //Swap draw buffers
         glfwSwapBuffers(window);
+        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
         glfwPollEvents();
+        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
 
         // Print FPS
         ++FPS;
+        ++frame;
         if((glfwGetTime() - current_time) > 1){
             std::string title = "Elastic materials, ";
             std::ostringstream ss;
@@ -230,6 +233,12 @@ bool initOpenGL(){
         fprintf(stderr, "Failed to initialize GLEW\n");
         return false;
     }
+    //OBS!!!!
+    //glewInit() causes OpenGL error 1280 (GL_INVALID_ENUM)
+    //this is probably safe to ignore if no other strange 
+    //things happen
+    int err = glGetError(); //1280
+
     glEnable(GL_DEPTH_TEST);
     // Current OpenGL version    
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
@@ -243,6 +252,8 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
         openGL_drawable.vertex_color_data.push_back(glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX));
     }
+
+    //glEnable(GL_DEPTH_TEST);
 
     // Generate the element buffer
     glGenBuffers(1, &openGL_drawable.elementBuffer);
