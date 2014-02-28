@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-#include <shader.h>
+
 #include "connection2massindices.h"
 #include "NumericalMethods.h"
 #include "test.h"
@@ -48,15 +48,20 @@ void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
 
 int main(void){
 
+    initGLFW();
+    initOpenGL();
+
     MCS mcs = MCS(20,7,2);
     OpenGL_drawable openGL_drawable;
 
-    initGLFW();
-    initOpenGL();
-    initOpenGL(openGL_drawable, mcs);
+    OpenGL_Drawer od;
+    od.add(mcs);
+
+    
+    //initOpenGL(openGL_drawable, mcs);
 
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
-    ratio = width / (float) height;
+    
     
     
     mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
@@ -92,12 +97,12 @@ int main(void){
     float current_time = glfwGetTime();;
     int FPS = 0;
     while (!glfwWindowShouldClose(window)){
-        glfwGetFramebufferSize(window, &width, &height);
+        
         for (int i = 0; i < simulations_per_frame; ++i){   
             // Moving one mass 
-            double x_mouse, y_mouse;
-            glfwGetCursorPos(window, &x_mouse, &y_mouse);
-            glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+            //double x_mouse, y_mouse;
+            //glfwGetCursorPos(window, &x_mouse, &y_mouse);
+            //glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
             //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
             //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
             //mcs.particles.velocities[0] = glm::vec3(0);
@@ -105,8 +110,15 @@ int main(void){
             rk4.update(mcs,dt);
         }
 
+
+
+        
         // DRAW
-        draw(openGL_drawable, mcs);
+        glfwGetFramebufferSize(window, &width, &height);
+        od.ratio = width / (float) height;
+        od.draw();
+
+        //draw(openGL_drawable, mcs);
 
         //Swap draw buffers
         glfwSwapBuffers(window);
@@ -159,7 +171,8 @@ void initGLFW(){
     glfwGetFramebufferSize(window, &width, &height);
     
     glfwSetCursorPos(window, 0,0);
-*/
+    */
+
 
     // INITIALISATION OF GLFW FOR MODERN OPENGL
 
@@ -190,14 +203,15 @@ bool initOpenGL(){
     // INITIALISATION OF OLD OPENGL
 
     //Init gl points
-    //glEnable( GL_POINT_SMOOTH );
-    //glEnable( GL_BLEND );
-    //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    //glPointSize( 5.0 );
+    /*
+    glEnable( GL_POINT_SMOOTH );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glPointSize( 5.0 );
 
     //Init gl lines
-    //glEnable( GL_LINE_SMOOTH );
-    
+    glEnable( GL_LINE_SMOOTH );
+    */
 
 
     // INITIALISATION OF MODERN OPENGL
@@ -208,7 +222,7 @@ bool initOpenGL(){
         fprintf(stderr, "Failed to initialize GLEW\n");
         return false;
     }
-
+    glEnable(GL_DEPTH_TEST);
     // Current OpenGL version    
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
@@ -275,10 +289,6 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     //GET UNIFORM LOCATION FOR MVP MATRIX HERE
     //Matrix_Loc = sgct::ShaderManager::instance()->getShaderProgram( "xform").getUniformLocation( "MVP" );
     openGL_drawable.MVP_loc = glGetUniformLocation( openGL_drawable.programID, "MVP");
-
-    
-    glEnable(GL_DEPTH_TEST);
-
 
     //UNBIND SHADER HERE
     // ------
