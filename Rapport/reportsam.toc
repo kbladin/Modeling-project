@@ -1,14 +1,22 @@
 \select@language {swedish}
 \thispagestyle {empty}
 \contentsline {chapter}{\numberline {1}Inledning}{1}
-\contentsline {section}{\numberline {1.1}Inledning}{1}
-\contentsline {section}{\numberline {1.2}Syfte}{1}
-\contentsline {chapter}{\numberline {2}Your title}{2}
-\contentsline {section}{\numberline {2.1}The argument}{2}
-\contentsline {section}{\numberline {2.2}A section}{4}
-\contentsline {section}{\numberline {2.3}Epilogue}{4}
-\contentsline {subsection}{\numberline {2.3.1}Last words}{4}
-\contentsline {subsection}{\numberline {2.3.2}The very last words}{4}
-\contentsline {chapter}{Litteraturf\"orteckning}{4}
-\contentsline {chapter}{\numberline {A}Proof of\dots }{5}
-\contentsline {chapter}{\numberline {B}Second proof of\dots }{7}
+\contentsline {section}{\numberline {1.1}Syfte}{1}
+\contentsline {chapter}{\numberline {2}Metod}{2}
+\contentsline {section}{\numberline {2.1}Kraftekvationen}{2}
+\contentsline {section}{\numberline {2.2}Matlab}{2}
+\contentsline {section}{\numberline {2.3}C++ osv.}{2}
+\contentsline {chapter}{\numberline {3}Resultat}{3}
+\contentsline {chapter}{\numberline {4}Diskussion}{4}
+\contentsline {chapter}{\numberline {5}Exempel fr\r an Anna}{5}
+\contentsline {section}{\numberline {5.1}Punktlista och n\r agot mysko}{5}
+\contentsline {section}{\numberline {5.2}Tabeller}{5}
+\contentsline {section}{\numberline {5.3}Figurer/Bilder}{5}
+\contentsline {section}{\numberline {5.4}Ekvationer}{6}
+\contentsline {section}{\numberline {5.5}A section}{6}
+\contentsline {section}{\numberline {5.6}Epilogue}{7}
+\contentsline {subsection}{\numberline {5.6.1}Last words}{7}
+\contentsline {subsection}{\numberline {5.6.2}The very last words}{7}
+\contentsline {chapter}{Litteraturf\"orteckning}{7}
+\contentsline {chapter}{\numberline {A}Proof of\dots }{8}
+\contentsline {chapter}{\numberline {B}Second proof of\dots }{10}

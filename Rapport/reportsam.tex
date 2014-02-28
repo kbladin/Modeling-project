@@ -2,7 +2,7 @@
 
 %\graphicspath{{figures/}}
 
-
+%Inkluderar olika paket
 \usepackage{times}  
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -12,6 +12,8 @@
 \usepackage{latexsym}
 \usepackage{url}
 \usepackage{babel}
+\usepackage{titlesec}
+\usepackage[affil-it]{authblk}
 
 \headsep          0.25in
 \headheight       12pt
@@ -33,31 +35,35 @@
     {Innehållsförteckning}
 }
 
+%För att få bra numrering och inte att det ska stå Kapitel 1
+\titleformat{\chapter}
+  {\Large\bfseries} % format
+  {}                % label
+  {0pt}             % sep
+  {\huge}           % before-code
+%
+
 \begin{document}
 
 \pagestyle{empty}
 
 %----------------------------- Front matter of the document
-\title{Elastiska Material}
-\date{}
-\author{Martin Gråd}
 
+%Framsidan
+\title{Simulering av Elastiska Material}
+%\date{}
+\author{Kalle Bladin\\Erik Broberg\\Emma Forsling Parborg\\Martin Gråd}
+
+\affil{Linköpings Universitet}
 \maketitle
 
+%Sammanfattning
 \begin{abstract}
-Cum M.~Cicero consul Nonis Decembribus senatum in aede
-Iovis Statoris consuleret, quid de iis coniurationis Catilinae
-sociis fieri placeret, qui in custodiam traditi essent, factum
-est, ut duae potissimum sententiae proponerentur, una D.~Silani consulis
-designati, qui morte multandos illos censebat,
-altera C.~Caesaris, qui illos publicatis bonis per municipia
-Italiae distribueudos ac vinculis sempiternis tenendos existimabat. Cum
-autem plures senatores ad C.~Caesaris quam ad
-D.~Silani sententiam inclinare viderentur, M.~Cicero ea, quae
-infra legitur, oratione Silani sententiam commendare studuit.
+Här ska sammanfattningen skrivas in
 \vfill
 \end{abstract}
 
+%Innehållsförteckning, Figurer, Tabeller
 \tableofcontents  % chapter with the table of contents
 \addtocontents{toc}{\protect\thispagestyle{empty}}
 \listoffigures    % chapter with the list of figures
@@ -66,119 +72,99 @@ infra legitur, oratione Silani sententiam commendare studuit.
 \addtocontents{lot}{\protect\thispagestyle{empty}}
 
 %----------------------------- Body of the document
-
 \pagestyle{plain}
 
+%1. Inledning
 \chapter{Inledning}
+Inledande text är alltid lite trevligt
 \setcounter{page}{1}
 
-\section{Inledning}
+  \section{Syfte}
+  Ett syfte är sitter aldrig fel det med.
 
-Video, patres conscripti, in me omnium vestrum ora atque oculos esse
-conversos, video vos non solunn de vestro ac rei publicae, verum etiam,
-si id depulsum sit, de meo periculo esse sollicitos. 
+% 2. Metod
+\chapter{Metod}
+Inledningstext för metoden
+  \section{Kraftekvationen} 
+  Åh den var så kraftig
+  
+  \section{Matlab}
+  Ett annat ord för matsal
+  
+  \section{C++ osv.}
+  men nu händer de riktiga grejerna
+
+% 3. Resultat
+\chapter{Resultat}
+WOW, nämen vad trevlig ;) \\Dags att byta rad\\ Byta stycke\\\\nu går det bra det här
+
+% 4. Diskussion
+\chapter{Diskussion}
+Nja men nu går det väll lite överstyr
+
+
+% Lite LATEX-kommandon
+\chapter{Exempel från Anna}
+
+%Punktlista
+\section{Punktlista och något mysko}
+Här kommer nu en punktlista skapas
 \begin{itemize}
-\item In Catilinam I
-\item In Catilinam II
-\item In Catilinam III
-\item In Catilinam IV
+  \item In Catilinam I
+  \item In Catilinam II
+  \item In Catilinam III
+  \item In Catilinam IV
 \end{itemize}
-Est mihi iucunda in
-malis et grata in dolore vestra erga me voluntas, sed eam, per deos
-inmortales, deponite atque obliti salutis meae de vobis ac de vestris
-liberis cogitate \cite{AbTaRu:54},  \cite{Abl:56}, \cite{Keo:58} and \cite{Pow:85}. Mihi si haec condicio consulatus data est, ut omnis
-acerbitates, onunis dolores cruciatusque perferrem, feram non solum
-fortiter, verum etiam lubenter, dum modo meis laboribus vobis populoque
-Romano dignitas salusque pariatur.
+Var den inte fin.\\
+Vet inte riktigt vad detta gör?\\
+liberis cogitate \cite{AbTaRu:54},  \cite{Abl:56}, \cite{Keo:58} and \cite{Pow:85}. 
 
-
-\section{Syfte}
-
-Ego sum ille consul, patres
-conscripti, cui non forum, iu quo omnis aequitas continetur, non campus
-consularibus auspiciis consecratus, non curia, summum auxilium omnium
-gentium, non domus, commune perfugium, non lectus ad quietem datus, non
-denique haec sedes honoris [sella curulis] umquam vacua mortis periculo
-atque insidiis fuit. 
-
-
-\chapter{Your title}
-
- Ego multa tacui, multa pertuli, multa concessi,
-multa meo quodam dolore in vestro timore sanavi. Nunc si hunc exitum
-consulatus mei di inmortales esse voluerunt, ut vos populumque Romanum
-ex caede miserrima, coniuges liberosque vestros virginesque Vestales ex
-acerbissima vexatione, templa atque delubra, hanc pulcherrimam patriam
-omnium nostrum ex foedissima flamma, totam Italiam ex bello et vastitate
-eriperem, quaecumque mihi uni proponetur fortuna, subeatur. Etenim, si
-P.~Lentulus suum nomen inductus a vatibus fatale ad perniciem rei
-publicae fore putavit, cur ego non laeter meum consulatum ad salutem
-populi Romani prope fatalem extitisse?
-
+%Tabeller
+\section{Tabeller}
+Nu ska jag skapa en UNDERBAR tabell.\\ 
+Jag kan ju till och med referera till den.(\ref{table_example}) %verkar dock lite buggig, blir ? då och då
 \begin{table}[htbp]
-  \caption{Heading centred.}
-  \label{table_example}
-  \begin{tabular*}{\hsize}{lllll}
-\hline
-Xxxxx & Xxxxx & Xxxx & Xxxxx & Xxxxx \\
-      &       &      &       & xxxx  \\
-\hline
-X     & X     &      & XXX   &       \\
-XX    & XXX   & XX   & X     & XX    \\
-XXX   & X     & X    & XXX   & XXX   \\
-XXXX  & XX    &      & XX    & X     \\
-X XX  & XXX   & XX   & XXX   & XXXXX \\
-\hline
-  \end{tabular*}
+    \caption{Heading centred.}
+    \label{table_example}
+    \begin{tabular*}{\hsize}{lllll}
+      \hline %streck
+      Emma & Martin & Kalle & Erik & XXXX\\
+      Forsling & Gråd & Bladin & Broberg & xxxx  \\
+      \hline
+      X     & X     &      & XXX   &       \\
+      XX    & XXX   & XX   & X     & XX    \\
+      XXX   & X     & X    & XXX   & XXX   \\
+      XXXX  & XX    &      & XX    & X     \\
+      X XX  & XXX   & XX   & XXX   & XXXXX \\
+      \hline
+    \end{tabular*}
 \end{table}
 
-
+%Bilder
+\section{Figurer/Bilder}
 \begin{figure}
-\begin{center}
+  \begin{center}
     \includegraphics[width=11cm]{Figures/block_simulink.eps} 
-\end{center}
-\caption{Example of figure}
-\label{model_block}
+  \end{center}
+  \caption{Example of figure}
+  \label{model_block}
 \end{figure}
 
 Figure \ref{model_block} is not by Cicero.
-Multa meo quodam dolore in vestro timore sanavi. Nunc si hunc exitum
-consulatus mei di inmortales esse voluerunt, ut vos populumque Romanum
-ex caede miserrima, coniuges liberosque vestros virginesque Vestales ex
-acerbissima vexatione, templa atque delubra, hanc pulcherrimam patriam
-omnium nostrum ex foedissima flamma, totam Italiam ex bello et vastitate
-eriperem, quaecumque mihi uni proponetur fortuna, subeatur. Etenim, si
-P.~Lentulus suum nomen inductus a vatibus fatale ad perniciem rei
-publicae fore putavit, cur ego non laeter meum consulatum ad salutem
-populi Romani prope fatalem extitisse?
 
-
-\section{The argument}
+%Ekvationer
+\section{Ekvationer}
 Some words might be appropriate describing equation \ref{e1}, if we
 had but time and space enough.
-\begin{equation}
-\frac{\partial F}{\partial
-t}=D\frac{\partial^2 F}{\partial x^2},
-\label{e1}
-\end{equation}
-Quare, patres conscripti, consulite vobis, prospicite patriae,
-conservate vos, coniuges, liberos fortunasque vestras, populi Romani
-nomen salutemque defendite; mihi parcere ac de me cogitare desinite. Nam
-primum debeo sperare omnis deos, qui huic urbi praesident, pro eo mihi,
-ac mereor, relaturos esse gratiam; deinde, si quid obtigerit, aequo
-animo paratoque moriar. Nam neque turpis mors forti viro potest accidere
-neque immatura consulari nec misera sapienti. Nec tamen ego sum ille
-ferreus, qui fratris carissimi atque amantissimi praesentis maerore non
-movear horumque omnium lacrumis, a quibus me circumsessum videtis Neque
-meam mentem non domum saepe revocat exanimata uxor et abiecta metu filia
-et parvulus filius quem mihi videtur amplecti res publica tamquam ob
-sidem consulatus mei, neque ille, qui expectans huius exitum diei stat
-in conspectu meo, gener. Moveo his rebus omnibus, sed in eam partem, uti
-salvi sint vobiscum omnes, etiamsi me vis aliqua oppresserit, potius,
-quam et illi et nos una rei publicae peste pereamus.
 
-Quare, patres conscripti, incumbite ad salutem rei publicae,
-circumspicite omnes procellas, quae inpendent, nisi providetis. Non
+\begin{equation}
+  \frac{\partial F}{\partial
+  t}=D\frac{\partial^2 F}{\partial x^2},
+  \label{e1}
+\end{equation}
+%Vet inte riktigt vad denna våg ska göra? Och sen är det bara massor text och lite till bilder ekvationer
+%Kanske har med referenser att göra men hittar inte det i dokumentet!!!!!
+
 Ti.~Gracchus, quod iterum tribunus plebis fieri voluit, non
 C.~Gracchus, quod agrarios concitare conatus est, non L.~Saturninus,
 quod C.~Memmium occidit, in discrimen aliquod atque in vestrae
