@@ -51,19 +51,11 @@ int main(void){
     initGLFW();
     initOpenGL();
 
-    MCS mcs = MCS(20,7,2);
-    OpenGL_drawable openGL_drawable;
-
-    OpenGL_Drawer od;
-    od.add(mcs);
-
-    
-    //initOpenGL(openGL_drawable, mcs);
 
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     
     
-    
+    MCS mcs = MCS(20,7,2);
     mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
     mcs.setAvgPosition(glm::vec3(-5,0,-10));
@@ -96,6 +88,21 @@ int main(void){
 
     float current_time = glfwGetTime();;
     int FPS = 0;
+
+
+    MCS od_mcs = mcs;
+    od_mcs.setAvgPosition(glm::vec3(-15,0,-10));
+
+
+    OpenGL_Drawer od;
+    od.add(od_mcs);
+    od.vecDrawable[0].print();
+
+
+    OpenGL_drawable openGL_drawable;
+    initOpenGL(openGL_drawable, mcs);
+    openGL_drawable.print();
+
     while (!glfwWindowShouldClose(window)){
         
         for (int i = 0; i < simulations_per_frame; ++i){   
@@ -108,17 +115,20 @@ int main(void){
             //mcs.particles.velocities[0] = glm::vec3(0);
 
             rk4.update(mcs,dt);
+            rk4.update(od_mcs,dt);
         }
-
-
-
         
         // DRAW
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfwGetFramebufferSize(window, &width, &height);
         od.ratio = width / (float) height;
-        od.draw();
+        //od.draw();
 
-        //draw(openGL_drawable, mcs);
+        //draw(od.vecDrawable[0], od_mcs);
+        draw(od.vecDrawable[0], *od.vecMCS[0]);
+        draw(openGL_drawable, mcs);
+        //draw(openGL_drawable, od_mcs);
+
 
         //Swap draw buffers
         glfwSwapBuffers(window);
@@ -137,10 +147,8 @@ int main(void){
             FPS = 0;
             current_time = glfwGetTime();
         }
-
     }
     cleanUpGLFW();
-    
 }
 
 static void error_callback(int error, const char* description){
@@ -358,9 +366,6 @@ void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
 
     glm::mat4 MVP = P*V*M;
-
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(openGL_drawable.vertexArray);

@@ -95,8 +95,8 @@ bool OpenGL_Drawer::add(MCS& mcs){
     vecMCS.push_back(&mcs);
     vecDrawable.push_back(openGL_drawable);
 
-    std::cout << "\nDONE openGL_drawable:" << std::endl;
-    openGL_drawable.print();
+    //std::cout << "\nDONE openGL_drawable:" << std::endl;
+    //openGL_drawable.print();
 
     return true;
 }

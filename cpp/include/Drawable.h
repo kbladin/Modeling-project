@@ -42,10 +42,12 @@ public:
     void draw();
     
     float ratio;
-private:
-    
+
     std::vector<MCS*> vecMCS;
     std::vector<OpenGL_drawable> vecDrawable;
+private:
+    
+    
 
 };
 
