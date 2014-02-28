@@ -12,6 +12,7 @@
 #include "connection2massindices.h"
 #include "NumericalMethods.h"
 #include "test.h"
+#include "debugtools.h"
 
 static void error_callback(int error, const char* description);
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -21,10 +22,6 @@ bool initOpenGL();
 void cleanUpGLFW();
 void cleanUpOpenGl();
 void draw();
-
-static std::ostream& operator<<(std::ostream& os, const glm::vec3& vec){
-    return os << "(" << vec[0] << ", " << vec[1] << ", " << vec[2] << ")";
-}
 
 int width, height;
 float ratio;
@@ -36,10 +33,14 @@ GLFWwindow* window;
 // THIS IS USED ONLY FOR MODERN OPENGL
 GLuint vertexArray = GL_FALSE;
 GLuint vertexPositionBuffer = GL_FALSE;
+GLuint vertexNormalBuffer = GL_FALSE;
 GLuint vertexColorBuffer = GL_FALSE;
 GLuint elementBuffer = GL_FALSE;
 
 GLint MVP_loc = -1;
+GLint M_loc = -1;
+GLint V_loc = -1;
+GLint MV_loc = -1;
 
 GLuint programID;
 
@@ -47,7 +48,7 @@ GLuint programID;
 std::vector<glm::vec3> vertex_color_data;
 
 
-MCS mcs = MCS(2,2,2);
+MCS mcs = MCS(10,2,10);
 
 
 int main(void){
@@ -70,7 +71,7 @@ int main(void){
                                     0.0f);      //friction
 
     mcs.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
-                                   -10.0f,      //positions the plane on normal
+                                   -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
                                     0.3f);      //friction
 
@@ -104,6 +105,8 @@ int main(void){
 
             rk4.update(mcs,dt);
         }
+
+        mcs.updateNormals();
 
         // DRAW
         draw();
@@ -213,7 +216,7 @@ bool initOpenGL(){
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-        vertex_color_data.push_back(glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX));
+        vertex_color_data.push_back(glm::vec3(0.5f,0.5f,0.5f) + 0.5f*(glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX)));
     }
 
     // Generate the element buffer
@@ -259,6 +262,21 @@ bool initOpenGL(){
         0,                  // stride
         reinterpret_cast<void*>(0) // array buffer offset
     );
+
+    //generate VBO for vertex normals
+    glGenBuffers(1, &vertexNormalBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexNormalBuffer);
+    //upload data to GPU
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.particles.normals.size(), &mcs.particles.normals[0], GL_STATIC_DRAW);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(
+        2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+        3,                  // size
+        GL_FLOAT,           // type
+        GL_FALSE,           // normalized?
+        0,                  // stride
+        reinterpret_cast<void*>(0) // array buffer offset
+    );
     
     // Unbind the current VAO
     glBindVertexArray(0);
@@ -269,6 +287,10 @@ bool initOpenGL(){
     //GET UNIFORM LOCATION FOR MVP MATRIX HERE
     //Matrix_Loc = sgct::ShaderManager::instance()->getShaderProgram( "xform").getUniformLocation( "MVP" );
     MVP_loc = glGetUniformLocation( programID, "MVP");
+    MV_loc = glGetUniformLocation( programID, "MV");
+    V_loc = glGetUniformLocation( programID, "V");
+    M_loc = glGetUniformLocation( programID, "M");
+
 
     
     glEnable(GL_DEPTH_TEST);
@@ -324,7 +346,6 @@ void draw(){
     }
     glEnd();    
 */
-
     //DRAW WITH MODERN OPENGL
 
     ratio = width / (float) height;
@@ -335,10 +356,9 @@ void draw(){
 
     glm::mat4 M = glm::mat4(1.0f);
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
-
     glm::mat4 translate = glm::translate(glm::vec3(0.0f,0.0f,-20.0f));
-
     glm::mat4 V = translate * rotate;
+    glm::mat4 MV = V * M;
     glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
 
     glm::mat4 MVP = P*V*M;
@@ -362,10 +382,19 @@ void draw(){
     // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
     glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * vertex_color_data.size(), &vertex_color_data[0], GL_STATIC_DRAW);
     
+    // Bind color buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexNormalBuffer);
+    //upload data to GPU
+    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.particles.normals[0], GL_STATIC_DRAW);
+
     //BIND SHADER HERE
     glUseProgram(programID);
  
     glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(M_loc, 1, GL_FALSE, &M[0][0]);
+    glUniformMatrix4fv(MV_loc, 1, GL_FALSE, &MV[0][0]);
+    glUniformMatrix4fv(V_loc, 1, GL_FALSE, &V[0][0]);
 
     // Index buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
@@ -378,8 +407,6 @@ void draw(){
      (void*)0           // element array buffer offset
     );
 
-
- 
     //unbind
     glBindVertexArray(0);
     
