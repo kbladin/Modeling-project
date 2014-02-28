@@ -4,6 +4,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "connection2massindices.h"
+#include "debugtools.h"
+
 
 /** Classes **/
 typedef struct{
@@ -18,6 +20,7 @@ typedef struct{
     std::vector<glm::vec3> accelerations;
     std::vector<glm::vec3> forces;
     std::vector<float> masses;
+    std::vector<glm::vec3> normals;
 } Particles;
 
 typedef struct{
@@ -37,6 +40,7 @@ typedef struct{
 
 typedef struct {
     std::vector<IndexedTriangle> triangleIndices;
+    std::vector<glm::vec3> normals;
 } Triangles;
 
 
@@ -51,6 +55,8 @@ class MCS{
         void addRotation(glm::vec3 axisOfRotation, float amount);
         void setAvgPosition(glm::vec3 pos);
         void setAvgVelocity(glm::vec3 pos);
+
+        void updateNormals();
 
         glm::vec3 centerOfMass() const;
         glm::vec3 averagePosition() const;
@@ -94,7 +100,8 @@ class MCS{
 
         friend void testMCS();
 
-    private:        
+    private:
+
         void initParticles();
         void initConnections();
         void initTriangles();

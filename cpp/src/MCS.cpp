@@ -21,6 +21,7 @@ void MCS::initParticles(){
     particles.accelerations = std::vector<glm::vec3>(numberOfParticles);
     particles.forces = std::vector<glm::vec3>(numberOfParticles);
     particles.masses = std::vector<float>(numberOfParticles);
+    particles.normals = std::vector<glm::vec3>(numberOfParticles);
 
     for (int i = 0; i < numberOfParticles; ++i){
         float x = i%N_COLS;
@@ -31,7 +32,8 @@ void MCS::initParticles(){
         particles.velocities[i]  = glm::vec3(0.f,0.f,0.f);
         particles.accelerations[i] = glm::vec3(0.f,0.f,0.f);
         particles.forces[i] = glm::vec3(0.f,0.f,0.f);
-        particles.masses[i] = 1.0f;    
+        particles.masses[i] = 1.0f;
+        particles.normals[i] = glm::vec3(1.0f,1.0f,1.0f);
     } 
 }
 
@@ -106,14 +108,15 @@ void MCS::initTriangles(){
     const int n_plane5 = 2*((N_COLS-1)*(N_STACKS-1));
     const int n_plane6 = n_plane5;
 
-    const int n_triangles =
+    int n_triangles =
         n_plane1 + n_plane2 + 
         n_plane3 + n_plane4 + 
         n_plane5 + n_plane6;
 
     triangles.triangleIndices = std::vector<IndexedTriangle>(n_triangles);
+    triangles.normals = std::vector<glm::vec3>(n_triangles);
+
     for(int ti = 0; ti < n_triangles; ++ti){
-        
         triangle2particleIndices(
             ti,
             triangles.triangleIndices[ti].idx1,
@@ -259,6 +262,30 @@ void MCS::setAvgVelocity(glm::vec3 vel){
     glm::vec3 toAdd = vel - avgVel;
     for (int i = 0; i < getNumberOfParticles(); ++i){
         particles.velocities[i] += toAdd;
+    }
+}
+
+void MCS::updateNormals(){
+    int n_triangles = triangles.triangleIndices.size();
+    int n_particles = particles.positions.size();
+    
+    glm::vec3 v1;
+    glm::vec3 v2;
+    glm::vec3 n;
+
+    // Calculate the triangle normals
+    for(int ti = 0; ti < n_triangles; ++ti){
+        v1 = particles.positions[triangles.triangleIndices[ti].idx2] - particles.positions[triangles.triangleIndices[ti].idx1];
+        v2 = particles.positions[triangles.triangleIndices[ti].idx3] - particles.positions[triangles.triangleIndices[ti].idx2];
+        //triangles.normals[ti] = glm::normalize(glm::cross(v1,v2));
+        n = glm::normalize(glm::cross(v1,v2));
+        particles.normals[triangles.triangleIndices[ti].idx1] += n;
+        particles.normals[triangles.triangleIndices[ti].idx2] += n;
+        particles.normals[triangles.triangleIndices[ti].idx3] += n;
+    }
+
+    for (int i = 0; i < n_particles; ++i){
+        particles.normals[i] = glm::normalize(particles.normals[i])*0.001f;
     }
 }
 
