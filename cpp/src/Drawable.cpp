@@ -46,8 +46,7 @@ bool OpenGL_Drawer::add(MCS& mcs){
     //generate the VAO
     glGenVertexArrays(1, &openGL_drawable.vertexArray);
 
-    // Create and compile the shader
-    openGL_drawable.programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
+    
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
     glBindVertexArray(openGL_drawable.vertexArray);
@@ -87,69 +86,66 @@ bool OpenGL_Drawer::add(MCS& mcs){
  
     //BIND SHADER HERE
     //glUseProgram(programID);
- 
-    //GET UNIFORM LOCATION FOR MVP MATRIX HERE
-    //Matrix_Loc = sgct::ShaderManager::instance()->getShaderProgram( "xform").getUniformLocation( "MVP" );
+    // Create and compile the shader
+    openGL_drawable.programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
+
     openGL_drawable.MVP_loc = glGetUniformLocation( openGL_drawable.programID, "MVP");
 
     vecMCS.push_back(&mcs);
     vecDrawable.push_back(openGL_drawable);
 
-    //std::cout << "\nDONE openGL_drawable:" << std::endl;
-    //openGL_drawable.print();
+    std::cout << "\nDONE openGL_drawable:" << std::endl;
+    openGL_drawable.print();
 
     return true;
 }
 
 void OpenGL_Drawer::draw(){
 	for (int i = 0; i < vecMCS.size(); ++i){
+        int c=0;
+
 		assert(vecMCS[i] != NULL);
 		const MCS& mcs = *vecMCS[i];
 		const OpenGL_drawable& openGL_drawable = vecDrawable[i];
 
-
 		
 	    // Do the matrix stuff
 	    float speed = 0.0f;
-
-
 	    glm::mat4 M = glm::mat4(1.0f);
 	    glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
-
 	    glm::mat4 translate = glm::translate(glm::vec3(0.0f,0.0f,-20.0f));
-
 	    glm::mat4 V = translate * rotate;
 	    glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
-
 	    glm::mat4 MVP = P*V*M;
 
-
-	    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	    
+        
+std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 	    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
+        std::cout << "openGL_drawable.vertexArray = " << openGL_drawable.vertexArray << std::endl;
 	    glBindVertexArray(openGL_drawable.vertexArray);
-	 
+std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 	    // Bind position buffer
 	    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexPositionBuffer);
 	    //upload data to GPU
 	    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
 	    // (Not needed for cube but done anyway since this is how it will be done)
 	    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
-	 
+std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 	    // Bind color buffer
 	    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
 	    //upload data to GPU
 	    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
 	    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * openGL_drawable.vertex_color_data.size(), &openGL_drawable.vertex_color_data[0], GL_STATIC_DRAW);
-	    
+std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 	    //BIND SHADER HERE
 	    glUseProgram(openGL_drawable.programID);
 	 
 	    glUniformMatrix4fv(openGL_drawable.MVP_loc, 1, GL_FALSE, &MVP[0][0]);
-
+std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 	    // Index buffer
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGL_drawable.elementBuffer);
-
+std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 	    // Draw the triangles !
 	    glDrawElements(
 	     GL_TRIANGLES,      // mode
@@ -157,7 +153,7 @@ void OpenGL_Drawer::draw(){
 	     GL_UNSIGNED_INT,   // type
 	     (void*)0           // element array buffer offset
 	    );
-
+std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 
 	 
 	    //unbind
@@ -165,7 +161,7 @@ void OpenGL_Drawer::draw(){
 	    
 	    //UNBIND SHADER HERE
 	    glUseProgram(0);
-	    
+std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 	}
 }
 

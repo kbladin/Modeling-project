@@ -60,16 +60,18 @@ int main(void){
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
     mcs.setAvgPosition(glm::vec3(-5,0,-10));
     mcs.setAvgVelocity(glm::vec3(0,0,0));
-    mcs.addCollisionPlane(glm::vec3(-1,1,0),    //normal of the plane
-                                   -15.0f,      //positions the plane on normal
-                                    1.0f,      //elasticity
-                                    0.0f);      //friction
-
     mcs.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -10.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
                                     0.3f);      //friction
 
+
+    
+    
+
+    // INIT SIMULATION 
+    int simulations_per_frame = 5;
+    float dt = 1.0f/(60.0f*simulations_per_frame);
 
     std::vector<float> w;
     w.push_back(1.0f);
@@ -79,16 +81,11 @@ int main(void){
 
     RungeKutta rk4(w);
     EulerExplicit ee;
-    
 
-    // INIT SIMULATION 
 
-    int simulations_per_frame = 5;
-    float dt = 1.0f/(60.0f*simulations_per_frame);
 
     float current_time = glfwGetTime();;
     int FPS = 0;
-
 
 
     OpenGL_Drawer od;
@@ -98,10 +95,9 @@ int main(void){
 
     //OpenGL_drawable openGL_drawable;
     //initOpenGL(openGL_drawable, mcs);
+    
     int b=0, frame = 0;
     while (!glfwWindowShouldClose(window)){
-        
-        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
 
         for (int i = 0; i < simulations_per_frame; ++i){   
             // Moving one mass 
@@ -114,27 +110,24 @@ int main(void){
 
             rk4.update(mcs,dt);
         }
-        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
+        
         // DRAW
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
         glfwGetFramebufferSize(window, &width, &height);
-        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
         od.ratio = width / (float) height;
         od.draw();
-        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
+        
 
         //draw(od.vecDrawable[0], od_mcs);
         //draw(od.vecDrawable[0], *od.vecMCS[0]);
+        //std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
         //draw(openGL_drawable, mcs);
-        //draw(openGL_drawable, od_mcs);
-
+        //std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
+        break;
 
         //Swap draw buffers
         glfwSwapBuffers(window);
-        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
         glfwPollEvents();
-        if(frame==0) std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
 
         // Print FPS
         ++FPS;
