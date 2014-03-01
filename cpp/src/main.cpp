@@ -17,6 +17,7 @@
 
 #include "Drawable.h"
 #include "MCS.h"
+#include "user_input.h"
 
 static void error_callback(int error, const char* description);
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -164,6 +165,8 @@ static void error_callback(int error, const char* description){
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
+
+    //PLAYBACK
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
         pause = !pause;
     }
@@ -176,6 +179,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_LEFT && action == GLFW_RELEASE)
         backward = false;
 
+
+    //MODIFICATION
+    if (key == GLFW_KEY_M && action == GLFW_PRESS){
+        float m = readFloat("Enter mass: ");
+        mcs->particles.setMasses(m, Particles::ALL);
+    }
+
+
+
+    //INITs
     if (key == GLFW_KEY_1 && action == GLFW_PRESS){
         delete mcs;
         openGL_drawable.deleteBuffers();
@@ -189,6 +202,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         mcs = createRollingDice();
         initOpenGL(openGL_drawable, *mcs);
     }
+
 
 }
 
@@ -277,6 +291,7 @@ bool initOpenGL(){
     }
 
     glEnable(GL_DEPTH_TEST);
+
     // Current OpenGL version    
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 

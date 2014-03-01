@@ -8,40 +8,53 @@
 
 
 /** Classes **/
-typedef struct{
+struct IndexedTriangle{
     int idx1;
     int idx2;
     int idx3;
-} IndexedTriangle;
+};
 
-typedef struct{
+struct Particles{
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> velocities;
     std::vector<glm::vec3> accelerations;
     std::vector<glm::vec3> forces;
     std::vector<float> masses;
     std::vector<glm::vec3> normals;
-} Particles;
 
-typedef struct{
+    static enum Select{
+        ALL = 0,
+        OUTSIDES,
+        EDGES,
+        CORNERS
+    } select;
+
+    void setMasses(float m, int select = 0){
+        for (int i = 0; i < masses.size(); ++i){
+            masses[i] = m;
+        }
+    }
+};
+
+struct Connections{
     std::vector<float> lengths;
     std::vector<float> springConstants;
     std::vector<float> damperConstants;
     std::vector<int> particle1;
     std::vector<int> particle2;
-} Connections;
+};
 
-typedef struct{
+struct CollisionPlane{
     glm::vec3 normal;
     float position;
     float elasticity;
     float friction;
-} CollisionPlane;
+};
 
-typedef struct {
+struct Triangles{
     std::vector<IndexedTriangle> triangleIndices;
     std::vector<glm::vec3> normals;
-} Triangles;
+};
 
 
 // The MCS - Mass Connection System
@@ -86,6 +99,8 @@ class MCS{
         const int N_ROWS;
         const int N_COLS;
         const int N_STACKS;
+
+       
 
         //Applied during update
         glm::vec3 externalAcceleration;
