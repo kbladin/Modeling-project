@@ -17,6 +17,10 @@ OpenGL_drawable::OpenGL_drawable(){
 }
 
 OpenGL_drawable::~OpenGL_drawable(){
+    deleteBuffers();
+}
+
+void OpenGL_drawable::deleteBuffers(){
     // Release memory
     if(vertexPositionBuffer)
         glDeleteBuffers(1, &vertexPositionBuffer);

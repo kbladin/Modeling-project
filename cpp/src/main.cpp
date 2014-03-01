@@ -41,7 +41,11 @@ bool backward = false;
 bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs);
 bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
 
+MCS * createFloppyThing();
+MCS * createRollingDice();
+
 MCS * mcs = NULL;
+OpenGL_drawable openGL_drawable;
 
 int main(void){
     int a = 0;
@@ -51,7 +55,7 @@ int main(void){
 
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     
-    
+  /*  
     mcs = new MCS(20,7,2);
     mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
@@ -61,8 +65,9 @@ int main(void){
                                    -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
                                     0.3f);      //friction
-
-
+*/
+    mcs = createFloppyThing();
+    
     
     
 
@@ -91,7 +96,7 @@ int main(void){
     
 
 
-    OpenGL_drawable openGL_drawable;
+    
     initOpenGL(openGL_drawable, *mcs);
     
     int b=0, frame = 0;
@@ -169,6 +174,21 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         backward = true;
     if (key == GLFW_KEY_LEFT && action == GLFW_RELEASE)
         backward = false;
+
+    if (key == GLFW_KEY_1 && action == GLFW_PRESS){
+        delete mcs;
+        openGL_drawable.deleteBuffers();
+        mcs = createFloppyThing();
+        initOpenGL(openGL_drawable, *mcs);
+    }
+
+    if (key == GLFW_KEY_2 && action == GLFW_PRESS){
+        delete mcs;
+        openGL_drawable.deleteBuffers();
+        mcs = createRollingDice();
+        initOpenGL(openGL_drawable, *mcs);
+    }
+
 }
 
 void initGLFW(){
@@ -490,3 +510,28 @@ void cleanUpGLFW()
     exit(EXIT_SUCCESS);
 }
 
+MCS * createFloppyThing(){
+    MCS * tmp_mcs = new MCS(20,7,2);
+    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
+    tmp_mcs->setAvgPosition(glm::vec3(-10,5,-10));
+    tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
+    tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                                   -5.0f,      //positions the plane on normal
+                                    1.0f,      //elasticity
+                                    0.3f);      //friction
+    return tmp_mcs;
+}
+
+MCS * createRollingDice(){
+    MCS * tmp_mcs = new MCS(2,2,2);
+    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),15.0f);
+    tmp_mcs->setAvgPosition(glm::vec3(-10,0,-10));
+    tmp_mcs->setAvgVelocity(glm::vec3(8,5,0));
+    tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                                   -5.0f,      //positions the plane on normal
+                                    1.0f,      //elasticity
+                                    0.3f);      //friction
+    return tmp_mcs;
+}

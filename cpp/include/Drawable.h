@@ -20,8 +20,9 @@
 class OpenGL_drawable {
 public:
     OpenGL_drawable();
-
     ~OpenGL_drawable();
+
+    void deleteBuffers();
 
     GLuint vertexArray;
     GLuint vertexPositionBuffer;
