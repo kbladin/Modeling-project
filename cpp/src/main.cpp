@@ -123,8 +123,6 @@ int main(void){
         //draw(od.vecDrawable[0], *od.vecMCS[0]);
         
         draw(openGL_drawable, mcs);
-        
-        break;
 
         //Swap draw buffers
         glfwSwapBuffers(window);
