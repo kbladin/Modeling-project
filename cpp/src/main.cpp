@@ -23,9 +23,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 void initGLFW();
 bool initOpenGL();
-
 void cleanUpGLFW();
-
 
 
 int width, height;
@@ -34,13 +32,16 @@ float scale;
 
 GLFWwindow* window;
 
+bool pause = false;
+bool forward = false;
+bool backward = false;
 
 
 
 bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs);
 bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
 
-
+MCS mcs = MCS(20,7,2);
 
 int main(void){
     int a = 0;
@@ -51,7 +52,7 @@ int main(void){
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     
     
-    MCS mcs = MCS(20,7,2);
+    
     mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     mcs.addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
     mcs.setAvgPosition(glm::vec3(-10,5,-10));
@@ -77,6 +78,7 @@ int main(void){
 
     RungeKutta rk4(w);
     EulerExplicit ee;
+    NumericalMethod * nm = &ee; //Make use of polymorphism
 
 
 
@@ -93,36 +95,29 @@ int main(void){
     initOpenGL(openGL_drawable, mcs);
     
     int b=0, frame = 0;
-    MCS mcs2(2,9,2);
-    mcs2.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    mcs2.addRotation(glm::vec3(0.0,1.0,1.0),5.0f);
-    mcs2.setAvgPosition(glm::vec3(-10,5,-10));
-    mcs2.setAvgVelocity(glm::vec3(0,0,0));
-    mcs2.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
-                                   -5.0f,      //positions the plane on normal
-                                    1.0f,      //elasticity
-                                    0.3f);      //friction
-
-    OpenGL_drawable openGL_drawable2;
-    initOpenGL(openGL_drawable2,mcs2);
-
+    
     while (!glfwWindowShouldClose(window)){
-
-        for (int i = 0; i < simulations_per_frame; ++i){   
-            // Moving one mass 
-            //double x_mouse, y_mouse;
-            //glfwGetCursorPos(window, &x_mouse, &y_mouse);
-            //glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
-            //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
-            //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
-            //mcs.particles.velocities[0] = glm::vec3(0);
-
-            ee.update(mcs,dt);
-            rk4.update(mcs2,dt);
+        
+        // Moving one mass 
+        //double x_mouse, y_mouse;
+        //glfwGetCursorPos(window, &x_mouse, &y_mouse);
+        //glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
+        //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
+        //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
+        //mcs.particles.velocities[0] = glm::vec3(0);
+        if(!pause){
+            for (int i = 0; i < simulations_per_frame; ++i){   
+                nm->update(mcs,dt);
+            }
         }
-
+        else{
+            for (int i = 0; i < simulations_per_frame; ++i){
+                if(forward) nm->update(mcs,dt/10.0f);
+                if(backward) nm->update(mcs,-dt/10.0f);
+            }
+        }
         mcs.updateNormals();
-        mcs2.updateNormals();
+
 
         // DRAW
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -134,7 +129,6 @@ int main(void){
         //if(!draw(od.vecDrawable[0], mcs)) break;
         //if(!draw(od.vecDrawable[0], *od.vecMCS[0])) break;
         if(!draw(openGL_drawable, mcs)) break;
-        if(!draw(openGL_drawable2, mcs2)) break;
 
         //Swap draw buffers
         glfwSwapBuffers(window);
@@ -164,6 +158,16 @@ static void error_callback(int error, const char* description){
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+        pause = !pause;
+    if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+        forward = true;
+    if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
+        forward = false;
+    if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+        backward = true;
+    if (key == GLFW_KEY_LEFT && action == GLFW_RELEASE)
+        backward = false;
 }
 
 void initGLFW(){
@@ -475,6 +479,7 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     }
     return true;
 }
+
 
 void cleanUpGLFW()
 {
