@@ -595,12 +595,12 @@ MCS * createRollingDice(){
 }
 
 MCS * createStandingSnake(){
-    int h = 300;
+    int h = 400;
     MCS * tmp_mcs = new MCS(h,2,2);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),50.0f);
-    tmp_mcs->setAvgPosition(glm::vec3(0,h/2-5,-15));
-    tmp_mcs->setAvgVelocity(glm::vec3(0,5,0));
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),0.0f);
+    tmp_mcs->setAvgPosition(glm::vec3(0,h/2-6,-15));
+    tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
