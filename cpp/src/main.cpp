@@ -502,8 +502,7 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
 }
 
 
-void cleanUpGLFW()
-{
+void cleanUpGLFW(){
     // Terminate glfw
     glfwDestroyWindow(window);
     glfwTerminate();
@@ -524,10 +523,10 @@ MCS * createFloppyThing(){
 }
 
 MCS * createRollingDice(){
-    MCS * tmp_mcs = new MCS(2,2,2);
+    MCS * tmp_mcs = new MCS(3,3,3);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),15.0f);
-    tmp_mcs->setAvgPosition(glm::vec3(-10,0,-10));
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),25.0f);
+    tmp_mcs->setAvgPosition(glm::vec3(-15,0,-10));
     tmp_mcs->setAvgVelocity(glm::vec3(8,5,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal

@@ -29,7 +29,7 @@ void main(){
 	float invDistSquare =  1.0f/(distanceSquare);
 
 	// Ambient light
-	float ambientBrightness = 0.1;
+	float ambientBrightness = 0.2;
 	vec3 ambientColor = vec3(1,1,1);
 	vec3 ambient = ambientColor * fragColor * ambientBrightness;
 	
