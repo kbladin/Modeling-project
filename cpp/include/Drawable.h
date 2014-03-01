@@ -28,7 +28,14 @@ public:
     GLuint vertexColorBuffer;
     GLuint elementBuffer;
 
+    GLuint vertexNormalBuffer;
+
     GLint MVP_loc;
+    GLint MV_loc;
+    GLint V_loc;
+    GLint M_loc;
+    GLint lightPos_loc;
+    GLint lightColor_loc;
 
     GLuint programID;
     // Vertex color data
