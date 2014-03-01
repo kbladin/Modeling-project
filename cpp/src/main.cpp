@@ -41,7 +41,7 @@ bool backward = false;
 bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs);
 bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
 
-MCS mcs = MCS(20,7,2);
+MCS * mcs = NULL;
 
 int main(void){
     int a = 0;
@@ -52,12 +52,12 @@ int main(void){
     scale = 11;// (float) fmax(N_ROWS,N_COLS);
     
     
-    
-    mcs.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    mcs.addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
-    mcs.setAvgPosition(glm::vec3(-10,5,-10));
-    mcs.setAvgVelocity(glm::vec3(0,0,0));
-    mcs.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+    mcs = new MCS(20,7,2);
+    mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+    mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
+    mcs->setAvgPosition(glm::vec3(-10,5,-10));
+    mcs->setAvgVelocity(glm::vec3(0,0,0));
+    mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
                                     0.3f);      //friction
@@ -92,7 +92,7 @@ int main(void){
 
 
     OpenGL_drawable openGL_drawable;
-    initOpenGL(openGL_drawable, mcs);
+    initOpenGL(openGL_drawable, *mcs);
     
     int b=0, frame = 0;
     
@@ -102,21 +102,21 @@ int main(void){
         //double x_mouse, y_mouse;
         //glfwGetCursorPos(window, &x_mouse, &y_mouse);
         //glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
-        //mcs.setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
-        //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
-        //mcs.particles.velocities[0] = glm::vec3(0);
+        //mcs->setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
+        //mcs->particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
+        //mcs->particles.velocities[0] = glm::vec3(0);
         if(!pause){
             for (int i = 0; i < simulations_per_frame; ++i){   
-                nm->update(mcs,dt);
+                nm->update(*mcs,dt);
             }
         }
         else{
             for (int i = 0; i < simulations_per_frame; ++i){
-                if(forward) nm->update(mcs,dt/10.0f);
-                if(backward) nm->update(mcs,-dt/10.0f);
+                if(forward) nm->update(*mcs,dt/10.0f);
+                if(backward) nm->update(*mcs,-dt/10.0f);
             }
         }
-        mcs.updateNormals();
+        mcs->updateNormals();
 
 
         // DRAW
@@ -128,7 +128,7 @@ int main(void){
 
         //if(!draw(od.vecDrawable[0], mcs)) break;
         //if(!draw(od.vecDrawable[0], *od.vecMCS[0])) break;
-        if(!draw(openGL_drawable, mcs)) break;
+        if(!draw(openGL_drawable, *mcs)) break;
 
         //Swap draw buffers
         glfwSwapBuffers(window);
@@ -149,6 +149,7 @@ int main(void){
             current_time = glfwGetTime();
         }
     }
+    delete mcs;
     cleanUpGLFW();
 }
 
