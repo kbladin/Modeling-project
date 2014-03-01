@@ -84,7 +84,7 @@ int main(void){
 
     RungeKutta rk4(w);
     EulerExplicit ee;
-    NumericalMethod * nm = &ee; //Make use of polymorphism
+    NumericalMethod * nm = &rk4; //Make use of polymorphism
 
 
 
@@ -163,6 +163,8 @@ static void error_callback(int error, const char* description){
     fputs(description, stderr);
 }
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+
+    //EXIT
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 
@@ -182,27 +184,43 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     //MODIFICATION
     if (key == GLFW_KEY_M && action == GLFW_PRESS){
-        float m = readFloat("Enter mass: ");
+        float m = readFloat("Enter particle mass: ");
         mcs->particles.setMasses(m, Particles::ALL);
     }
 
+    if (key == GLFW_KEY_L && action == GLFW_PRESS){
+        float l = readFloat("Enter connection length: ");
+        mcs->connections.setLengths(l);
+    }
 
+    if (key == GLFW_KEY_S && action == GLFW_PRESS){
+        float s = readFloat("Enter spring constant: ");
+        mcs->connections.setSpringConstant(s);
+    }
 
-    //INITs
+    if (key == GLFW_KEY_D && action == GLFW_PRESS){
+        float d = readFloat("Enter damper constant: ");
+        mcs->connections.setDamperConstant(d);
+    }
+
+    //INITS
     if (key == GLFW_KEY_1 && action == GLFW_PRESS){
+        std::cout << "Loading Floppy Thing... " << std::endl;
         delete mcs;
         openGL_drawable.deleteBuffers();
         mcs = createFloppyThing();
         initOpenGL(openGL_drawable, *mcs);
+        std::cout << "Done" << std::endl;
     }
 
     if (key == GLFW_KEY_2 && action == GLFW_PRESS){
+        std::cout << "Loading Rolling Dice..." << std::endl;
         delete mcs;
         openGL_drawable.deleteBuffers();
         mcs = createRollingDice();
         initOpenGL(openGL_drawable, *mcs);
+        std::cout << "Done" << std::endl;
     }
-
 
 }
 
@@ -392,8 +410,13 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     //UNBIND SHADER HERE
     // ------
 
-    return true;
+    int err = glGetError();
+    if (err > 0){
+        std::cout << "Error in initOpenGL(const OpenGL_drawable&, const MCS&). Error code: " << err << std::endl;
+        return false;
+    }
 
+    return true;
 }
 
 bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){

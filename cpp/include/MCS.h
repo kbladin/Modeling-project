@@ -42,6 +42,38 @@ struct Connections{
     std::vector<float> damperConstants;
     std::vector<int> particle1;
     std::vector<int> particle2;
+
+    //The number of connections of each type/direction
+    int nType[13];
+    int startType[13];
+
+    static enum Select{
+        ALL = 0,
+        ALONG_ROWS,
+        ALONG_COLS,
+        ALONG_STACKS
+    } select;
+
+    void setLengths(float l, int select = 0){
+        for (int i = 0; i < startType[3]; ++i)
+            lengths[i] = l;
+        for (int i = startType[3]; i < startType[9]; ++i)
+            lengths[i] = l*sqrt(2.0f);
+        for (int i = startType[9]; i < lengths.size(); ++i)
+            lengths[i] = l*sqrt(3);
+    }
+
+    void setSpringConstant(float s, int select = 0){
+        for (int i = 0; i < springConstants.size(); ++i){
+            springConstants[i] = s;
+        }
+    }
+
+    void setDamperConstant(float d, int select = 0){
+        for (int i = 0; i < damperConstants.size(); ++i){
+            damperConstants[i] = d;
+        }
+    }
 };
 
 struct CollisionPlane{
@@ -91,9 +123,7 @@ class MCS{
         Triangles triangles;
         
         
-        //The number of connections of each type/direction
-        int numberOfConnectionsOfType[13];
-        int startOfConnectionOfType[13];
+
         
         //The dimensions variables for the MCS
         const int N_ROWS;

@@ -1,8 +1,24 @@
-Här leker jag med glfw3 och OpenGL.
+User interaction
+================
 
-Lär mig lite om make på köpet; makefilen är inte mycket
-att hänga i julgranen men den funkar för mig och borde
-funka om du använder OSX och har glfw3 installerat på
-"rätt" ställe.
 
-Tjoflöjt!
+Playback
+--------
+SPACE: 	toggle pause/unpause
+RIGHT: 	if paused: small steps forward
+LEFT:	if paused: small steps backwards
+
+
+Inits
+-----
+1:		Init big floppy	thing
+2:		Init rolling dice
+
+
+Modification
+------------
+M:		set particles masses (from command line)
+S:		set spring constants (from command line)
+D:		set damper constants (from command line)
+L:		set connection lengths (from command line)
+
