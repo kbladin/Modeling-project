@@ -112,19 +112,18 @@ bool OpenGL_Drawer::add(MCS& mcs){
     vecMCS.push_back(&mcs);
     vecDrawable.push_back(openGL_drawable);
 
-    std::cout << "\nDONE openGL_drawable:" << std::endl;
-    openGL_drawable.print();
+    //std::cout << "\nDONE openGL_drawable:" << std::endl;
+    //openGL_drawable.print();
 
     int err = glGetError();
     if (err > 0){
         std::cout << "ERROR in OpenGL_Drawer::add(). Error code: " << err << std::endl;
         return false;
     }
-
     return true;
 }
 
-void OpenGL_Drawer::draw(){
+bool OpenGL_Drawer::draw(){
 	for (int i = 0; i < vecMCS.size(); ++i){
         int c=0;
 
@@ -188,7 +187,6 @@ void OpenGL_Drawer::draw(){
 	     GL_UNSIGNED_INT,   // type
 	     (void*)0           // element array buffer offset
 	    );
-        std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 
 	 
 	    //unbind
@@ -196,8 +194,13 @@ void OpenGL_Drawer::draw(){
 	    
 	    //UNBIND SHADER HERE
 	    glUseProgram(0);
-        std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
+        int err = glGetError();
+        if (err > 0){
+            std::cout << "Error in OpenGL_Drawer::draw(). Error code: " << err << std::endl;
+            return false;
+        }
 	}
+    return true;
 }
 
 

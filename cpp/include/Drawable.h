@@ -48,7 +48,7 @@ public:
 class OpenGL_Drawer{
 public:
     bool add(MCS& mcs);
-    void draw();
+    bool draw();
     
     float ratio;
 

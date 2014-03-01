@@ -38,7 +38,7 @@ GLFWwindow* window;
 
 
 bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs);
-void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
+bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
 
 
 
@@ -84,7 +84,7 @@ int main(void){
     int FPS = 0;
 
 
-    //OpenGL_Drawer od;
+    OpenGL_Drawer od;
     //od.add(mcs);
     
 
@@ -112,14 +112,13 @@ int main(void){
         // DRAW
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfwGetFramebufferSize(window, &width, &height);
-        //od.ratio = width / (float) height;
-        //od.draw();
+        od.ratio = width / (float) height;
+        //if(!od.draw()) break;
         
 
-        //draw(od.vecDrawable[0], od_mcs);
-        //draw(od.vecDrawable[0], *od.vecMCS[0]);
-        
-        draw(openGL_drawable, mcs);
+        //if(!draw(od.vecDrawable[0], mcs)) break;
+        //if(!draw(od.vecDrawable[0], *od.vecMCS[0])) break;
+        if(!draw(openGL_drawable, mcs)) break;
 
         //Swap draw buffers
         glfwSwapBuffers(window);
@@ -339,7 +338,7 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
 
 }
 
-void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
+bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
 
     // DRAW OLD OPENGL
 /*
@@ -456,7 +455,9 @@ void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     int err = glGetError();
     if (err > 0){
         std::cout << "Error in draw(const OpenGL_drawable&, const MCS&). Error code: " << err << std::endl;
+        return false;
     }
+    return true;
 }
 
 void cleanUpGLFW()
