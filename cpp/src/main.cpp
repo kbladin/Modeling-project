@@ -44,6 +44,8 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
 
 MCS * createFloppyThing();
 MCS * createRollingDice();
+MCS * createStandingSnake();
+MCS * createCloth();
 
 MCS * mcs = NULL;
 OpenGL_drawable openGL_drawable;
@@ -84,7 +86,7 @@ int main(void){
 
     RungeKutta rk4(w);
     EulerExplicit ee;
-    NumericalMethod * nm = &rk4; //Make use of polymorphism
+    NumericalMethod * nm = &ee; //Make use of polymorphism
 
 
 
@@ -222,6 +224,23 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Done" << std::endl;
     }
 
+    if (key == GLFW_KEY_3 && action == GLFW_PRESS){
+        std::cout << "Loading Standing Snake..." << std::endl;
+        delete mcs;
+        openGL_drawable.deleteBuffers();
+        mcs = createStandingSnake();
+        initOpenGL(openGL_drawable, *mcs);
+        std::cout << "Done" << std::endl;
+    }
+
+    if (key == GLFW_KEY_4 && action == GLFW_PRESS){
+        std::cout << "Loading Cloth..." << std::endl;
+        delete mcs;
+        openGL_drawable.deleteBuffers();
+        mcs = createCloth();
+        initOpenGL(openGL_drawable, *mcs);
+        std::cout << "Done" << std::endl;
+    }
 }
 
 void initGLFW(){
@@ -572,5 +591,30 @@ MCS * createRollingDice(){
                                    -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
                                     0.3f);      //friction
+    return tmp_mcs;
+}
+
+MCS * createStandingSnake(){
+    int h = 300;
+    MCS * tmp_mcs = new MCS(h,2,2);
+    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),50.0f);
+    tmp_mcs->setAvgPosition(glm::vec3(0,h/2-5,-15));
+    tmp_mcs->setAvgVelocity(glm::vec3(0,5,0));
+    tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                                   -5.0f,      //positions the plane on normal
+                                    1.0f,      //elasticity
+                                    0.3f);      //friction
+    return tmp_mcs;
+}
+
+MCS * createCloth(){
+    MCS * tmp_mcs = new MCS(30,30,2);
+    //tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+    tmp_mcs->connections.setLengths(0.8f);
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),0.1f);
+    tmp_mcs->setAvgPosition(glm::vec3(0,0,-10));
+    tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
+    
     return tmp_mcs;
 }
