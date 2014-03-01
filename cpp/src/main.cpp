@@ -164,8 +164,9 @@ static void error_callback(int error, const char* description){
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
         pause = !pause;
+    }
     if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
         forward = true;
     if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
@@ -279,6 +280,7 @@ bool initOpenGL(){
     // Current OpenGL version    
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
+    glClearColor(1.0f,1.0f,1.0f,0.0f);
 
     return true;
 }
