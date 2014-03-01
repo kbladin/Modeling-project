@@ -66,7 +66,7 @@ int main(void){
     
 
     // INIT SIMULATION 
-    int simulations_per_frame = 5;
+    int simulations_per_frame = 4;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
     std::vector<float> w;
@@ -93,6 +93,19 @@ int main(void){
     initOpenGL(openGL_drawable, mcs);
     
     int b=0, frame = 0;
+    MCS mcs2(2,9,2);
+    mcs2.externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+    mcs2.addRotation(glm::vec3(0.0,1.0,1.0),5.0f);
+    mcs2.setAvgPosition(glm::vec3(-10,5,-10));
+    mcs2.setAvgVelocity(glm::vec3(0,0,0));
+    mcs2.addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                                   -5.0f,      //positions the plane on normal
+                                    1.0f,      //elasticity
+                                    0.3f);      //friction
+
+    OpenGL_drawable openGL_drawable2;
+    initOpenGL(openGL_drawable2,mcs2);
+
     while (!glfwWindowShouldClose(window)){
 
         for (int i = 0; i < simulations_per_frame; ++i){   
@@ -104,10 +117,12 @@ int main(void){
             //mcs.particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
             //mcs.particles.velocities[0] = glm::vec3(0);
 
-            rk4.update(mcs,dt);
+            ee.update(mcs,dt);
+            rk4.update(mcs2,dt);
         }
 
         mcs.updateNormals();
+        mcs2.updateNormals();
 
         // DRAW
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -119,6 +134,7 @@ int main(void){
         //if(!draw(od.vecDrawable[0], mcs)) break;
         //if(!draw(od.vecDrawable[0], *od.vecMCS[0])) break;
         if(!draw(openGL_drawable, mcs)) break;
+        if(!draw(openGL_drawable2, mcs2)) break;
 
         //Swap draw buffers
         glfwSwapBuffers(window);
