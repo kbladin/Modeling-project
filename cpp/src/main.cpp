@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <shader.h>
 
 
 #include "connection2massindices.h"
@@ -88,13 +89,13 @@ int main(void){
     int FPS = 0;
 
 
-    OpenGL_Drawer od;
-    od.add(mcs);
+    //OpenGL_Drawer od;
+    //od.add(mcs);
     
 
 
-    //OpenGL_drawable openGL_drawable;
-    //initOpenGL(openGL_drawable, mcs);
+    OpenGL_drawable openGL_drawable;
+    initOpenGL(openGL_drawable, mcs);
     
     int b=0, frame = 0;
     while (!glfwWindowShouldClose(window)){
@@ -114,15 +115,15 @@ int main(void){
         // DRAW
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfwGetFramebufferSize(window, &width, &height);
-        od.ratio = width / (float) height;
-        od.draw();
+        //od.ratio = width / (float) height;
+        //od.draw();
         
 
         //draw(od.vecDrawable[0], od_mcs);
         //draw(od.vecDrawable[0], *od.vecMCS[0]);
-        //std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
-        //draw(openGL_drawable, mcs);
-        //std::cout << "b=" << b++ << " :  glGetError() = " << glGetError() << std::endl;
+        
+        draw(openGL_drawable, mcs);
+        
         break;
 
         //Swap draw buffers
@@ -226,11 +227,14 @@ bool initOpenGL(){
         fprintf(stderr, "Failed to initialize GLEW\n");
         return false;
     }
-    //OBS!!!!
-    //glewInit() causes OpenGL error 1280 (GL_INVALID_ENUM)
-    //this is probably safe to ignore if no other strange 
-    //things happen
-    int err = glGetError(); //1280
+    int err = glGetError(); 
+    if (err > 0){
+        //OBS!!!!
+        //glewInit() causes OpenGL error 1280 (GL_INVALID_ENUM)
+        //this is probably safe to ignore if no other strange 
+        //things happen
+        std::cout << "Error in initOpenGL(). Error code = " << err << std::endl;
+    }
 
     glEnable(GL_DEPTH_TEST);
     // Current OpenGL version    
@@ -359,16 +363,11 @@ void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
 
     // Do the matrix stuff
     float speed = 0.0f;
-
-
     glm::mat4 M = glm::mat4(1.0f);
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
-
     glm::mat4 translate = glm::translate(glm::vec3(0.0f,0.0f,-20.0f));
-
     glm::mat4 V = translate * rotate;
     glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
-
     glm::mat4 MVP = P*V*M;
 
     // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
@@ -411,7 +410,10 @@ void draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     //UNBIND SHADER HERE
     glUseProgram(0);
 
-
+    int err = glGetError();
+    if (err > 0){
+        std::cout << "Error in draw(const OpenGL_drawable&, const MCS&). Error code: " << err << std::endl;
+    }
 }
 
 void cleanUpGLFW()

@@ -2,15 +2,17 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+#include <vector>
+#include <cassert>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <shader.h>
-
-#include <vector>
-#include <cassert>
-#include <iostream>
 
 #include "MCS.h"
 

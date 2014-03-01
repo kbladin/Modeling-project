@@ -17,6 +17,10 @@ OpenGL_drawable::~OpenGL_drawable(){
         glDeleteBuffers(1, &vertexColorBuffer);
     if(vertexArray)
         glDeleteVertexArrays(1, &vertexArray);
+    int err = glGetError();
+    if (err > 0){
+        std::cout << "ERROR in OpenGL_drawable::~OpenGL_drawable(). Error code: " << err << std::endl;
+    }
 }
 
 void OpenGL_drawable::print() const{
@@ -97,6 +101,12 @@ bool OpenGL_Drawer::add(MCS& mcs){
     std::cout << "\nDONE openGL_drawable:" << std::endl;
     openGL_drawable.print();
 
+    int err = glGetError();
+    if (err > 0){
+        std::cout << "ERROR in OpenGL_Drawer::add(). Error code: " << err << std::endl;
+        return false;
+    }
+
     return true;
 }
 
@@ -119,7 +129,7 @@ void OpenGL_Drawer::draw(){
 	    glm::mat4 MVP = P*V*M;
 
 	    
-        
+
 std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
 	    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
         std::cout << "openGL_drawable.vertexArray = " << openGL_drawable.vertexArray << std::endl;
