@@ -11,8 +11,10 @@ LEFT:	if paused: small steps backwards
 
 Inits
 -----
-1:		Init big floppy	thing
-2:		Init rolling dice
+1:		init Floppy Thing
+2:		init Rolling Dice
+3:		init Standing Snake
+4:		inti Cloth
 
 
 Modification
