@@ -72,12 +72,11 @@ void MCS::initConnections(){
         connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         
         connections.lengths[i] = 1.0f;
-        connections.springConstants[i] = 5000.0f;
+        connections.springConstants[i] = 2000.0f;
         connections.damperConstants[i] = 20.0f;
         connections.particle1[i] = p_index1;
         connections.particle2[i] = p_index2;
     }
-
     //Set length of 2D-diagonal springs to sqrt(2)
     for (int i = startOfConnectionOfType[3]; i < startOfConnectionOfType[9]; ++i){
         connections.lengths[i] *= sqrt(2.0f);

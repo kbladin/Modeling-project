@@ -17,7 +17,7 @@ out vec3 color;
 void main(){
 	vec3 materialDiffuseColor = fragColor;
 
-	float lightIntensity = 100;
+	float lightIntensity = 200;
 
 	vec3 n = normalize(fragNormal_viewSpace);
 	vec3 e = normalize(viewDirectionToVertex_viewSpace); // Eye vector (away from the camera)
@@ -29,7 +29,7 @@ void main(){
 	float invDistSquare =  1.0f/(distanceSquare);
 
 	// Ambient light
-	float ambientBrightness = 0.2;
+	float ambientBrightness = 0.1;
 	vec3 ambientColor = vec3(1,1,1);
 	vec3 ambient = ambientColor * fragColor * ambientBrightness;
 	
@@ -38,7 +38,7 @@ void main(){
 	vec3 diffuse = materialDiffuseColor * lightColor * cosTheta * invDistSquare * lightIntensity;
 
 	//Specular light
-	float specularity = 0.7;
+	float specularity = 0.3;
 	float shinyNess = 30;
 	float wetness = 0.2;
 	float cosAlpha = clamp( dot( e,-r ), 0,1 ) * (1 + wetness);
