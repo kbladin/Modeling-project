@@ -46,6 +46,7 @@ MCS * createFloppyThing();
 MCS * createRollingDice();
 MCS * createStandingSnake();
 MCS * createCloth();
+MCS * createSoftCube();
 
 MCS * mcs = NULL;
 OpenGL_drawable openGL_drawable;
@@ -241,6 +242,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         initOpenGL(openGL_drawable, *mcs);
         std::cout << "Done" << std::endl;
     }
+
+    if (key == GLFW_KEY_5 && action == GLFW_PRESS){
+        std::cout << "Loading SoftCube..." << std::endl;
+        delete mcs;
+        openGL_drawable.deleteBuffers();
+        mcs = createSoftCube();
+        initOpenGL(openGL_drawable, *mcs);
+        std::cout << "Done" << std::endl;
+    }
+
 }
 
 void initGLFW(){
@@ -568,6 +579,18 @@ void cleanUpGLFW(){
     exit(EXIT_SUCCESS);
 }
 
+/*
+void setMCS(){
+  
+    std::cout << "Loading Cloth..." << std::endl;
+    openGL_drawable.deleteBuffers();
+    mcs = createCloth();
+    initOpenGL(openGL_drawable, *mcs);
+    std::cout << "Done" << std::endl;
+
+}
+*/
+
 MCS * createFloppyThing(){
     MCS * tmp_mcs = new MCS(20,7,2);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
@@ -615,6 +638,23 @@ MCS * createCloth(){
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),0.1f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,-10));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
+    
+    return tmp_mcs;
+}
+
+MCS * createSoftCube(){
+    int s = 5;
+    MCS * tmp_mcs = new MCS(s,s,s);
+    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+    tmp_mcs->connections.setSpringConstant(100.0f);
+    tmp_mcs->connections.setDamperConstant(20.0f);
+    tmp_mcs->addRotation(glm::vec3(0.0,0.0,1.0),1.5f);
+    tmp_mcs->setAvgPosition(glm::vec3(-15,0,-10));
+    tmp_mcs->setAvgVelocity(glm::vec3(10,5,0));
+    tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                                   -5.0f,      //positions the plane on normal
+                                    1.0f,      //elasticity
+                                    0.3f);      //friction
     
     return tmp_mcs;
 }
