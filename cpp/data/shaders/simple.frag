@@ -17,7 +17,7 @@ out vec3 color;
 void main(){
 	vec3 materialDiffuseColor = fragColor;
 
-	float lightIntensity = 200;
+	float lightIntensity = 400;
 
 	vec3 n = normalize(fragNormal_viewSpace);
 	vec3 e = normalize(viewDirectionToVertex_viewSpace); // Eye vector (away from the camera)

@@ -38,26 +38,27 @@ void MCS::initParticles(){
 }
 
 void MCS::initConnections(){
-    numberOfConnectionsOfType[0] = N_ROWS*(N_COLS-1)*N_STACKS;
-    numberOfConnectionsOfType[1] = (N_ROWS-1)*N_COLS*N_STACKS;
-    numberOfConnectionsOfType[2] = N_ROWS*N_COLS*(N_STACKS-1);
-    numberOfConnectionsOfType[3] = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
-    numberOfConnectionsOfType[4] = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
-    numberOfConnectionsOfType[5] = N_ROWS*(N_COLS-1)*(N_STACKS-1);
-    numberOfConnectionsOfType[6] = N_ROWS*(N_COLS-1)*(N_STACKS-1);
-    numberOfConnectionsOfType[7] = (N_ROWS-1)*N_COLS*(N_STACKS-1);
-    numberOfConnectionsOfType[8] = (N_ROWS-1)*N_COLS*(N_STACKS-1);
-    numberOfConnectionsOfType[9] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
-    numberOfConnectionsOfType[10] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
-    numberOfConnectionsOfType[11] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
-    numberOfConnectionsOfType[12] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+    connections.nType[0] = N_ROWS*(N_COLS-1)*N_STACKS;
+    connections.nType[1] = (N_ROWS-1)*N_COLS*N_STACKS;
+    connections.nType[2] = N_ROWS*N_COLS*(N_STACKS-1);
+    connections.nType[3] = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
+    connections.nType[4] = (N_ROWS-1)*(N_COLS-1)*N_STACKS;
+    connections.nType[5] = N_ROWS*(N_COLS-1)*(N_STACKS-1);
+    connections.nType[6] = N_ROWS*(N_COLS-1)*(N_STACKS-1);
+    connections.nType[7] = (N_ROWS-1)*N_COLS*(N_STACKS-1);
+    connections.nType[8] = (N_ROWS-1)*N_COLS*(N_STACKS-1);
+    connections.nType[9] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+    connections.nType[10] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+    connections.nType[11] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
+    connections.nType[12] = (N_ROWS-1)*(N_COLS-1)*(N_STACKS-1);
 
-    startOfConnectionOfType[0] = 0;
-    int numberOfConnections = numberOfConnectionsOfType[0];
+    connections.startType[0] = 0;
+    int numberOfConnections = connections.nType[0];
     for (int i = 1; i < 13; ++i){
-        startOfConnectionOfType[i] = startOfConnectionOfType[i-1] + numberOfConnectionsOfType[i-1];
-        numberOfConnections += numberOfConnectionsOfType[i];
+        connections.startType[i] = connections.startType[i-1] + connections.nType[i-1];
+        numberOfConnections += connections.nType[i];
     }
+
 
     connections.lengths = std::vector<float>(numberOfConnections);
     connections.springConstants = std::vector<float>(numberOfConnections);
@@ -78,16 +79,15 @@ void MCS::initConnections(){
         connections.particle2[i] = p_index2;
     }
     //Set length of 2D-diagonal springs to sqrt(2)
-    for (int i = startOfConnectionOfType[3]; i < startOfConnectionOfType[9]; ++i){
+    for (int i = connections.startType[3]; i < connections.startType[9]; ++i){
         connections.lengths[i] *= sqrt(2.0f);
     }
 
     //Set length of 3D-diagonal springs to sqrt(3)
-    for (int i = startOfConnectionOfType[9]; i < numberOfConnections; ++i){
+    for (int i = connections.startType[9]; i < numberOfConnections; ++i){
         connections.lengths[i] *= sqrt(3.0f);
     }
 }
-
 
 void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, float friction){
     CollisionPlane cp; 
@@ -124,7 +124,7 @@ void MCS::initTriangles(){
     }
 }
 
-void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset, std::vector<glm::vec3> delta_p_offset){
+void MCS::calcConnectionForcesOnParticles(const std::vector<glm::vec3>& delta_v_offset, const std::vector<glm::vec3>& delta_p_offset){
     glm::vec3 delta_p;
     glm::vec3 delta_v;
     glm::vec3 delta_p_hat;
@@ -148,7 +148,6 @@ void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset,
         delta_v = particles.velocities[connections.particle1[i]] - particles.velocities[connections.particle2[i]]; 
         delta_v += delta_v_offset[i];
         
-
         spring_elongation = glm::length(delta_p) - l;
         //float sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
 
@@ -157,6 +156,38 @@ void MCS::calcConnectionForcesOnParticles(std::vector<glm::vec3> delta_v_offset,
         particles.forces[connections.particle2[i]] -= force;
     }
 }
+
+void MCS::calcConnectionForcesOnParticles(){
+    glm::vec3 delta_p;
+    glm::vec3 delta_v;
+    glm::vec3 delta_p_hat;
+    glm::vec3 force;
+
+    float k;
+    float l;
+    float b;
+    float spring_elongation;
+
+    // Calculate the forces of the springs
+    for (int i = 0; i < getNumberOfConnections(); ++i){
+        k = connections.springConstants[i];
+        l = connections.lengths[i];
+        b = connections.damperConstants[i];
+
+        delta_v = particles.velocities[connections.particle1[i]] - particles.velocities[connections.particle2[i]]; 
+        delta_p = particles.positions[connections.particle1[i]] - particles.positions[connections.particle2[i]]; 
+        delta_p_hat = glm::normalize(delta_p);
+        
+        spring_elongation = glm::length(delta_p) - l;
+        //float sign = spring_elongation >= 0.0f ? 1.0f : -1.0f;
+
+        force = (-k*spring_elongation - b*glm::dot(delta_v,delta_p_hat))*delta_p_hat;
+        particles.forces[connections.particle1[i]] += force;
+        particles.forces[connections.particle2[i]] -= force;
+    }
+}
+
+
 
 void MCS::calcAccelerationOfParticle(int i){
     particles.accelerations[i] = 
