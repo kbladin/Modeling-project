@@ -29,7 +29,7 @@ void cleanUpGLFW();
 
 int width, height;
 float ratio;
-float scale;
+//float scale;
 
 GLFWwindow* window;
 
@@ -58,7 +58,7 @@ int main(void){
     initGLFW();
     initOpenGL();
 
-    scale = 11;// (float) fmax(N_ROWS,N_COLS);
+    //scale = 11;// (float) fmax(N_ROWS,N_COLS);
     
 
   /*  
@@ -345,7 +345,7 @@ bool initOpenGL(){
     // Current OpenGL version    
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
-    glClearColor(1.0f,1.0f,1.0f,0.0f);
+    glClearColor(0.5f,0.5f,0.5f,0.0f);
     
     glEnable(GL_CULL_FACE);
 

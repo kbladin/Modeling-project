@@ -290,7 +290,7 @@ void MCS::updateNormals(){
 
 glm::vec3 MCS::centerOfMass() const{
     glm::vec3 weightedSum(0,0,0);
-    float totalMass;
+    float totalMass = 0;
     for (int i = 0; i < getNumberOfParticles(); ++i){
         weightedSum += particles.positions[i] * particles.masses[i];
         totalMass += particles.masses[i];
