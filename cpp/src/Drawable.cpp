@@ -1,12 +1,12 @@
 #include "Drawable.h"
 
 OpenGL_drawable::OpenGL_drawable(){
-    vertexArray = GL_FALSE;
     vertexPositionBuffer = GL_FALSE;
     vertexColorBuffer = GL_FALSE;
-    elementBuffer = GL_FALSE;
+    vertexNormalBuffer = GL_FALSE;
 
-    vertexColorBuffer = GL_FALSE;
+    vertexArray = GL_FALSE;
+    elementBuffer = GL_FALSE;
 
     MVP_loc = -1;
     MV_loc = -1;
@@ -24,8 +24,11 @@ void OpenGL_drawable::deleteBuffers(){
     // Release memory
     if(vertexPositionBuffer)
         glDeleteBuffers(1, &vertexPositionBuffer);
+    if(vertexNormalBuffer)
+        glDeleteBuffers(1, &vertexNormalBuffer);
     if(vertexColorBuffer)
         glDeleteBuffers(1, &vertexColorBuffer);
+
     if(vertexArray)
         glDeleteVertexArrays(1, &vertexArray);
     int err = glGetError();
@@ -41,17 +44,13 @@ void OpenGL_drawable::print() const{
 	std::cout << "elementBuffer: " << elementBuffer << std::endl;
 	std::cout << "MVP_loc: " << MVP_loc << std::endl;
 	std::cout << "programID: " << programID << std::endl;
-	std::cout << "vertex_color_data.size(): " << vertex_color_data.size() << std::endl;
+	//std::cout << "vertex_color_data.size(): " << vertex_color_data.size() << std::endl;
 }
 
-
+// KOMMENTERAR BORT DENNA KLASS SÅ LÄNGE, SE H-FILEN
+/*
 bool OpenGL_Drawer::add(MCS& mcs){
 	OpenGL_drawable openGL_drawable;
-
-	//BIND SOME OPENGL STUFF
-	for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-        openGL_drawable.vertex_color_data.push_back(glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX));
-    }
 
     // Generate the element buffer
     glGenBuffers(1, &openGL_drawable.elementBuffer);
@@ -206,6 +205,6 @@ bool OpenGL_Drawer::draw(){
 	}
     return true;
 }
-
+*/
 
 

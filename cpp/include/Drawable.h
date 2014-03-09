@@ -24,12 +24,12 @@ public:
 
     void deleteBuffers();
 
-    GLuint vertexArray;
     GLuint vertexPositionBuffer;
     GLuint vertexColorBuffer;
-    GLuint elementBuffer;
-
     GLuint vertexNormalBuffer;
+
+    GLuint vertexArray;
+    GLuint elementBuffer;
 
     GLint MVP_loc;
     GLint MV_loc;
@@ -40,12 +40,14 @@ public:
 
     GLuint programID;
     // Vertex color data
-    std::vector<glm::vec3> vertex_color_data;
+    //std::vector<glm::vec3> vertex_color_data;
 
     void print() const;
 };
 
 
+// DENNA KLASS STÄMMER INTE LÄNGRE ÖVERENS MED UTRITNINGEN, KOMMENTERAR DÄRFÖR BORT DEN SÅ LÄNGE EFTERSOM DEN INTE ANVÄNDS
+/*
 class OpenGL_Drawer{
 public:
     bool add(MCS& mcs);
@@ -56,9 +58,8 @@ public:
     std::vector<MCS*> vecMCS;
     std::vector<OpenGL_drawable> vecDrawable;
 private:
-    
-    
 
 };
+*/
 
 #endif

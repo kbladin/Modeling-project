@@ -14,7 +14,7 @@ GLEWINCLUDE = -I"/usr/local/Cellar/glew/1.10.0/include"
 GLEWLIB = -L"/usr/local/Cellar/glew/1.10.0/lib"
 GLEW = $(GLEWINCLUDE) $(GLEWLIB) -lglew
 
-CFLAGS =
+CFLAGS = -g -O2 -Wno-string-plus-int
 INCLUDE = -I"include"
 LDFLAGS =
 
@@ -22,7 +22,7 @@ LDFLAGS =
 FRAMEWORKS = $(GLFW) $(GLEW) -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 
 $(EXEC): objects
-	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(INCLUDE) $(FRAMEWORKS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(OBJS) $(INCLUDE) $(FRAMEWORKS)
 
 objects: $(SOURCE)
 	mkdir objects; \

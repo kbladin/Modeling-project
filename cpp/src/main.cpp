@@ -7,9 +7,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+
 #include <shader.h>
-
-
 #include "connection2massindices.h"
 #include "NumericalMethods.h"
 #include "test.h"
@@ -18,26 +17,15 @@
 #include "Drawable.h"
 #include "MCS.h"
 #include "user_input.h"
+#include "MatrixHandler.h"
 
+// Global functions
 static void error_callback(int error, const char* description);
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 void initGLFW();
 bool initOpenGL();
 void cleanUpGLFW();
-
-
-int width, height;
-float ratio;
-//float scale;
-
-GLFWwindow* window;
-
-bool pause = false;
-bool forward = false;
-bool backward = false;
-
-
 
 bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs);
 bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
@@ -49,37 +37,29 @@ MCS * createCloth();
 MCS * createSoftCube();
 
 
+// Global variables
+GLFWwindow* window;
 MCS * mcs = NULL;
 OpenGL_drawable openGL_drawable;
+MatrixHandler* matrices;
+
+int width, height;
+float ratio;
+
+bool pause = false;
+bool forward = false;
+bool backward = false;
 
 int main(void){
-    int a = 0;
-
     initGLFW();
     initOpenGL();
 
-    //scale = 11;// (float) fmax(N_ROWS,N_COLS);
-    
-
-  /*  
-    mcs = new MCS(20,7,2);
-    mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
-    mcs->setAvgPosition(glm::vec3(-10,5,-10));
-    mcs->setAvgVelocity(glm::vec3(0,0,0));
-    mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
->>>>>>> 91981753bdf6c85c4f6f1b48f534bf8d5a8902cb
-                                   -5.0f,      //positions the plane on normal
-                                    1.0f,      //elasticity
-                                    0.3f);      //friction
-*/
     mcs = createFloppyThing();
     
+    matrices = new MatrixHandler(window);
     
-    
-
     // INIT SIMULATION 
-    int simulations_per_frame = 4;
+    int simulations_per_frame = 10;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
     std::vector<float> w;
@@ -92,29 +72,24 @@ int main(void){
     EulerExplicit ee;
     NumericalMethod * nm = &ee; //Make use of polymorphism
 
-
     float current_time = glfwGetTime();;
     int FPS = 0;
 
-
-    OpenGL_Drawer od;
-    //od.add(mcs);
-    
-
-
+    //OpenGL_Drawer //od;
+    ////od.add(mcs);
     
     initOpenGL(openGL_drawable, *mcs);
     
     int b=0, frame = 0;
     
     while (!glfwWindowShouldClose(window)){
-        
+
         // Moving one mass 
         //double x_mouse, y_mouse;
         //glfwGetCursorPos(window, &x_mouse, &y_mouse);
         //glm::vec2 pos2d = glm::vec2(float(x_mouse-0.5*width)*2*scale/height, -float(y_mouse-0.5*height)*2*scale/height);
         //mcs->setAvgPosition(glm::vec3(pos2d[0],pos2d[1],-50));
-        //mcs->particles.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
+        //mcs->vertices.positions[0] = glm::vec3(pos2d[0],pos2d[1],-50);
         //mcs->particles.velocities[0] = glm::vec3(0);
         if(!pause){
             for (int i = 0; i < simulations_per_frame; ++i){   
@@ -127,13 +102,13 @@ int main(void){
                 if(backward) nm->update(*mcs,-dt/10.0f);
             }
         }
+        mcs->updateVertexPositions();
         mcs->updateNormals();
-
 
         // DRAW
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfwGetFramebufferSize(window, &width, &height);
-        od.ratio = width / (float) height;
+        //od.ratio = width / (float) height;
         //if(!od.draw()) break;
         
 
@@ -257,34 +232,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 void initGLFW(){
-    
-    // INITIALISATION OF GLFW FOR GLBEGIN
-/*
-    glfwSetErrorCallback(error_callback);
-    if (!glfwInit())
-        exit(EXIT_FAILURE);
-    window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
-    if (!window){
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetKeyCallback(window, key_callback);
-
-
-
-    glfwGetFramebufferSize(window, &width, &height);
-<<<<<<< HEAD
-    
-    glfwSetCursorPos(window, 0,0);
-    */
-    
-    //glfwSetCursorPos(window, 0,0);
-
-
-
-    // INITIALISATION OF GLFW FOR MODERN OPENGL
-
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -308,23 +255,6 @@ void initGLFW(){
 }
 
 bool initOpenGL(){
-    
-    // INITIALISATION OF OLD OPENGL
-
-    //Init gl points
-    /*
-    glEnable( GL_POINT_SMOOTH );
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glPointSize( 5.0 );
-
-    //Init gl lines
-    glEnable( GL_LINE_SMOOTH );
-    */
-
-
-    // INITIALISATION OF MODERN OPENGL
-
     // Initialize GLEW
     glewExperimental=true; // Needed in core profile
     if (glewInit() != GLEW_OK) {
@@ -354,11 +284,6 @@ bool initOpenGL(){
 
 
 bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
-    for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-        openGL_drawable.vertex_color_data.push_back(glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX));
-    }
-
-    //glEnable(GL_DEPTH_TEST);
 
     // Generate the element buffer
     glGenBuffers(1, &openGL_drawable.elementBuffer);
@@ -371,14 +296,14 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     // Create and compile the shader
     openGL_drawable.programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
 
-    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
+    // Bind the VAO
     glBindVertexArray(openGL_drawable.vertexArray);
  
     //generate VBO for vertex positions
     glGenBuffers(1, &openGL_drawable.vertexPositionBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexPositionBuffer);
     //upload data to GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.particles.positions.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.positions.size(), &mcs.vertices.positions[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(
         0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -393,7 +318,7 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     glGenBuffers(1, &openGL_drawable.vertexColorBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
     //upload data to GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * openGL_drawable.vertex_color_data.size(), &openGL_drawable.vertex_color_data[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.colors.size(), &mcs.vertices.colors[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(
         1,                  // attribute 1. No particular reason for 1, but must match the layout in the shader.
@@ -408,10 +333,10 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     glGenBuffers(1, &openGL_drawable.vertexNormalBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexNormalBuffer);
     //upload data to GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.particles.normals.size(), &mcs.particles.normals[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.normals.size(), &mcs.vertices.normals[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(
-        2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+        2,                  // attribute 2. No particular reason for 2, but must match the layout in the shader.
         3,                  // size
         GL_FLOAT,           // type
         GL_FALSE,           // normalized?
@@ -422,12 +347,7 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     // Unbind the current VAO
     glBindVertexArray(0);
  
-    //BIND SHADER HERE
-    //glUseProgram(programID);
- 
-    //GET UNIFORM LOCATION FOR MVP MATRIX HERE
-    //Matrix_Loc = sgct::ShaderManager::instance()->getShaderProgram( "xform").getUniformLocation( "MVP" );
-
+    // Shader IDs
     openGL_drawable.MVP_loc = glGetUniformLocation( openGL_drawable.programID, "MVP");
     openGL_drawable.MV_loc = glGetUniformLocation( openGL_drawable.programID, "MV");
     openGL_drawable.V_loc = glGetUniformLocation( openGL_drawable.programID, "V");
@@ -435,14 +355,6 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
 
     openGL_drawable.lightPos_loc = glGetUniformLocation( openGL_drawable.programID, "lightPos_worldSpace");
     openGL_drawable.lightColor_loc = glGetUniformLocation( openGL_drawable.programID, "lightColor");
-
-
-    
-    glEnable(GL_DEPTH_TEST);
-
-
-    //UNBIND SHADER HERE
-    // ------
 
     int err = glGetError();
     if (err > 0){
@@ -455,100 +367,37 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
 
 bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
 
-    // DRAW OLD OPENGL
-/*
-    glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    float zNear = 0.1f;
-    float zFar = 255.0f;
-
-    glOrtho(-ratio * scale, ratio * scale, -1.f * scale, 1.f * scale, zNear, -zFar);
-    glTranslatef(0.f,0.f,0.f);
-    //glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
-    //Draw masses
-
-    glBegin(GL_POINTS);
-    glColor3f(1.f, 0.f, 0.f);
-    for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-        break;
-        glm::vec3 pos = mcs.particles.positions[i];
-        glVertex3f(pos[0],pos[1],pos[2]);
-    }
-    glEnd();
-
-
-    //Draw connections
-    glBegin(GL_LINES);
-    for (int i = 0; i < mcs.getNumberOfConnections(); ++i){
-        int index_p1 = mcs.connections.particle1[i];
-        int index_p2 = mcs.connections.particle2[i];
-        const glm::vec3& p1 = mcs.particles.positions[index_p1];
-        const glm::vec3& p2 = mcs.particles.positions[index_p2];
-        const glm::vec3& delta_p = p1 - p2;
-        
-        float r = 5.0f*glm::abs(glm::length(delta_p)-mcs.connections.lengths[i]);
-        glColor3f(r,1-r,0.0f);
-        glVertex3f(p1[0], p1[1], p1[2]);
-        glVertex3f(p2[0], p2[1], p2[2]);
-    }
-    glEnd();    
-*/
-    //DRAW WITH MODERN OPENGL
-
     ratio = width / (float) height;
 
     // Do the matrix stuff
-    float speed = 0.0f;
-    glm::mat4 M = glm::mat4(1.0f);
-    glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
-    glm::mat4 translate = glm::translate(glm::vec3(0.0f,0.0f,-20.0f));
-    glm::mat4 V = translate * rotate;
-    glm::mat4 MV = V * M;
-    glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
-    glm::mat4 MVP = P*V*M;
+    matrices->calculateMatrices(ratio);
 
-    glm::vec3 lightPos = glm::vec3(10,10,0);
+    glm::vec3 lightPos = glm::vec3(30,30,0);
     glm::vec3 lightColor = glm::vec3(1,1,1);
 
-
-
-    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
+    // Bind the VAO (Contains the vertex buffers)
     glBindVertexArray(openGL_drawable.vertexArray);
  
-    // Bind position buffer
+    // Bind buffers and upload data to GPU
     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexPositionBuffer);
-    //upload data to GPU
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    // (Not needed for cube but done anyway since this is how it will be done)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
- 
-    // Bind color buffer
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.positions.size(), &mcs.vertices.positions[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
-    //upload data to GPU
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * openGL_drawable.vertex_color_data.size(), &openGL_drawable.vertex_color_data[0], GL_STATIC_DRAW);
-    
-    // Bind color buffer
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.colors.size(), &mcs.vertices.colors[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexNormalBuffer);
-    //upload data to GPU
-    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.particles.normals[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.normals.size(), &mcs.vertices.normals[0], GL_STATIC_DRAW);
 
-    //BIND SHADER HERE
-    glUseProgram(openGL_drawable.programID);
- 
+    // Bind shader
+    glUseProgram(openGL_drawable.programID); 
 
-    glUniformMatrix4fv(openGL_drawable.MVP_loc, 1, GL_FALSE, &MVP[0][0]);
-    glUniformMatrix4fv(openGL_drawable.M_loc, 1, GL_FALSE, &M[0][0]);
-    glUniformMatrix4fv(openGL_drawable.MV_loc, 1, GL_FALSE, &MV[0][0]);
-    glUniformMatrix4fv(openGL_drawable.V_loc, 1, GL_FALSE, &V[0][0]);
+    // Matrix data
+    glUniformMatrix4fv(openGL_drawable.MVP_loc, 1, GL_FALSE, &matrices->MVP[0][0]);
+    glUniformMatrix4fv(openGL_drawable.M_loc, 1, GL_FALSE, &matrices->M[0][0]);
+    glUniformMatrix4fv(openGL_drawable.MV_loc, 1, GL_FALSE, &matrices->MV[0][0]);
+    glUniformMatrix4fv(openGL_drawable.V_loc, 1, GL_FALSE, &matrices->V[0][0]);
 
+    // Light data
     glUniform3fv(openGL_drawable.lightPos_loc, 1, &lightPos[0]);
     glUniform3fv(openGL_drawable.lightColor_loc, 1, &lightColor[0]);
-
 
     // Index buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGL_drawable.elementBuffer);
@@ -561,10 +410,10 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
      (void*)0           // element array buffer offset
     );
 
-    //unbind
+    // Unbind VAO
     glBindVertexArray(0);
     
-    //UNBIND SHADER HERE
+    // Unbind shader
     glUseProgram(0);
 
     int err = glGetError();
@@ -596,7 +445,7 @@ void setMCS(){
 */
 
 MCS * createFloppyThing(){
-    MCS * tmp_mcs = new MCS(20,7,2);
+    MCS * tmp_mcs = new MCS(3,12,20); //Minns inte hur den var
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
     tmp_mcs->setAvgPosition(glm::vec3(-10,5,-10));
@@ -613,6 +462,7 @@ MCS * createRollingDice(){
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),25.0f);
     tmp_mcs->setAvgPosition(glm::vec3(-15,0,-10));
+    tmp_mcs->connections.setSpringConstant(20000.0f);
     tmp_mcs->setAvgVelocity(glm::vec3(8,5,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
@@ -626,6 +476,7 @@ MCS * createStandingSnake(){
     MCS * tmp_mcs = new MCS(h,2,2);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),0.0f);
+    tmp_mcs->connections.setSpringConstant(100000.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,h/2-6,-15));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
@@ -636,10 +487,10 @@ MCS * createStandingSnake(){
 }
 
 MCS * createCloth(){
-    MCS * tmp_mcs = new MCS(30,30,2);
+    MCS * tmp_mcs = new MCS(30,30,1);
     //tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->connections.setLengths(0.8f);
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),0.1f);
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),0.5f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,-10));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
     
@@ -651,10 +502,10 @@ MCS * createSoftCube(){
     MCS * tmp_mcs = new MCS(s,s,s);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->connections.setSpringConstant(100.0f);
-    tmp_mcs->connections.setDamperConstant(20.0f);
-    tmp_mcs->addRotation(glm::vec3(0.0,0.0,1.0),1.5f);
+    tmp_mcs->connections.setDamperConstant(70.0f);
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-2.0f);
     tmp_mcs->setAvgPosition(glm::vec3(-15,0,-10));
-    tmp_mcs->setAvgVelocity(glm::vec3(10,5,0));
+    tmp_mcs->setAvgVelocity(glm::vec3(20,20,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity

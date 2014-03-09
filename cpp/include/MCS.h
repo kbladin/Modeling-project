@@ -20,7 +20,6 @@ struct Particles{
     std::vector<glm::vec3> accelerations;
     std::vector<glm::vec3> forces;
     std::vector<float> masses;
-    std::vector<glm::vec3> normals;
 
     static enum Select{
         ALL = 0,
@@ -88,6 +87,18 @@ struct Triangles{
     std::vector<glm::vec3> normals;
 };
 
+struct NewTriangles{
+    std::vector<IndexedTriangle> triangleIndices;
+    std::vector<glm::vec3> normals;
+};
+
+struct Vertices{
+    std::vector<glm::vec3> positions;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec3> colors;
+    std::vector<glm::vec2> UVs;
+    std::vector<int> particleIndices;
+};
 
 // The MCS - Mass Connection System
 class MCS{
@@ -102,6 +113,8 @@ class MCS{
         void setAvgVelocity(glm::vec3 pos);
 
         void updateNormals();
+        void updateVertexPositions();
+
 
         glm::vec3 centerOfMass() const;
         glm::vec3 averagePosition() const;
@@ -110,27 +123,24 @@ class MCS{
         //Get-functions to access the protected variables in the MCS class
         int getNumberOfParticles() const;
         int getNumberOfConnections() const;
+        int getNumberOfVertices() const;
 
 
         Particles particles;
         Connections connections;
+        Vertices vertices;
+        Triangles triangles;
+        NewTriangles newTriangles;
 
         void addCollisionPlane(glm::vec3 normal, 
                                float position, 
                                float elasticity = 0.0f,
                                float friction = 0.0f);
-
-        Triangles triangles;
         
-        
-
-        
-        //The dimensions variables for the MCS
+        //The dimensions constants for the MCS
         const int N_ROWS;
         const int N_COLS;
         const int N_STACKS;
-
-       
 
         //Applied during update
         glm::vec3 externalAcceleration;
@@ -150,8 +160,12 @@ class MCS{
         void initParticles();
         void initConnections();
         void initTriangles();
+        void initVertices();
         
         void triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int &particleIndex3);
+        void vertex2particleIndex(int vertexIndex, int &particleIndex);
+        void triangle2vertexIndices(int triangleIndex, int &vertexIndex1, int &vertexIndex2, int &vertexIndex3);
+
 
         std::vector<CollisionPlane> collisionPlanes;
 };
