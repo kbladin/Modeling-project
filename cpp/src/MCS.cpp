@@ -308,6 +308,10 @@ void MCS::updateNormals(){
     glm::vec3 v1;
     glm::vec3 v2;
     glm::vec3 n;
+
+    for (int i = 0; i < n_vertices; ++i){
+        vertices.normals[i] = glm::vec3(0.0f,0.0f,0.0f); // Zero normals in beginning
+    }
     // Calculate the triangle normals
     for(int ti = 0; ti < n_triangles; ++ti){
         v1 = vertices.positions[triangles.triangleIndices[ti].idx2] - vertices.positions[triangles.triangleIndices[ti].idx1];
@@ -319,7 +323,7 @@ void MCS::updateNormals(){
         vertices.normals[triangles.triangleIndices[ti].idx3] += n;
     }
     for (int i = 0; i < n_vertices; ++i){
-        vertices.normals[i] = glm::normalize(vertices.normals[i])*0.001f; //Extremt ful lösning, detta ska bort
+        vertices.normals[i] = glm::normalize(vertices.normals[i]);
     }
 }
 
