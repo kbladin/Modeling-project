@@ -136,6 +136,8 @@ class MCS{
                                float position, 
                                float elasticity = 0.0f,
                                float friction = 0.0f);
+
+        void freeze();
         
         //The dimensions constants for the MCS
         const int N_ROWS;

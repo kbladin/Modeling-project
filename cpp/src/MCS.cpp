@@ -6,7 +6,6 @@ MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
 {
 	initParticles();
     initConnections();
-
     initVertices();
     initTriangles();
 
@@ -100,6 +99,13 @@ void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, 
     collisionPlanes.push_back(cp);
 }
 
+void MCS::freeze(){
+    int n_connections = connections.lengths.size();
+    for (int i = 0; i < n_connections; ++i){
+        connections.lengths[i] = glm::length(particles.positions[connections.particle1[i]] - particles.positions[connections.particle2[i]]);
+    }
+}
+
 void MCS::initTriangles(){
     if(vertices.positions.size() == 0){
         std::cout << "ERROR: Vertices not initialized before triangles" << std::endl;
@@ -127,10 +133,6 @@ void MCS::initTriangles(){
             triangles.triangleIndices[ti].idx2,
             triangles.triangleIndices[ti].idx3);
         triangles.normals[ti] = glm::vec3(0.0f,0.0f,0.0f);
-        std::cout << "ti = " << ti << std::endl;
-        std::cout << "triangles.triangleIndices[ti].idx1 = " << triangles.triangleIndices[ti].idx1 << std::endl;
-        std::cout << "triangles.triangleIndices[ti].idx2 = " << triangles.triangleIndices[ti].idx2 << std::endl;
-        std::cout << "triangles.triangleIndices[ti].idx3 = " << triangles.triangleIndices[ti].idx3 << std::endl;
     }
 }
 
@@ -563,6 +565,7 @@ void MCS::triangle2vertexIndices(int triangleIndex, int &vertexIndex1, int &vert
     int Ntype_verts5 = Ntype_verts4;                          //top
     int TotNtype_verts = Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4 + Ntype_verts5;
 
+
     assert(triangleIndex < TotNtype);
 
     int oneRowOfParticles = N_COLS;
@@ -571,7 +574,7 @@ void MCS::triangle2vertexIndices(int triangleIndex, int &vertexIndex1, int &vert
     int oneStackOfParticles = N_ROWS*N_COLS;
     int newTriangleIndex;
 
-    int row_p1 = floor(triangleIndex/floor(Ntype0/(N_ROWS-1)));
+    int row_p1 = (N_ROWS == 1) ? 0 : triangleIndex/(Ntype0/(N_ROWS-1));
 
     if(triangleIndex < Ntype0){                                         //back
         oneRowOfParticlesLocal = N_COLS;

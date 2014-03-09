@@ -182,6 +182,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         float d = readFloat("Enter damper constant: ");
         mcs->connections.setDamperConstant(d);
     }
+    if (key == GLFW_KEY_F && action == GLFW_PRESS){
+        mcs->freeze();
+    }
 
     //INITS
     if (key == GLFW_KEY_1 && action == GLFW_PRESS){
@@ -490,10 +493,11 @@ MCS * createCloth(){
     MCS * tmp_mcs = new MCS(30,30,1);
     //tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->connections.setLengths(0.8f);
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),0.5f);
-    tmp_mcs->setAvgPosition(glm::vec3(0,0,-10));
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),0.5f);
+    tmp_mcs->connections.setSpringConstant(100000.0f);
+    tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
-    
+
     return tmp_mcs;
 }
 
