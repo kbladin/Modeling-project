@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <glm/glm.hpp>
-#include "connection2massindices.h"
+#include "conversions.h"
 #include "debugtools.h"
 
 
@@ -12,6 +12,13 @@ struct IndexedTriangle{
     int idx1;
     int idx2;
     int idx3;
+};
+
+struct CollisionPlane{
+    glm::vec3 normal;
+    float position;
+    float elasticity;
+    float friction;
 };
 
 struct Particles{
@@ -75,19 +82,7 @@ struct Connections{
     }
 };
 
-struct CollisionPlane{
-    glm::vec3 normal;
-    float position;
-    float elasticity;
-    float friction;
-};
-
 struct Triangles{
-    std::vector<IndexedTriangle> triangleIndices;
-    std::vector<glm::vec3> normals;
-};
-
-struct NewTriangles{
     std::vector<IndexedTriangle> triangleIndices;
     std::vector<glm::vec3> normals;
 };
@@ -102,11 +97,10 @@ struct Vertices{
 
 // The MCS - Mass Connection System
 class MCS{
-
     public:
-        // Constructor
         MCS(const int n_rows, const int n_cols, const int n_stacks);
 
+        // Set-functions
         void rotate(glm::vec3 axisOfRotation, float amount);
         void addRotation(glm::vec3 axisOfRotation, float amount);
         void setAvgPosition(glm::vec3 pos);
@@ -115,7 +109,20 @@ class MCS{
         void updateNormals();
         void updateVertexPositions();
 
+        void addCollisionPlane(glm::vec3 normal,
+                           float position,
+                           float elasticity = 0.0f,
+                           float friction = 0.0f);
+        void freeze();
 
+        void calcConnectionForcesOnParticles();
+        void calcConnectionForcesOnParticles(
+                                        const std::vector<glm::vec3>& delta_v_offset,
+                                        const std::vector<glm::vec3>& delta_p_offset);
+        void calcAccelerationOfParticle(int i);
+        void checkCollisions(glm::vec3& pos, glm::vec3& vel) const;
+
+        // Get-functions
         glm::vec3 centerOfMass() const;
         glm::vec3 averagePosition() const;
         glm::vec3 averageVelocity() const;
@@ -125,50 +132,29 @@ class MCS{
         int getNumberOfConnections() const;
         int getNumberOfVertices() const;
 
-
+        // Public members
         Particles particles;
         Connections connections;
         Vertices vertices;
         Triangles triangles;
-        NewTriangles newTriangles;
-
-        void addCollisionPlane(glm::vec3 normal, 
-                               float position, 
-                               float elasticity = 0.0f,
-                               float friction = 0.0f);
-
-        void freeze();
-        
-        //The dimensions constants for the MCS
-        const int N_ROWS;
-        const int N_COLS;
-        const int N_STACKS;
-
+    
         //Applied during update
         glm::vec3 externalAcceleration;
         glm::vec3 externalForce;
 
-        void calcConnectionForcesOnParticles();
-        void calcConnectionForcesOnParticles(
-            const std::vector<glm::vec3>& delta_v_offset,
-            const std::vector<glm::vec3>& delta_p_offset);
-        void calcAccelerationOfParticle(int i);
-        void checkCollisions(glm::vec3& pos, glm::vec3& vel) const;
-
         friend void testMCS();
 
     private:
-
         void initParticles();
         void initConnections();
         void initTriangles();
         void initVertices();
-        
-        void triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int &particleIndex3);
-        void vertex2particleIndex(int vertexIndex, int &particleIndex);
-        void triangle2vertexIndices(int triangleIndex, int &vertexIndex1, int &vertexIndex2, int &vertexIndex3);
-
 
         std::vector<CollisionPlane> collisionPlanes;
+    
+        // The dimensions constants for the MCS
+        const int N_ROWS;
+        const int N_COLS;
+        const int N_STACKS;
 };
 #endif

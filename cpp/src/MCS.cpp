@@ -71,7 +71,7 @@ void MCS::initConnections(){
     int p_index1;
     int p_index2;
     for (int i = 0; i < numberOfConnections; ++i){
-        connection2massIndices3D(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
+        connection2massIndices(i, p_index1, p_index2, N_ROWS, N_COLS, N_STACKS);
         
         connections.lengths[i] = 1.0f;
         connections.springConstants[i] = 2000.0f;
@@ -90,6 +90,66 @@ void MCS::initConnections(){
     }
 }
 
+void MCS::initTriangles(){
+    if(vertices.positions.size() == 0){
+        std::cout << "ERROR: Vertices not initialized before triangles" << std::endl;
+        assert(false);
+    }
+    const int n_plane1 = 2*((N_ROWS-1)*(N_COLS-1));
+    const int n_plane2 = n_plane1;
+    const int n_plane3 = 2*((N_ROWS-1)*(N_STACKS-1));
+    const int n_plane4 = n_plane3;
+    const int n_plane5 = 2*((N_COLS-1)*(N_STACKS-1));
+    const int n_plane6 = n_plane5;
+    
+    int n_triangles =
+    n_plane1 + n_plane2 +
+    n_plane3 + n_plane4 +
+    n_plane5 + n_plane6;
+    
+    triangles.triangleIndices = std::vector<IndexedTriangle>(n_triangles);
+    triangles.normals = std::vector<glm::vec3>(n_triangles);
+    
+    for(int ti = 0; ti < n_triangles; ++ti){
+        triangle2vertexIndices(
+                               ti,
+                               triangles.triangleIndices[ti].idx1,
+                               triangles.triangleIndices[ti].idx2,
+                               triangles.triangleIndices[ti].idx3,
+                               N_ROWS,
+                               N_COLS,
+                               N_STACKS);
+        triangles.normals[ti] = glm::vec3(0.0f,0.0f,0.0f);
+    }
+}
+
+void MCS::initVertices(){
+    const int n_plane1 = (N_ROWS == 1 || N_COLS == 1) ? 0 : N_ROWS * N_COLS;
+    const int n_plane2 = n_plane1;
+    const int n_plane3 = (N_ROWS == 1 || N_STACKS == 1) ? 0 : N_ROWS * N_STACKS;
+    const int n_plane4 = n_plane3;
+    const int n_plane5 = (N_COLS == 1 || N_STACKS == 1) ? 0 : N_COLS * N_STACKS;
+    const int n_plane6 = n_plane5;
+    
+    int n_vertices =
+    n_plane1 + n_plane2 +
+    n_plane3 + n_plane4 +
+    n_plane5 + n_plane6;
+    
+    vertices.positions = std::vector<glm::vec3>(n_vertices);
+    vertices.normals = std::vector<glm::vec3>(n_vertices);
+    vertices.colors = std::vector<glm::vec3>(n_vertices);
+    vertices.UVs = std::vector<glm::vec2>(n_vertices);
+    vertices.particleIndices = std::vector<int>(n_vertices);
+    
+    for(int i = 0; i < n_vertices; ++i){
+        vertex2particleIndex(i, vertices.particleIndices[i], N_ROWS, N_COLS, N_STACKS);
+        vertices.positions[i] = particles.positions[vertices.particleIndices[i]];
+        vertices.normals[i] = glm::vec3(0,0,0);
+        vertices.colors[i] = glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX);
+    }
+}
+
 void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, float friction){
     CollisionPlane cp; 
     cp.normal = glm::normalize(normal);
@@ -103,63 +163,6 @@ void MCS::freeze(){
     int n_connections = connections.lengths.size();
     for (int i = 0; i < n_connections; ++i){
         connections.lengths[i] = glm::length(particles.positions[connections.particle1[i]] - particles.positions[connections.particle2[i]]);
-    }
-}
-
-void MCS::initTriangles(){
-    if(vertices.positions.size() == 0){
-        std::cout << "ERROR: Vertices not initialized before triangles" << std::endl;
-        assert(false);
-    }
-    const int n_plane1 = 2*((N_ROWS-1)*(N_COLS-1));
-    const int n_plane2 = n_plane1;
-    const int n_plane3 = 2*((N_ROWS-1)*(N_STACKS-1));
-    const int n_plane4 = n_plane3;
-    const int n_plane5 = 2*((N_COLS-1)*(N_STACKS-1));
-    const int n_plane6 = n_plane5;
-
-    int n_triangles =
-        n_plane1 + n_plane2 + 
-        n_plane3 + n_plane4 + 
-        n_plane5 + n_plane6;
-
-    triangles.triangleIndices = std::vector<IndexedTriangle>(n_triangles);
-    triangles.normals = std::vector<glm::vec3>(n_triangles);
-
-    for(int ti = 0; ti < n_triangles; ++ti){
-        triangle2vertexIndices(
-            ti,
-            triangles.triangleIndices[ti].idx1,
-            triangles.triangleIndices[ti].idx2,
-            triangles.triangleIndices[ti].idx3);
-        triangles.normals[ti] = glm::vec3(0.0f,0.0f,0.0f);
-    }
-}
-
-void MCS::initVertices(){
-    const int n_plane1 = (N_ROWS == 1 || N_COLS == 1) ? 0 : N_ROWS * N_COLS;
-    const int n_plane2 = n_plane1;
-    const int n_plane3 = (N_ROWS == 1 || N_STACKS == 1) ? 0 : N_ROWS * N_STACKS;
-    const int n_plane4 = n_plane3;
-    const int n_plane5 = (N_COLS == 1 || N_STACKS == 1) ? 0 : N_COLS * N_STACKS;
-    const int n_plane6 = n_plane5;
-
-    int n_vertices =
-        n_plane1 + n_plane2 + 
-        n_plane3 + n_plane4 + 
-        n_plane5 + n_plane6;
-
-    vertices.positions = std::vector<glm::vec3>(n_vertices);
-    vertices.normals = std::vector<glm::vec3>(n_vertices);
-    vertices.colors = std::vector<glm::vec3>(n_vertices);
-    vertices.UVs = std::vector<glm::vec2>(n_vertices);
-    vertices.particleIndices = std::vector<int>(n_vertices);
-
-    for(int i = 0; i < n_vertices; ++i){
-        vertex2particleIndex(i, vertices.particleIndices[i]);
-        vertices.positions[i] = particles.positions[vertices.particleIndices[i]];
-        vertices.normals[i] = glm::vec3(0,0,0);
-        vertices.colors[i] = glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX);
     }
 }
 
@@ -372,308 +375,4 @@ int MCS::getNumberOfConnections() const{
 
 int MCS::getNumberOfVertices() const{
     return vertices.positions.size();
-}
-
-void MCS::triangle2particleIndices(int triangleIndex, int &particleIndex1, int &particleIndex2, int &particleIndex3){
- 
-    int Ntype0 = 2*(N_ROWS-1)*(N_COLS-1);         //back
-    int Ntype1 = Ntype0;                          //front
-    int Ntype2 = 2*(N_ROWS-1)*(N_STACKS-1);       //left
-    int Ntype3 = Ntype2;                          //right
-    int Ntype4 = 2*(N_STACKS-1)*(N_COLS-1);       //bottom
-    int Ntype5 = Ntype4;                          //top
-    int TotNtype = Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4 + Ntype5;
-
-    assert(triangleIndex < TotNtype);
-
-    int oneRowOfParticles = N_COLS;
-    int oneRowOfParticlesLocal;
-    int oneStackOfParticles = N_ROWS*N_COLS;
-    int newTriangleIndex;
-
-    int row_p1 = floor(triangleIndex/floor(Ntype0/(N_ROWS-1)));
-    
-    if(triangleIndex < Ntype0){                                     //back
-        oneRowOfParticlesLocal = N_COLS;
-        if(triangleIndex%2==0){     //even
-            particleIndex1=triangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticlesLocal;
-            particleIndex3=particleIndex2+1;
-        }
-        else{                       //odd
-            particleIndex1=(triangleIndex-1)/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
-            particleIndex3=particleIndex1+1;
-        }
-    }
-
-    else if(triangleIndex < Ntype0+Ntype1){                         //front
-        oneRowOfParticlesLocal = N_COLS;
-        newTriangleIndex = triangleIndex - Ntype0;
-        int row_p1 = floor(newTriangleIndex/floor(Ntype1/(N_ROWS-1)));
-
-        if(newTriangleIndex%2==0){  //even
-            particleIndex1=newTriangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
-            particleIndex3=particleIndex2-1;
-        }
-        else{                       //odd
-            particleIndex1=(newTriangleIndex-1)/2+row_p1;
-            particleIndex2=particleIndex1+1;
-            particleIndex3=particleIndex2+oneRowOfParticlesLocal;
-        }
-        particleIndex1+=N_COLS*N_ROWS*(N_STACKS-1);
-        particleIndex2+=N_COLS*N_ROWS*(N_STACKS-1);
-        particleIndex3+=N_COLS*N_ROWS*(N_STACKS-1);
-    }
-
-    else if(triangleIndex < Ntype0+Ntype1+Ntype2){                  //left
-        oneRowOfParticlesLocal = N_STACKS;
-        newTriangleIndex=triangleIndex-(Ntype0+Ntype1);
-        int row_p1 = floor(newTriangleIndex/floor(Ntype2/(N_ROWS-1)));
-
-        if(newTriangleIndex%2==0){  //even
-            particleIndex1=newTriangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
-            particleIndex3=particleIndex2-1;
-        }
-        else{                       //odd
-            particleIndex1=(newTriangleIndex-1)/2+row_p1;
-            particleIndex2=particleIndex1+1;
-            particleIndex3=particleIndex2+oneRowOfParticlesLocal;
-        }
-        particleIndex1 = (particleIndex1 % N_STACKS)*oneStackOfParticles + (particleIndex1/N_STACKS)*oneRowOfParticles;
-        particleIndex2 = (particleIndex2 % N_STACKS)*oneStackOfParticles + (particleIndex2/N_STACKS)*oneRowOfParticles;
-        particleIndex3 = (particleIndex3 % N_STACKS)*oneStackOfParticles + (particleIndex3/N_STACKS)*oneRowOfParticles;
-    }
-
-    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3){           //right
-        oneRowOfParticlesLocal = N_STACKS;
-        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2);
-        int row_p1 = floor(newTriangleIndex/floor(Ntype3/(N_ROWS-1)));
-
-        if(newTriangleIndex%2==0){     //even
-            particleIndex1=newTriangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticlesLocal;
-            particleIndex3=particleIndex2+1;
-        }
-        else{                       //odd
-            particleIndex1=(newTriangleIndex-1)/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
-            particleIndex3=particleIndex1+1;
-        }
-        particleIndex1 = (particleIndex1 % N_STACKS)*oneStackOfParticles + (particleIndex1/N_STACKS)*oneRowOfParticles + oneRowOfParticles-1;
-        particleIndex2 = (particleIndex2 % N_STACKS)*oneStackOfParticles + (particleIndex2/N_STACKS)*oneRowOfParticles + oneRowOfParticles-1;
-        particleIndex3 = (particleIndex3 % N_STACKS)*oneStackOfParticles + (particleIndex3/N_STACKS)*oneRowOfParticles + oneRowOfParticles-1;
-    }
-
-    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3+Ntype4){    //bottom
-        oneRowOfParticlesLocal = N_COLS;
-        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3);
-        int row_p1 = floor(newTriangleIndex/floor(Ntype4/(N_STACKS-1)));
-        if(newTriangleIndex%2==0){  //even
-            particleIndex1=newTriangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
-            particleIndex3=particleIndex2-1;
-        }
-        else{                       //odd
-            particleIndex1=(newTriangleIndex-1)/2+row_p1;
-            particleIndex2=particleIndex1+1;
-            particleIndex3=particleIndex2+oneRowOfParticlesLocal;
-        }
-        particleIndex1 = (particleIndex1 / N_COLS)*oneStackOfParticles + particleIndex1 % N_COLS;
-        particleIndex2 = (particleIndex2 / N_COLS)*oneStackOfParticles + particleIndex2 % N_COLS;
-        particleIndex3 = (particleIndex3 / N_COLS)*oneStackOfParticles + particleIndex3 % N_COLS;
-    }
-
-    else if(triangleIndex < TotNtype){                              //top
-        oneRowOfParticlesLocal = N_COLS;
-        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3+Ntype4);
-        int row_p1 = floor(newTriangleIndex/floor(Ntype5/(N_STACKS-1)));
-        if(newTriangleIndex%2==0){     //even
-            particleIndex1=newTriangleIndex/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticlesLocal;
-            particleIndex3=particleIndex2+1;
-        }
-        else{                       //odd
-            particleIndex1=(newTriangleIndex-1)/2+row_p1;
-            particleIndex2=particleIndex1+oneRowOfParticlesLocal+1;
-            particleIndex3=particleIndex1+1;
-        }
-        particleIndex1 = (particleIndex1 / N_COLS)*oneStackOfParticles + particleIndex1 % N_COLS + (N_ROWS-1)*N_COLS;
-        particleIndex2 = (particleIndex2 / N_COLS)*oneStackOfParticles + particleIndex2 % N_COLS + (N_ROWS-1)*N_COLS;
-        particleIndex3 = (particleIndex3 / N_COLS)*oneStackOfParticles + particleIndex3 % N_COLS + (N_ROWS-1)*N_COLS;
-    }
-}
-
-void MCS::vertex2particleIndex(int vertexIndex, int &particleIndex){
-    int Ntype0 = N_ROWS * N_COLS;         //back
-    int Ntype1 = Ntype0;                          //front
-    int Ntype2 = N_ROWS * N_STACKS;       //left
-    int Ntype3 = Ntype2;                          //right
-    int Ntype4 = N_STACKS * N_COLS;       //bottom
-    int Ntype5 = Ntype4;                          //top
-    int TotNtype = Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4 + Ntype5;
-
-    assert(vertexIndex < TotNtype);
-
-    int oneRowOfParticles = N_COLS;
-    int oneStackOfParticles = N_ROWS*N_COLS;
-    int newVertexIndex;
-
-    if(vertexIndex < Ntype0){                                         //back
-        particleIndex = vertexIndex;
-    }
-    else if(vertexIndex < Ntype0 + Ntype1){                           //front
-        newVertexIndex = vertexIndex - Ntype0;
-        particleIndex = newVertexIndex + N_COLS*N_ROWS*(N_STACKS-1);
-    }
-    else if(vertexIndex < Ntype0 + Ntype1 + Ntype2){                  //left
-        newVertexIndex = vertexIndex - Ntype0 - Ntype1;
-        particleIndex = (newVertexIndex % N_STACKS)*oneStackOfParticles + (newVertexIndex/N_STACKS)*oneRowOfParticles;
-    }
-    else if(vertexIndex < Ntype0 + Ntype1 + Ntype2 + Ntype3){         //right
-        newVertexIndex = vertexIndex - Ntype0 - Ntype1 - Ntype2;
-        particleIndex = (newVertexIndex % N_STACKS)*oneStackOfParticles + (newVertexIndex/N_STACKS)*oneRowOfParticles + oneRowOfParticles-1;
-    }
-    else if(vertexIndex < Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4){//bottom
-        newVertexIndex = vertexIndex - Ntype0 - Ntype1 - Ntype2 - Ntype3;
-        particleIndex = (newVertexIndex / N_COLS)*oneStackOfParticles + newVertexIndex % N_COLS;
-    }
-    else if(vertexIndex < TotNtype){                                  //top
-        newVertexIndex = vertexIndex - Ntype0 - Ntype1 - Ntype2 - Ntype3 - Ntype4;
-        particleIndex = (newVertexIndex / N_COLS)*oneStackOfParticles + newVertexIndex % N_COLS + (N_ROWS-1)*N_COLS;
-    }
-}
-
-void MCS::triangle2vertexIndices(int triangleIndex, int &vertexIndex1, int &vertexIndex2, int &vertexIndex3){
-    int Ntype0 = 2*(N_ROWS-1)*(N_COLS-1);         //back
-    int Ntype1 = Ntype0;                          //front
-    int Ntype2 = 2*(N_ROWS-1)*(N_STACKS-1);       //left
-    int Ntype3 = Ntype2;                          //right
-    int Ntype4 = 2*(N_STACKS-1)*(N_COLS-1);       //bottom
-    int Ntype5 = Ntype4;                          //top
-    int TotNtype = Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4 + Ntype5;
-
-    int Ntype_verts0 = N_ROWS * N_COLS;         //back
-    int Ntype_verts1 = Ntype_verts0;                          //front
-    int Ntype_verts2 = N_ROWS * N_STACKS;       //left
-    int Ntype_verts3 = Ntype_verts2;                          //right
-    int Ntype_verts4 = N_STACKS * N_COLS;       //bottom
-
-
-    assert(triangleIndex < TotNtype);
-
-    int oneRowOfParticlesLocal;
-
-    int newTriangleIndex;
-
-    int row_p1 = (N_ROWS == 1) ? 0 : triangleIndex/(Ntype0/(N_ROWS-1));
-
-    if(triangleIndex < Ntype0){                                         //back
-        oneRowOfParticlesLocal = N_COLS;
-        if(triangleIndex%2==0){     //even
-            vertexIndex1=triangleIndex/2+row_p1;
-            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal;
-            vertexIndex3=vertexIndex2+1;
-        }
-        else{                       //odd
-            vertexIndex1=(triangleIndex-1)/2+row_p1;
-            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
-            vertexIndex3=vertexIndex1+1;
-        }
-    }
-    else if(triangleIndex < Ntype0 + Ntype1){                           //front
-        oneRowOfParticlesLocal = N_COLS;
-        newTriangleIndex = triangleIndex - Ntype0;
-        int row_p1 = floor(newTriangleIndex/floor(Ntype1/(N_ROWS-1)));
-
-        if(newTriangleIndex%2==0){  //even
-            vertexIndex1=newTriangleIndex/2+row_p1;
-            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
-            vertexIndex3=vertexIndex2-1;
-        }
-        else{                       //odd
-            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
-            vertexIndex2=vertexIndex1+1;
-            vertexIndex3=vertexIndex2+oneRowOfParticlesLocal;
-        }
-        vertexIndex1 += Ntype_verts0;
-        vertexIndex2 += Ntype_verts0;
-        vertexIndex3 += Ntype_verts0;
-    }
-    else if(triangleIndex < Ntype0+Ntype1+Ntype2){                  //left
-        oneRowOfParticlesLocal = N_STACKS;
-        newTriangleIndex=triangleIndex-(Ntype0+Ntype1);
-        int row_p1 = floor(newTriangleIndex/floor(Ntype2/(N_ROWS-1)));
-
-        if(newTriangleIndex%2==0){  //even
-            vertexIndex1=newTriangleIndex/2+row_p1;
-            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
-            vertexIndex3=vertexIndex2-1;
-        }
-        else{                       //odd
-            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
-            vertexIndex2=vertexIndex1+1;
-            vertexIndex3=vertexIndex2+oneRowOfParticlesLocal;
-        }
-        vertexIndex1 += Ntype_verts0 + Ntype_verts1;
-        vertexIndex2 += Ntype_verts0 + Ntype_verts1;
-        vertexIndex3 += Ntype_verts0 + Ntype_verts1;
-    }
-    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3){           //right
-        oneRowOfParticlesLocal = N_STACKS;
-        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2);
-        int row_p1 = floor(newTriangleIndex/floor(Ntype3/(N_ROWS-1)));
-
-        if(newTriangleIndex%2==0){     //even
-            vertexIndex1=newTriangleIndex/2+row_p1;
-            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal;
-            vertexIndex3=vertexIndex2+1;
-        }
-        else{                       //odd
-            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
-            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
-            vertexIndex3=vertexIndex1+1;
-        }
-        vertexIndex1 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2;
-        vertexIndex2 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2;
-        vertexIndex3 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2;
-    }
-    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3+Ntype4){    //bottom
-        oneRowOfParticlesLocal = N_COLS;
-        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3);
-        int row_p1 = floor(newTriangleIndex/floor(Ntype4/(N_STACKS-1)));
-        if(newTriangleIndex%2==0){  //even
-            vertexIndex1=newTriangleIndex/2+row_p1;
-            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
-            vertexIndex3=vertexIndex2-1;
-        }
-        else{                       //odd
-            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
-            vertexIndex2=vertexIndex1+1;
-            vertexIndex3=vertexIndex2+oneRowOfParticlesLocal;
-        }
-        vertexIndex1 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3;
-        vertexIndex2 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3;
-        vertexIndex3 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3;
-    }
-    else if(triangleIndex < TotNtype){                                  //top
-        oneRowOfParticlesLocal = N_COLS;
-        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3+Ntype4);
-        int row_p1 = floor(newTriangleIndex/floor(Ntype5/(N_STACKS-1)));
-        if(newTriangleIndex%2==0){     //even
-            vertexIndex1=newTriangleIndex/2+row_p1;
-            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal;
-            vertexIndex3=vertexIndex2+1;
-        }
-        else{                       //odd
-            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
-            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
-            vertexIndex3=vertexIndex1+1;
-        }
-        vertexIndex1 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4;
-        vertexIndex2 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4;
-        vertexIndex3 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4;
-    }
 }

@@ -9,9 +9,8 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 #include <shader.h>
-#include "connection2massindices.h"
+#include "conversions.h"
 #include "NumericalMethods.h"
-#include "test.h"
 #include "debugtools.h"
 
 #include "Drawable.h"

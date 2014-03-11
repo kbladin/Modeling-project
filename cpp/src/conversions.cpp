@@ -1,46 +1,6 @@
-#include "connection2massindices.h"
+#include "conversions.h"
 
-void connection2massIndices(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols)
-{
-	//Number of connections in each direction (|/_\)
-	int n_type1 = (n_rows-1)*n_cols; // |
-	int n_type2 = (n_rows-1)*(n_cols-1); // /
-	int n_type3 = n_rows*(n_cols-1); // _
-	//int n_type4 = n_type2; // \.
-
-	int prev_num_springs;
-	int row_m1;
-
-	if (connection_index < n_type1) //Direction: |
-	{
-	    //prev_num_springs = 0;
-	    mass_index1 = connection_index;
-	    mass_index2 = connection_index + n_cols;
-	}
-	else if (connection_index < (n_type1 + n_type2)) //Direction /
-	{
-	    prev_num_springs = n_type1;
-	    row_m1 = ((connection_index - prev_num_springs)/(n_cols-1));
-	    mass_index1 = connection_index - prev_num_springs + row_m1;
-	    mass_index2 = mass_index1 + n_cols + 1;
-	}
-	else if (connection_index < (n_type1 + n_type2 + n_type3)) //Direction _
-	{
-	    prev_num_springs = n_type1 + n_type2;
-	    row_m1 = ((connection_index - prev_num_springs)/(n_cols-1));
-	    mass_index1 = connection_index - prev_num_springs + row_m1;
-	    mass_index2 = mass_index1 + 1;
-	}
-	else // Direction \ .
-	{
-		prev_num_springs = n_type1 + n_type2 + n_type3;
-	    row_m1 = ((connection_index - prev_num_springs)/(n_cols-1));
-	    mass_index1 = connection_index - prev_num_springs + row_m1 + 1;
-	    mass_index2 = mass_index1 + n_cols - 1;
-	}
-}
-
-void connection2massIndices3D(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols, const int n_stacks){
+void connection2massIndices(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols, const int n_stacks){
 	// Number of connections of a certain type (13 different directions)
 	const int N_TYPES = 13;
 	int n_type[N_TYPES];
@@ -249,17 +209,6 @@ void connection2massIndices3D(const int connection_index, int &mass_index1, int 
 		default:
 			mass_index1 = mass_index2 = -1;
 	}
-/*
-	std::cout << "n_rows = " << n_rows << std::endl;
-	std::cout << "n_cols = " << n_cols << std::endl;
-	std::cout << "n_stacks = " << n_stacks << std::endl;
-	std::cout << "type = " << type << std::endl;
-	std::cout << "one_row_of_connections = " << one_row_of_connections << std::endl;
-	std::cout << "one_stack_of_connections = " << one_stack_of_connections << std::endl;
-	std::cout << "stack_m1 = " << stack_m1 << std::endl;
-	std::cout << "row_m1 = " << row_m1 << std::endl;
-*/
-
 }
 
 // Calculate the stack in which the first mass (not necessary mass 1) of the pair is positioned
@@ -272,4 +221,176 @@ int stackOfFirstMass(const int connection_index, const int prev_num_springs, con
 int rowOfFirstMass(const int connection_index, const int prev_num_springs, const int one_row_of_connections, const int one_stack_of_connections){
 	// Integer division
 	return ((connection_index - prev_num_springs) % one_stack_of_connections)/one_row_of_connections;
+}
+
+void vertex2particleIndex(int vertexIndex, int &particleIndex, const int n_rows, const int n_cols, const int n_stacks){
+    int Ntype0 = n_rows * n_cols;         //back
+    int Ntype1 = Ntype0;                          //front
+    int Ntype2 = n_rows * n_stacks;       //left
+    int Ntype3 = Ntype2;                          //right
+    int Ntype4 = n_stacks * n_cols;       //bottom
+    int Ntype5 = Ntype4;                          //top
+    int TotNtype = Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4 + Ntype5;
+    
+    assert(vertexIndex < TotNtype);
+    
+    int oneRowOfParticles = n_cols;
+    int oneStackOfParticles = n_rows*n_cols;
+    int newVertexIndex;
+    
+    if(vertexIndex < Ntype0){                                         //back
+        particleIndex = vertexIndex;
+    }
+    else if(vertexIndex < Ntype0 + Ntype1){                           //front
+        newVertexIndex = vertexIndex - Ntype0;
+        particleIndex = newVertexIndex + n_cols*n_rows*(n_stacks-1);
+    }
+    else if(vertexIndex < Ntype0 + Ntype1 + Ntype2){                  //left
+        newVertexIndex = vertexIndex - Ntype0 - Ntype1;
+        particleIndex = (newVertexIndex % n_stacks)*oneStackOfParticles + (newVertexIndex/n_stacks)*oneRowOfParticles;
+    }
+    else if(vertexIndex < Ntype0 + Ntype1 + Ntype2 + Ntype3){         //right
+        newVertexIndex = vertexIndex - Ntype0 - Ntype1 - Ntype2;
+        particleIndex = (newVertexIndex % n_stacks)*oneStackOfParticles + (newVertexIndex/n_stacks)*oneRowOfParticles + oneRowOfParticles-1;
+    }
+    else if(vertexIndex < Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4){//bottom
+        newVertexIndex = vertexIndex - Ntype0 - Ntype1 - Ntype2 - Ntype3;
+        particleIndex = (newVertexIndex / n_cols)*oneStackOfParticles + newVertexIndex % n_cols;
+    }
+    else if(vertexIndex < TotNtype){                                  //top
+        newVertexIndex = vertexIndex - Ntype0 - Ntype1 - Ntype2 - Ntype3 - Ntype4;
+        particleIndex = (newVertexIndex / n_cols)*oneStackOfParticles + newVertexIndex % n_cols + (n_rows-1)*n_cols;
+    }
+}
+
+void triangle2vertexIndices(int triangleIndex, int &vertexIndex1, int &vertexIndex2, int &vertexIndex3, const int n_rows, const int n_cols, const int n_stacks){
+    int Ntype0 = 2*(n_rows-1)*(n_cols-1);         //back
+    int Ntype1 = Ntype0;                          //front
+    int Ntype2 = 2*(n_rows-1)*(n_stacks-1);       //left
+    int Ntype3 = Ntype2;                          //right
+    int Ntype4 = 2*(n_stacks-1)*(n_cols-1);       //bottom
+    int Ntype5 = Ntype4;                          //top
+    int TotNtype = Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4 + Ntype5;
+    
+    int Ntype_verts0 = n_rows * n_cols;         //back
+    int Ntype_verts1 = Ntype_verts0;                          //front
+    int Ntype_verts2 = n_rows * n_stacks;       //left
+    int Ntype_verts3 = Ntype_verts2;                          //right
+    int Ntype_verts4 = n_stacks * n_cols;       //bottom
+    
+    
+    assert(triangleIndex < TotNtype);
+    
+    int oneRowOfParticlesLocal;
+    
+    int newTriangleIndex;
+    
+    int row_p1 = (n_rows == 1) ? 0 : triangleIndex/(Ntype0/(n_rows-1));
+    
+    if(triangleIndex < Ntype0){                                         //back
+        oneRowOfParticlesLocal = n_cols;
+        if(triangleIndex%2==0){     //even
+            vertexIndex1=triangleIndex/2+row_p1;
+            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal;
+            vertexIndex3=vertexIndex2+1;
+        }
+        else{                       //odd
+            vertexIndex1=(triangleIndex-1)/2+row_p1;
+            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
+            vertexIndex3=vertexIndex1+1;
+        }
+    }
+    else if(triangleIndex < Ntype0 + Ntype1){                           //front
+        oneRowOfParticlesLocal = n_cols;
+        newTriangleIndex = triangleIndex - Ntype0;
+        int row_p1 = floor(newTriangleIndex/floor(Ntype1/(n_rows-1)));
+        
+        if(newTriangleIndex%2==0){  //even
+            vertexIndex1=newTriangleIndex/2+row_p1;
+            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
+            vertexIndex3=vertexIndex2-1;
+        }
+        else{                       //odd
+            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
+            vertexIndex2=vertexIndex1+1;
+            vertexIndex3=vertexIndex2+oneRowOfParticlesLocal;
+        }
+        vertexIndex1 += Ntype_verts0;
+        vertexIndex2 += Ntype_verts0;
+        vertexIndex3 += Ntype_verts0;
+    }
+    else if(triangleIndex < Ntype0+Ntype1+Ntype2){                  //left
+        oneRowOfParticlesLocal = n_stacks;
+        newTriangleIndex=triangleIndex-(Ntype0+Ntype1);
+        int row_p1 = floor(newTriangleIndex/floor(Ntype2/(n_rows-1)));
+        
+        if(newTriangleIndex%2==0){  //even
+            vertexIndex1=newTriangleIndex/2+row_p1;
+            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
+            vertexIndex3=vertexIndex2-1;
+        }
+        else{                       //odd
+            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
+            vertexIndex2=vertexIndex1+1;
+            vertexIndex3=vertexIndex2+oneRowOfParticlesLocal;
+        }
+        vertexIndex1 += Ntype_verts0 + Ntype_verts1;
+        vertexIndex2 += Ntype_verts0 + Ntype_verts1;
+        vertexIndex3 += Ntype_verts0 + Ntype_verts1;
+    }
+    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3){           //right
+        oneRowOfParticlesLocal = n_stacks;
+        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2);
+        int row_p1 = floor(newTriangleIndex/floor(Ntype3/(n_rows-1)));
+        
+        if(newTriangleIndex%2==0){     //even
+            vertexIndex1=newTriangleIndex/2+row_p1;
+            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal;
+            vertexIndex3=vertexIndex2+1;
+        }
+        else{                       //odd
+            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
+            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
+            vertexIndex3=vertexIndex1+1;
+        }
+        vertexIndex1 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2;
+        vertexIndex2 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2;
+        vertexIndex3 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2;
+    }
+    else if(triangleIndex < Ntype0+Ntype1+Ntype2+Ntype3+Ntype4){    //bottom
+        oneRowOfParticlesLocal = n_cols;
+        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3);
+        int row_p1 = floor(newTriangleIndex/floor(Ntype4/(n_stacks-1)));
+        if(newTriangleIndex%2==0){  //even
+            vertexIndex1=newTriangleIndex/2+row_p1;
+            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
+            vertexIndex3=vertexIndex2-1;
+        }
+        else{                       //odd
+            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
+            vertexIndex2=vertexIndex1+1;
+            vertexIndex3=vertexIndex2+oneRowOfParticlesLocal;
+        }
+        vertexIndex1 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3;
+        vertexIndex2 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3;
+        vertexIndex3 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3;
+    }
+    else if(triangleIndex < TotNtype){                                  //top
+        oneRowOfParticlesLocal = n_cols;
+        newTriangleIndex = triangleIndex - (Ntype0+Ntype1+Ntype2+Ntype3+Ntype4);
+        int row_p1 = floor(newTriangleIndex/floor(Ntype5/(n_stacks-1)));
+        if(newTriangleIndex%2==0){     //even
+            vertexIndex1=newTriangleIndex/2+row_p1;
+            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal;
+            vertexIndex3=vertexIndex2+1;
+        }
+        else{                       //odd
+            vertexIndex1=(newTriangleIndex-1)/2+row_p1;
+            vertexIndex2=vertexIndex1+oneRowOfParticlesLocal+1;
+            vertexIndex3=vertexIndex1+1;
+        }
+        vertexIndex1 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4;
+        vertexIndex2 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4;
+        vertexIndex3 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4;
+    }
 }

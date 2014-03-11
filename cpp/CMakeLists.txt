@@ -32,6 +32,9 @@ set(CMAKE_CXX_FLAGS "-g")
 
 # Creating our own library
 file(GLOB Library_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+# We do not want main.cpp in the library
+file(GLOB to_remove ${PROJECT_SOURCE_DIR}/src/main.cpp)
+list(REMOVE_ITEM Library_SOURCES ${to_remove})
 file(GLOB Library_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
 
 add_library(ElasticMaterials_lib ${Library_SOURCES} ${Library_HEADERS})

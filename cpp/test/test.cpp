@@ -1,7 +1,6 @@
 #include <iostream>
 #include "gtest/gtest.h"
-
-#include "test.h"
+#include <MCS.h>
 
 /* *
 * Test class for Chromosome
@@ -24,7 +23,6 @@ protected:
 
 	}
 	
-	//Chromosome c;
 };
 
 TEST_F(EMTest, superMegaTestet) {
@@ -34,5 +32,7 @@ TEST_F(EMTest, superMegaTestet) {
 }
 
 TEST_F(EMTest, ParticleConnectionMCS) {
-    testMCS();
+    std::cout << "Testing MCS" << std::endl;
+    MCS mcs(1,2,2);
+    assert(mcs.getNumberOfParticles() == 1*2*2);
 }

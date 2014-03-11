@@ -9,19 +9,20 @@
 
 class MatrixHandler{
 public:
-	glm::mat4 M;
+	MatrixHandler(GLFWwindow* window);
+	void calculateMatrices(float ratio);
+
+    glm::mat4 M;
 	glm::mat4 V;
 	glm::mat4 P;
 	glm::mat4 MV;
 	glm::mat4 MVP;
-
-	MatrixHandler(GLFWwindow* window);
-	void calculateMatrices(float ratio);
-
 private:
+    static void scroll_fun(GLFWwindow* window, double x_pos, double y_pos);
+
 	GLFWwindow* window_;
-	//float previous_x_pos_;
-	//float previous_y_pos_;
+    static double zoom;
+    static float rotate;
 };
 
 #endif
