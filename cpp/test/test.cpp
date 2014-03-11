@@ -34,7 +34,5 @@ TEST_F(EMTest, superMegaTestet) {
 }
 
 TEST_F(EMTest, ParticleConnectionMCS) {
-	testParticle();
-    testConnection();
     testMCS();
 }

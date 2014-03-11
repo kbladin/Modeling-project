@@ -20,8 +20,8 @@ public:
 
 private:
 	GLFWwindow* window_;
-	float previous_x_pos_;
-	float previous_y_pos_;
+	//float previous_x_pos_;
+	//float previous_y_pos_;
 };
 
 #endif

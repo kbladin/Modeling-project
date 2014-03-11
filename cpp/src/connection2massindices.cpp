@@ -6,7 +6,7 @@ void connection2massIndices(const int connection_index, int &mass_index1, int &m
 	int n_type1 = (n_rows-1)*n_cols; // |
 	int n_type2 = (n_rows-1)*(n_cols-1); // /
 	int n_type3 = n_rows*(n_cols-1); // _
-	int n_type4 = n_type2; // \
+	//int n_type4 = n_type2; // \.
 
 	int prev_num_springs;
 	int row_m1;

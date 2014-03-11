@@ -11,8 +11,8 @@ MatrixHandler::MatrixHandler(GLFWwindow* window){
 	glfwGetCursorPos(window_, &x_mouse, &y_mouse);
 	glfwGetWindowSize(window_, &width, &height);
 
-	previous_x_pos_ = (x_mouse/width-0.5)*2;
-	previous_x_pos_ = -(y_mouse/height-0.5)*2;
+	//previous_x_pos_ = (x_mouse/width-0.5)*2;
+	//previous_x_pos_ = -(y_mouse/height-0.5)*2;
 }
 
 void MatrixHandler::calculateMatrices(float ratio){

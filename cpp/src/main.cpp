@@ -80,7 +80,7 @@ int main(void){
     
     initOpenGL(openGL_drawable, *mcs);
     
-    int b=0, frame = 0;
+    int frame = 0;
     
     while (!glfwWindowShouldClose(window)){
 
@@ -297,7 +297,7 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     glGenVertexArrays(1, &openGL_drawable.vertexArray);
 
     // Create and compile the shader
-    openGL_drawable.programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
+    openGL_drawable.programID = LoadShaders( "../../data/shaders/simple.vert", "../../data/shaders/simple.frag" );
 
     // Bind the VAO
     glBindVertexArray(openGL_drawable.vertexArray);

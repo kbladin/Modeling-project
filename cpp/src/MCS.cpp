@@ -388,7 +388,6 @@ void MCS::triangle2particleIndices(int triangleIndex, int &particleIndex1, int &
 
     int oneRowOfParticles = N_COLS;
     int oneRowOfParticlesLocal;
-    //int oneColumnOfParticles = N_ROWS;
     int oneStackOfParticles = N_ROWS*N_COLS;
     int newTriangleIndex;
 
@@ -519,7 +518,6 @@ void MCS::vertex2particleIndex(int vertexIndex, int &particleIndex){
     assert(vertexIndex < TotNtype);
 
     int oneRowOfParticles = N_COLS;
-    int oneRowOfParticlesLocal;
     int oneStackOfParticles = N_ROWS*N_COLS;
     int newVertexIndex;
 
@@ -562,16 +560,12 @@ void MCS::triangle2vertexIndices(int triangleIndex, int &vertexIndex1, int &vert
     int Ntype_verts2 = N_ROWS * N_STACKS;       //left
     int Ntype_verts3 = Ntype_verts2;                          //right
     int Ntype_verts4 = N_STACKS * N_COLS;       //bottom
-    int Ntype_verts5 = Ntype_verts4;                          //top
-    int TotNtype_verts = Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4 + Ntype_verts5;
 
 
     assert(triangleIndex < TotNtype);
 
-    int oneRowOfParticles = N_COLS;
     int oneRowOfParticlesLocal;
-    //int oneColumnOfParticles = N_ROWS;
-    int oneStackOfParticles = N_ROWS*N_COLS;
+
     int newTriangleIndex;
 
     int row_p1 = (N_ROWS == 1) ? 0 : triangleIndex/(Ntype0/(N_ROWS-1));
