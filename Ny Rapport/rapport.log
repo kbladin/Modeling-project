@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.2.4)  12 MAR 2014 10:49
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.2.4)  12 MAR 2014 11:10
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -289,12 +289,12 @@ LaTeX Font Info:    External font `cmex7' loaded for size
 
  [3]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 58.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 62.
  [1] [2] (./rapport.aux) ) 
 Here is how much of TeX's memory you used:
  3011 strings out of 493315
  42587 string characters out of 6137905
- 110355 words of memory out of 5000000
+ 112355 words of memory out of 5000000
  6394 multiletter control sequences out of 15000+600000
  38391 words of font info for 52 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
@@ -303,7 +303,7 @@ Here is how much of TeX's memory you used:
 ase/8r.enc}</usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmb8a.pfb
 ></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/loc
 al/texlive/2013/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on rapport.pdf (5 pages, 43201 bytes).
+Output written on rapport.pdf (5 pages, 46895 bytes).
 PDF statistics:
  33 PDF objects out of 1000 (max. 8388607)
  22 compressed objects within 1 object stream
