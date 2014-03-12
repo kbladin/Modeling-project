@@ -5,12 +5,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <iostream>
+#include <MCS.h>
 
+#include "debugtools.h"
+
+class Camera;
 
 class MatrixHandler{
 public:
-	MatrixHandler(GLFWwindow* window);
-	void calculateMatrices(float ratio);
+	MatrixHandler(Camera* camera);
+	void calculateMatrices();
 
     glm::mat4 M;
 	glm::mat4 V;
@@ -18,11 +22,32 @@ public:
 	glm::mat4 MV;
 	glm::mat4 MVP;
 private:
-    static void scroll_fun(GLFWwindow* window, double x_pos, double y_pos);
+    Camera* camera_;
+};
 
-	GLFWwindow* window_;
-    static double zoom;
-    static float rotate;
+class Camera{
+public:
+    Camera(GLFWwindow* window, MCS* target);
+
+    void setTarget(MCS* target);
+    
+    float getAspectRatio();
+    
+    static glm::vec3 rotation_axis;
+    static glm::vec3 position;
+    static glm::vec3 direction;
+    static glm::vec3 up;
+    static float fov;
+
+    static MCS* target_;
+
+private:
+    static void scroll_fun(GLFWwindow* window, double x_pos, double y_pos);
+	
+    static float x_pos_incr;
+    static float y_pos_incr;
+    
+    GLFWwindow* window_;
 };
 
 #endif

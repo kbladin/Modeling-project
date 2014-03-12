@@ -39,6 +39,7 @@ MCS * createSoftCube();
 // Global variables
 GLFWwindow* window;
 MCS * mcs = NULL;
+Camera* cam = NULL;
 OpenGL_drawable openGL_drawable;
 MatrixHandler* matrices;
 
@@ -54,8 +55,9 @@ int main(void){
     initOpenGL();
 
     mcs = createFloppyThing();
-    
-    matrices = new MatrixHandler(window);
+
+    cam = new Camera(window, mcs);
+    matrices = new MatrixHandler(cam);
     
     // INIT SIMULATION 
     int simulations_per_frame = 10;
@@ -135,6 +137,7 @@ int main(void){
         }
     }
     delete mcs;
+    delete cam;
     cleanUpGLFW();
 }
 
@@ -191,6 +194,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         delete mcs;
         openGL_drawable.deleteBuffers();
         mcs = createFloppyThing();
+        cam->setTarget(mcs);
         initOpenGL(openGL_drawable, *mcs);
         std::cout << "Done" << std::endl;
     }
@@ -200,6 +204,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         delete mcs;
         openGL_drawable.deleteBuffers();
         mcs = createRollingDice();
+        cam->setTarget(mcs);
         initOpenGL(openGL_drawable, *mcs);
         std::cout << "Done" << std::endl;
     }
@@ -209,6 +214,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         delete mcs;
         openGL_drawable.deleteBuffers();
         mcs = createStandingSnake();
+        cam->setTarget(mcs);
         initOpenGL(openGL_drawable, *mcs);
         std::cout << "Done" << std::endl;
     }
@@ -218,6 +224,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         delete mcs;
         openGL_drawable.deleteBuffers();
         mcs = createCloth();
+        cam->setTarget(mcs);
         initOpenGL(openGL_drawable, *mcs);
         std::cout << "Done" << std::endl;
     }
@@ -227,6 +234,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         delete mcs;
         openGL_drawable.deleteBuffers();
         mcs = createSoftCube();
+        cam->setTarget(mcs);
         initOpenGL(openGL_drawable, *mcs);
         std::cout << "Done" << std::endl;
     }
@@ -296,7 +304,7 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     glGenVertexArrays(1, &openGL_drawable.vertexArray);
 
     // Create and compile the shader
-    openGL_drawable.programID = LoadShaders( "../../data/shaders/simple.vert", "../../data/shaders/simple.frag" );
+    openGL_drawable.programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
 
     // Bind the VAO
     glBindVertexArray(openGL_drawable.vertexArray);
@@ -372,7 +380,7 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     ratio = width / (float) height;
 
     // Do the matrix stuff
-    matrices->calculateMatrices(ratio);
+    matrices->calculateMatrices();
 
     glm::vec3 lightPos = glm::vec3(30,30,0);
     glm::vec3 lightColor = glm::vec3(1,1,1);
@@ -450,7 +458,7 @@ MCS * createFloppyThing(){
     MCS * tmp_mcs = new MCS(3,12,20); //Minns inte hur den var
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
-    tmp_mcs->setAvgPosition(glm::vec3(-10,5,-10));
+    tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
@@ -463,7 +471,7 @@ MCS * createRollingDice(){
     MCS * tmp_mcs = new MCS(3,3,3);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),25.0f);
-    tmp_mcs->setAvgPosition(glm::vec3(-15,0,-10));
+    tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
     tmp_mcs->connections.setSpringConstant(20000.0f);
     tmp_mcs->setAvgVelocity(glm::vec3(8,5,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
@@ -507,7 +515,7 @@ MCS * createSoftCube(){
     tmp_mcs->connections.setSpringConstant(100.0f);
     tmp_mcs->connections.setDamperConstant(70.0f);
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-2.0f);
-    tmp_mcs->setAvgPosition(glm::vec3(-15,0,-10));
+    tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
     tmp_mcs->setAvgVelocity(glm::vec3(20,20,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal

@@ -340,6 +340,7 @@ void MCS::updateVertexPositions(){
 }
 
 glm::vec3 MCS::centerOfMass() const{
+    
     glm::vec3 weightedSum(0,0,0);
     float totalMass = 0;
     for (int i = 0; i < getNumberOfParticles(); ++i){
