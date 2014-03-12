@@ -11,6 +11,10 @@ objects/*.o
 # LaTeX shit #
 /Rapport/reportsam.pdf
 /Rapport/reportsam.log
+/Rapport/reportsam.aux
+/Rapport/reportsam.lof
+/Rapport/reportsam.lot
+/Rapport/reportsam.toc
 /Rapport/reportsam.synctex.gz
 
 # Build #
