@@ -17,5 +17,14 @@ objects/*.o
 /Rapport/reportsam.toc
 /Rapport/reportsam.synctex.gz
 
+# LaTeX shit #
+/Ny\ Rapport/rapport.pdf
+/Ny\ Rapport/rapport.log
+/Ny\ Rapport/rapport.aux
+/Ny\ Rapport/rapport.lof
+/Ny\ Rapport/rapport.lot
+/Ny\ Rapport/rapport.toc
+/Ny\ Rapport/rapport.synctex.gz
+
 # Build #
 /cpp/build
