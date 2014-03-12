@@ -1,0 +1,33 @@
+\select@language {swedish}
+\thispagestyle {empty}
+\contentsline {section}{\numberline {1}Inledning}{1}
+\contentsline {subsection}{\numberline {1.1}Syfte}{1}
+\contentsline {section}{\numberline {2}Bakgrund}{1}
+\contentsline {subsection}{\numberline {2.1}Numeriska metoder}{1}
+\contentsline {section}{\numberline {3}F\"orstudier i MATLAB}{1}
+\contentsline {subsection}{\numberline {3.1}Kraftekvation}{1}
+\contentsline {subsection}{\numberline {3.2}Utveckling av MSD-system}{1}
+\contentsline {section}{\numberline {4}Implementering}{1}
+\contentsline {subsection}{\numberline {4.1}Grundl\"aggande systemarkitektur}{1}
+\contentsline {subsection}{\numberline {4.2}Indexeringsproblem}{1}
+\contentsline {subsection}{\numberline {4.3}Implementering av kraftekvation}{1}
+\contentsline {subsubsection}{\numberline {4.3.1}Algoritm 1: baserad p\r a massorna}{2}
+\contentsline {subsubsection}{\numberline {4.3.2}Algoritm 2: baserad p\r a kopplingarna mellan massorna}{2}
+\contentsline {subsection}{\numberline {4.4}Implementering av numeriska integreringsmetoder}{2}
+\contentsline {subsubsection}{\numberline {4.4.1}Eulers stegmetod}{2}
+\contentsline {subsubsection}{\numberline {4.4.2}Runge Kutta}{2}
+\contentsline {subsection}{\numberline {4.5}Stabilitets- och prestandatest}{2}
+\contentsline {section}{\numberline {5}Resultat}{2}
+\contentsline {subsection}{\numberline {5.1}Resultat fr\r an f\"orstudier}{2}
+\contentsline {subsubsection}{\numberline {5.1.1}En dimension}{2}
+\contentsline {subsubsection}{\numberline {5.1.2}Tv\r a dimensioner}{2}
+\contentsline {subsection}{\numberline {5.2}Resultat fr\r an implementering}{2}
+\contentsline {subsection}{\numberline {5.3}Stabilitets- och prestandakrav}{2}
+\contentsline {section}{\numberline {6}Beskrivning av systemet}{2}
+\contentsline {subsection}{\numberline {6.1}Systemkrav}{2}
+\contentsline {subsubsection}{\numberline {6.1.1}H\r ardvara}{2}
+\contentsline {subsubsection}{\numberline {6.1.2}Mjukvara}{2}
+\contentsline {subsection}{\numberline {6.2}K\"ora programmet}{2}
+\contentsline {section}{\numberline {7}Diskussion}{2}
+\contentsline {section}{\numberline {8}Resultat}{2}
+\contentsline {section}{\numberline {A}Bilaga om ditten}{2}

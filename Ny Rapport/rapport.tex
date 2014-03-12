@@ -1,0 +1,130 @@
+%oneside/twoside for the printer
+\documentclass[a4paper,12pt,oneside,final,swedish]{extarticle}
+%article vs. extarticle
+%Paket
+\usepackage[latin1]{inputenc}	%å,ä,ö
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{times}			%typsnitt times kanske
+\usepackage[swedish]{babel}
+\usepackage[affil-it]{authblk}
+\usepackage{geometry}	%lets you customize the page size
+
+\geometry{
+ margin=20mm
+} 
+
+\usepackage{fancyhdr} %include this to customize headers/footers
+\usepackage{titling}
+
+%-------------------------------------------------------------Här börjar dokumentet 
+\begin{document}
+% Framsida
+
+\author{Grupp 9\\\\Kalle Bladin\\Erik Broberg\\Emma Forsling Parborg\\Martin Gråd}
+\title{Simulering av Elastiska Material}
+\clearpage\maketitle %genererar en separat titelsida
+\thispagestyle{empty}
+\date{2014-03-xx}
+\affil{Linköpings Universitet}
+\pagebreak
+%\pagestyle{empty} %fancy, empty, plain, myheadings
+
+
+
+
+%Sammanfattning
+\begin{abstract}
+\thispagestyle{empty}
+Här ska sammanfattningen skrivas in
+\hfill
+\end{abstract}
+\pagebreak 
+
+%Innehållsförteckning, Figurförteckning & Tabellförteckning
+\tableofcontents  % chapter with the table of contents
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+\listoffigures    % chapter with the list of figures
+\addtocontents{lof}{\protect\thispagestyle{empty}}
+\listoftables     % chapter with the list of tables
+\addtocontents{lot}{\protect\thispagestyle{empty}}
+
+%-----------------------------------------------------------
+%Inledning
+%\pagestyle{plain}
+\pagebreak
+\pagestyle{plain}
+\setcounter{page}{1}
+%Inledning
+\section{Inledning}
+Inledande text är alltid lite trevligt
+
+\subsection{Syfte}
+Denna rapport syftar till att undersöka hur verklighetstrogna simuleringar av elastiska material kan göras i tre dimensioner med hjälp av mass-fjäder-dämparsystem. Simuleringarna som demonstreras är menade att kunna göras i realtid, och erbjuda en användare viss interaktion. 
+
+%Bakgrund
+\section{Bakgrund}
+\subsection{Numeriska metoder}
+
+%Förstudier i MATLAB
+\section{Förstudier i MATLAB}
+\subsection{Kraftekvation}
+
+\subsection{Utveckling av MSD-system}
+
+%Implementering
+\section{Implementering}
+\subsection{Grundläggande systemarkitektur}
+
+\subsection{Indexeringsproblem}
+
+\subsection{Implementering av kraftekvation}
+Att implementera kraftekvationen för varje massa i ett MSD-system enligt Ekvation N, innebär att kraftvektorn till varje massa i, beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje massa. I detta projekt utforskades två algoritmer för detta ändamål.
+\subsubsection{Algoritm 1: baserad på massorna}
+\subsubsection{Algoritm 2: baserad på kopplingarna mellan massorna}
+
+\subsection{Implementering av numeriska integreringsmetoder}
+\subsubsection{Eulers stegmetod}
+\subsubsection{Runge Kutta}
+
+\subsection{Stabilitets- och prestandatest}
+
+%Resultat
+\section{Resultat}
+\subsection{Resultat från förstudier}
+\subsubsection{En dimension}
+\subsubsection{Två dimensioner}
+
+\subsection{Resultat från implementering}
+\subsection{Stabilitets- och prestandakrav}
+
+%Beskrivning av systemet
+\section{Beskrivning av systemet}
+\subsection{Systemkrav}
+\subsubsection{Hårdvara}
+\subsubsection{Mjukvara}
+
+\subsection{Köra programmet}
+
+%Diskussion
+\section{Diskussion}
+
+%Resultat
+\section{Resultat}
+
+
+%Referenser
+\begin{thebibliography}{9}
+
+\bibitem{pfleeger10softwareengineering}
+Shari Lawrence Pfleeger och Joanne M. Atlee, \emph{Software Engineering, Fourth Edition, International Edition}, Pearson 2010
+  
+\end{thebibliography}
+
+%Bilagor
+\appendix
+
+\section{Bilaga om ditten}
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+\end{document}
