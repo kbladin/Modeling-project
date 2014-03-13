@@ -2,7 +2,7 @@
 \documentclass[a4paper,12pt,oneside,final,swedish]{extarticle}
 %article vs. extarticle
 %Paket
-\usepackage[latin1]{inputenc}	%å,ä,ö
+\usepackage[latin1]{inputenc}	%Ã¥,Ã¤,Ã¶
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{times}			%typsnitt times kanske
@@ -28,16 +28,16 @@
 \setcounter{tocdepth}{4}    % how many sectioning levels to show in ToC
 
 
-%-------------------------------------------------------------Här börjar dokumentet 
+%-------------------------------------------------------------HÃ¤r bÃ¶rjar dokumentet 
 \begin{document}
 % Framsida
 
-\author{Grupp 9\\\\Kalle Bladin\\Erik Broberg\\Emma Forsling Parborg\\Martin Gråd}
+\author{Grupp 9\\\\Kalle Bladin\\Erik Broberg\\Emma Forsling Parborg\\Martin GrÃ¥d}
 \title{Simulering av Elastiska Material}
 \clearpage\maketitle %genererar en separat titelsida
 \thispagestyle{empty}
 \date{2014-03-xx}
-\affil{Linköpings Universitet}
+\affil{LinkÃ¶pings Universitet}
 \pagebreak
 %\pagestyle{empty} %fancy, empty, plain, myheadings
 
@@ -47,12 +47,12 @@
 %Sammanfattning
 \begin{abstract}
 \thispagestyle{empty}
-Här ska sammanfattningen skrivas in
+HÃ¤r ska sammanfattningen skrivas in
 \hfill
 \end{abstract}
 \pagebreak 
 
-%Innehållsförteckning, Figurförteckning & Tabellförteckning
+%InnehÃ¥llsfÃ¶rteckning, FigurfÃ¶rteckning & TabellfÃ¶rteckning
 \tableofcontents  % chapter with the table of contents
 \addtocontents{toc}{\protect\thispagestyle{empty}}
 \listoffigures    % chapter with the list of figures
@@ -69,76 +69,96 @@ Här ska sammanfattningen skrivas in
 
 %Inledning
 \section{Inledning}
-Inledande text är alltid lite trevligt
+Inledande text Ã¤r alltid lite trevligt
 \subsection{Introduktion}
   %Syfte
 \subsection{Syfte}
-Denna rapport syftar till att undersöka hur verklighetstrogna simuleringar av elastiska material kan göras i tre dimensioner med hjälp av mass-fjäder-dämparsystem. Simuleringarna som demonstreras är menade att kunna göras i realtid, och erbjuda en användare viss interaktion.
+Denna rapport syftar till att undersÃ¶ka hur verklighetstrogna simuleringar av elastiska material kan gÃ¶ras i tre dimensioner med hjÃ¤lp av mass-fjÃ¤der-dÃ¤mparsystem. 
+Simuleringarna som demonstreras Ã¤r menade att kunna gÃ¶ras i realtid, och erbjuda en anvÃ¤ndare viss interaktion.
+
   %Bakgrund
 \subsection{Bakgrund}
 \subsubsection{Fysikalisk modellering}
-En modell som kan användas för simulering av elastiska material är ett så kallat ''mass spring damper system'' (Gelenbe, Lent \& Stakellari 2012) eller MSD-system; en modell som beskrivs av partiklar sammankopplade med fjädrar och dämpare.
+En modell som kan anvÃ¤ndas fÃ¶r simulering av elastiska material Ã¤r ett sÃ¥ kallat ''mass spring damper system'' (Gelenbe, Lent \& Stakellari 2012) eller MSD-system; en modell som beskrivs av partiklar sammankopplade med fjÃ¤drar och dÃ¤mpare.
+
 \\%Figur
-\\Det enkla systemet i Figur X utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande elastiska material. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
-\\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna (Halliday 2007) som beskrevs av Newton. Newtons andra lag anges i Ekvation 2, 
+\\Det enkla systemet i Figur X utgÃ¶r grunden fÃ¶r den struktur som anvÃ¤nds i detta projekt. 
+Genom att utÃ¶ka systemet med partiklar och samma typ av kopplingar, kan mÃ¥nga olika material och former beskrivas, exempelvis tyg, gelÃ©, skumgummi eller liknande elastiska material. 
+Beroende pÃ¥ parametrarna fjÃ¤derkonstanter, dÃ¤mparkonstanter, massor och fjÃ¤derlÃ¤ngder kan realistiska simuleringar av dessa material uppnÃ¥s.
+
+\\\\Som bakgrund till den fysikaliska modellen lÃ¥g de grundlÃ¤ggande rÃ¶relse- och kraftlagarna (Halliday 2007) som beskrevs av Newton. 
+Newtons andra lag anges i Ekvation 2, 
 \\%Ekvation 2
-\\där F är den resulterande kraften på en partikel, x?? är partikelns acceleration, m är partikelns massa och t är tidsvariabeln. Newtons tredje lag summeras i ett citat:
+\\dÃ¤r F Ã¤r den resulterande kraften pÃ¥ en partikel, x?? Ã¤r partikelns acceleration, m Ã¤r partikelns massa och t Ã¤r tidsvariabeln. 
+Newtons tredje lag summeras i ett citat:
 \begin{quote}''If A puts a force on B, then B puts a force on A, and the two forces are equal in magnitude and have opposite direction.'' (Halliday 2007)\end{quote}
-Fjädrarna modellerades med Hookes lag som anges i ekvation 3,
+FjÃ¤drarna modellerades med Hookes lag som anges i ekvation 3,
 \\%Ekvation 3
-\\där F är kraften som fjädern uträttar, k är fjäderkonstanten, l(t) är fjäderns utsträckning, och l0 är fjäderns vilolängd.
-\\\\Dämparna modellerades utifrån ekvation 4,
+\\dÃ¤r F Ã¤r kraften som fjÃ¤dern utrÃ¤ttar, k Ã¤r fjÃ¤derkonstanten, l(t) Ã¤r fjÃ¤derns utstrÃ¤ckning, och l0 Ã¤r fjÃ¤derns vilolÃ¤ngd.
+\\\\DÃ¤mparna modellerades utifrÃ¥n ekvation 4,
 \\%Ekvation 4
-\\där F är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
-\subsubsection{Numerisk lösning av differentialekvationer}
+\\dÃ¤r F Ã¤r kraften som dÃ¤mparen utrÃ¤ttar, b Ã¤r dÃ¤mparkonstanten och l Ã¤r fjÃ¤derns utstrÃ¤ckning.
+\subsubsection{Numerisk lÃ¶sning av differentialekvationer}
 \subsubsection{Euler}%subsubsub
 \subsubsection{Runge Kutta}%subsubsub
 
 
 %Metod
 \section{Metod}
-\subsection{Förstudier}
-I förstudierna ingick dels framtagandet av en kraftekvation, dels utvecklingen av MSD-system i en och två dimensioner. Som verktyg användes MATLAB för att få en visuell återkoppling på kraftekvationen, med hjälp av programmets inbyggda renderingsfunktion.
+\subsection{FÃ¶rstudier}
+I fÃ¶rstudierna ingick dels framtagandet av en kraftekvation, dels utvecklingen av MSD-system i en och tvÃ¥ dimensioner. 
+Som verktyg anvÃ¤ndes MATLAB fÃ¶r att fÃ¥ en visuell Ã¥terkoppling pÃ¥ kraftekvationen, med hjÃ¤lp av programmets inbyggda renderingsfunktion.
+
 \subsubsection{Kraftekvation}
 \subsubsection{Utveckling av MSD-system}
 \paragraph{En dimension}
-\paragraph{Två dimensioner}
+\paragraph{TvÃ¥ dimensioner}
 \subsubsection{Indexering av partiklar och kopplingar}
-Ett stort problem, som ovanstående stycke implicerar, var att ta reda på vilka partiklar som skulle höra till varje koppling. För att detta skulle kunna lösas för godtyckligt stora objekt, behövdes ett systematiskt sätt att tilldela kopplingarna deras partiklar. Detta löstes med en funktion som utifrån index till en viss koppling gav indexar till de två partiklar som den kopplade samman. Genom att låta funktionen genomlöpa alla kopplingar innan simuleringen genomfördes kunde indexeringen användas för att finna de rätta konstanterna (massorna) och variablerna (positionerna och hastigheterna) för de kopplade massorna. En liknande funktion implementerades för att finna triangelindexar som användes för renderingen.
+Ett stort problem, som ovanstÃ¥ende stycke implicerar, var att ta reda pÃ¥ vilka partiklar som skulle hÃ¶ra till varje koppling. 
+FÃ¶r att detta skulle kunna lÃ¶sas fÃ¶r godtyckligt stora objekt, behÃ¶vdes ett systematiskt sÃ¤tt att tilldela kopplingarna deras partiklar.
+Detta lÃ¶stes med en funktion som utifrÃ¥n index till en viss koppling gav indexar till de tvÃ¥ partiklar som den kopplade samman. 
+Genom att lÃ¥ta funktionen genomlÃ¶pa alla kopplingar innan simuleringen genomfÃ¶rdes kunde indexeringen anvÃ¤ndas fÃ¶r att finna de rÃ¤tta konstanterna (massorna) och variablerna (positionerna och hastigheterna) fÃ¶r de kopplade massorna. 
+En liknande funktion implementerades fÃ¶r att finna triangelindexar som anvÃ¤ndes fÃ¶r renderingen.
+
 \subsubsection{Interaktion med omgivning}
 %Algoritm 1: Kollision
 \subsubsection{Implementering av kraftekvationen}
-%Algorithm 2: baserad på massorna
-%Algorithm 3: baserad på kopplingarna mellan massorna
+%Algorithm 2: baserad pÃ¥ massorna
+%Algorithm 3: baserad pÃ¥ kopplingarna mellan massorna
 \subsection{Implementering}
 
-\subsubsection{Grundläggande systemarkitektur}
-Att övergå till ett objektorienterat system innebar att en systemarkitektur behövde tas fram. För att ge en grundläggande förståelse av systemarkitekturen beskrivs denna med ett blockdiagram där de primära modulerna är separerade från varandra. Se Figur \ref{systemark}.
+\subsubsection{GrundlÃ¤ggande systemarkitektur}
+Att Ã¶vergÃ¥ till ett objektorienterat system innebar att en systemarkitektur behÃ¶vde tas fram. 
+FÃ¶r att ge en grundlÃ¤ggande fÃ¶rstÃ¥else av systemarkitekturen beskrivs denna med ett blockdiagram dÃ¤r de primÃ¤ra modulerna Ã¤r separerade frÃ¥n varandra. 
+Se Figur \ref{systemark}.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=16cm]{Bilder/Arkitektur.png} 
   \end{center}
-  \caption{Övergripande systemarkitektur}
+  \caption{Ã–vergripande systemarkitektur}
   \label{systemark}
 \end{figure}
-\\Klassen MCS (Mass Connection System) är den klass som lagrar all den huvudsakliga datan. Den innehåller samtliga partiklar och kopplingar för ett system.
-\\\\Alla partiklar identifieras med ett index, och definieras av följande information:
+\\Klassen MCS (Mass Connection System) Ã¤r den klass som lagrar all den huvudsakliga datan. 
+Den innehÃ¥ller samtliga partiklar och kopplingar fÃ¶r ett system.
+
+\\\\Alla partiklar identifieras med ett index, och definieras av fÃ¶ljande information:
 \begin{itemize}
   \item p, position
   \item v, hastighet
   \item a, acceleration
-  \item F, total momentan kraftpåverkan
+  \item F, total momentan kraftpÃ¥verkan
   \item m, massa
 \end{itemize}
-Samtliga kopplingar identifieras med ett index, och definieras av följande information:
+Samtliga kopplingar identifieras med ett index, och definieras av fÃ¶ljande information:
 \begin{itemize}
-  \item l, vilolängd
-  \item k, fjäderkonstant
-  \item b, dämparkonstant
-  \item p1, index till den partikel som utgör kopplingens ena ändpunkt
-  \item p2, index till den partikel som utgör kopplingens andra ändpunkt
+  \item l, vilolÃ¤ngd
+  \item k, fjÃ¤derkonstant
+  \item b, dÃ¤mparkonstant
+  \item p1, index till den partikel som utgÃ¶r kopplingens ena Ã¤ndpunkt
+  \item p2, index till den partikel som utgÃ¶r kopplingens andra Ã¤ndpunkt
 \end{itemize}
-Vad som också framgår i Figur Figur \ref{systemark} är att all numerisk integrering beräknas i en separat modul vilket gjorde det enkelt att ändra integreringsmetod vid behov, då den var oberoende av resten av systemet.
+Vad som ocksÃ¥ framgÃ¥r i Figur Figur \ref{systemark} Ã¤r att all numerisk integrering berÃ¤knas i en separat modul vilket gjorde det enkelt att Ã¤ndra integreringsmetod vid behov, dÃ¥ den var oberoende av resten av systemet.
+
 \subsubsection{Implementering av numeriska integreringsmetoder}
 \paragraph{Eulers stegmetod} 
 \paragraph{Runge Kutta}
@@ -148,10 +168,14 @@ Vad som också framgår i Figur Figur \ref{systemark} är att all numerisk integrer
 
 %Resultat
 \section{Resultat}
-\subsection{Resultat från förstudier}
+\subsection{Resultat frÃ¥n fÃ¶rstudier}
 
 \subsubsection{En dimension}
-Resultatet från förstudierna i en dimension presenteras i Figur \ref{endim}. Här illustreras fem sammankopplade partiklars samverkan efter att en av dem har givits en förskjuten startposition. Den kraft som bildas av denna förskjutning kan ses påverka de andra partiklarna och fortplantas genom systemet över tid. Krafterna ses också dämpas och tillslut avta, vilket stabiliserar systemet.
+Resultatet frÃ¥n fÃ¶rstudierna i en dimension presenteras i Figur \ref{endim}. 
+HÃ¤r illustreras fem sammankopplade partiklars samverkan efter att en av dem har givits en fÃ¶rskjuten startposition. 
+Den kraft som bildas av denna fÃ¶rskjutning kan ses pÃ¥verka de andra partiklarna och fortplantas genom systemet Ã¶ver tid. 
+Krafterna ses ocksÃ¥ dÃ¤mpas och tillslut avta, vilket stabiliserar systemet.
+
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=16cm]{Bilder/1D_matlab.png} 
@@ -160,18 +184,22 @@ Resultatet från förstudierna i en dimension presenteras i Figur \ref{endim}. Här
   \label{endim}
 \end{figure}
 
-\subsubsection{Två dimensioner}
-I Figur \ref{tvådim} åskådliggörs resultatet av förstudierna i två dimensioner. Här illustreras ett 4x4 MSD-system som faller från sin startposition och därefter kolliderar med ett markplan. Fjädrarnas inverkande krafter visualiseras genom att låta färgen bero på kopplingens längd. Kopplingen är grön i sitt viloläge och färgen går mot rött ju mer längden avviker från denna.
+\subsubsection{TvÃ¥ dimensioner}
+I Figur \ref{tvÃ¥dim} Ã¥skÃ¥dliggÃ¶rs resultatet av fÃ¶rstudierna i tvÃ¥ dimensioner. 
+HÃ¤r illustreras ett 4x4 MSD-system som faller frÃ¥n sin startposition och dÃ¤refter kolliderar med ett markplan.
+FjÃ¤drarnas inverkande krafter visualiseras genom att lÃ¥ta fÃ¤rgen bero pÃ¥ kopplingens lÃ¤ngd. 
+Kopplingen Ã¤r grÃ¶n i sitt vilolÃ¤ge och fÃ¤rgen gÃ¥r mot rÃ¶tt ju mer lÃ¤ngden avviker frÃ¥n denna.
+
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=16cm]{Bilder/boing.png} 
   \end{center}
-  \caption{Tvådimensionellt 4x4 MSD-system i MATLAB}
-  \label{tvådim}
+  \caption{TvÃ¥dimensionellt 4x4 MSD-system i MATLAB}
+  \label{tvÃ¥dim}
 \end{figure}
 
-\subsection{Resultat från implementering}
-\subsection{Resultat från stabilitets- och prestandatest}
+\subsection{Resultat frÃ¥n implementering}
+\subsection{Resultat frÃ¥n stabilitets- och prestandatest}
 
 %Diskussion
 \section{Diskussion}
@@ -198,10 +226,10 @@ Shari Lawrence Pfleeger och Joanne M. Atlee, \emph{Software Engineering, Fourth 
 %Bilaga 1: Beskrivning av systemet
 \section{Beskrivning av systemet}
 \subsection{Systemkrav}
-\subsubsection{Hårdvara}
+\subsubsection{HÃ¥rdvara}
 \subsubsection{Mjukvara}
 
-\subsection{Köra programmet}
+\subsection{KÃ¶ra programmet}
 
 
 \end{document}
