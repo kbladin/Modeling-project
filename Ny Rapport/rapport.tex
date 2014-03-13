@@ -103,13 +103,17 @@ En modell som kan användas för simulering av elastiska material är ett så ka
 \end{figure}
 \\Det enkla systemet i Figur \ref{m1m2} utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
 \\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna som beskrevs av Newton (Halliday 2007). Newtons andra lag anges i (2),
-\\%Ekvation 2
-\\där F(t) är den resulterande kraften på en partikel, x’’(t) är partikelns acceleration, m är partikelns massa och t är tidsvariabeln. Newtons tredje lag summeras i ett citat:
+\begin{equation}
+	{ \mathbf F }_{ k }(t)=-k(\Delta x(t)-{ l }_{ o })
+\end{equation}
+där F(t) är den resulterande kraften på en partikel, x’’(t) är partikelns acceleration, m är partikelns massa och t är tidsvariabeln. Newtons tredje lag summeras i ett citat:
 Newtons tredje lag summeras i ett citat:
-\begin{quote}''If A puts a force on B, then B puts a force on A, and the two forces are equal in magnitude and have opposite direction.'' (Halliday 2007)\end{quote}
+\begin{quote}\begin{center}\textit{''If A puts a force on B, then B puts a force on A, and the two forces are equal in magnitude and have opposite direction.''} (Halliday 2007)\end{center}\end{quote}
 Fjädrarna modellerades med Hookes lag som anges i (3),
-\\%Ekvation 3
-\\där Fk(t) är kraften som fjädern uträttar, k är fjäderkonstanten, l0(t) är fjäderns utsträckning, och l0 är fjäderns vilolängd.
+\begin{equation}
+	{ F }_{ k }(t)=-k(\Delta x(t)-{ l }_{ o })
+\end{equation}
+där Fk(t) är kraften som fjädern uträttar, k är fjäderkonstanten, l0(t) är fjäderns utsträckning, och l0 är fjäderns vilolängd.
 \\\\Dämparna modellerades utifrån ekvation 4,
 \\%Ekvation 4 - HÄÄÄÄR SKA EKVATIONEN IN PLUS ANPASSA TEXTEN
 \\där Fb(t) är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
@@ -140,7 +144,6 @@ I figur \ref{2D_simple} nedan introduceras den nya notationen av ett system med 
   \label{2D_simple}
 \end{figure}
 I MATLAB utvecklades först ett MSD-system i en dimension, där partiklar sammankopplades i serie enligt Figur \ref{simple1D4} nedan.
-
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=6cm]{Bilder/simple1D4.png} 
