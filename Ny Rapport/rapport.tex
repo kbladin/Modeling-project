@@ -7,12 +7,14 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{times}			%typsnitt times kanske
 \usepackage[swedish]{babel}
 \usepackage[affil-it]{authblk}
 \usepackage{geometry}	%lets you customize the page size
 \usepackage{hyperref}
 \usepackage[ruled,vlined]{algorithm2e}
+
 \geometry{
  margin=20mm
 } 
@@ -112,7 +114,48 @@ Som verktyg användes MATLAB för att få en visuell återkoppling på kraftekva
 \subsubsection{Kraftekvation}
 \subsubsection{Utveckling av MSD-system}
 \paragraph{En dimension}
+Då det enkla systemet med två sammankopplade partiklar utökades med fler partiklar och kopplingar, krävdes en mer överskådlig notation för att beskriva systemet. 
+I figur \ref{2D_simple} nedan introduceras den nya notationen av ett system med två sammankopplade massor.
+
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=3cm]{Bilder/2D_simple.png} 
+  \end{center}
+  \caption{Två sammankopplade partiklar}
+  \label{2D_simple}
+\end{figure}
+I MATLAB utvecklades först ett MSD-system i en dimension, där partiklar sammankopplades i serie enligt Figur \ref{simple1D4} nedan.
+
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=6cm]{Bilder/simple1D4.png} 
+  \end{center}
+  \caption{Fyra sammankopplade partiklar i serie}
+  \label{simple1D4}
+\end{figure}
+
+Genom att simulera detta system med Euler-metoden samt undersöka hur partiklarnas positioner förändrades över tid, kunde implementationen av den framtagna kraftekvationen enkelt verifieras.
+
 \paragraph{Två dimensioner}
+Nästa steg i utvecklingen av MSD-systemet var att implementera det i två dimensioner. 
+Detta innebar en övergång från skalärer till vektorer i de framtagna ekvationerna.
+
+För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors} nedan.
+
+\begin{figure}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/2D_4Neighbors.png} 
+    \subcaption{Partiklar med fyra kopplingar}\label{fig:1a}
+  \end{minipage}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/2D_8Neighbors.png} 
+    \subcaption{Partiklar med åtta kopplingar}\label{fig:1b}
+  \end{minipage}
+  \caption{Två olika sätt att koppla samman partiklar}\label{2D_Neighbors}
+\end{figure}
+
 \subsubsection{Indexering av partiklar och kopplingar}
 Ett stort problem, som ovanstående stycke implicerar, var att ta reda på vilka partiklar som skulle höra till varje koppling. 
 För att detta skulle kunna lösas för godtyckligt stora objekt, behövdes ett systematiskt sätt att tilldela kopplingarna deras partiklar.
