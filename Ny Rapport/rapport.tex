@@ -102,12 +102,12 @@ En modell som kan användas för simulering av elastiska material är ett så ka
   \label{m1m2}
 \end{figure}
 \\Det enkla systemet i Figur \ref{m1m2} utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
-\\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna som beskrevs av Newton (Halliday 2007). Newtons andra lag anges i Ekvation 2,
+\\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna som beskrevs av Newton (Halliday 2007). Newtons andra lag anges i (2),
 \\%Ekvation 2
 \\där F(t) är den resulterande kraften på en partikel, x’’(t) är partikelns acceleration, m är partikelns massa och t är tidsvariabeln. Newtons tredje lag summeras i ett citat:
 Newtons tredje lag summeras i ett citat:
 \begin{quote}''If A puts a force on B, then B puts a force on A, and the two forces are equal in magnitude and have opposite direction.'' (Halliday 2007)\end{quote}
-Fjädrarna modellerades med Hookes lag som anges i ekvation 3,
+Fjädrarna modellerades med Hookes lag som anges i (3),
 \\%Ekvation 3
 \\där Fk(t) är kraften som fjädern uträttar, k är fjäderkonstanten, l0(t) är fjäderns utsträckning, och l0 är fjäderns vilolängd.
 \\\\Dämparna modellerades utifrån ekvation 4,
@@ -115,15 +115,15 @@ Fjädrarna modellerades med Hookes lag som anges i ekvation 3,
 \\där Fb(t) är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
 
 \subsubsection{Numerisk lösning av differentialekvationer}
-Som bakgrund till simuleringen och därmed numerisk integrering låg Eulers stegmetod och Runge-Kuttametoden (Ljung \& Glad 2003). Nedanstående ekvationer beskriver numerisk integrering som krävs för lösning av första ordningens differentialekvationer, se ekvation 5.
+Som bakgrund till simuleringen och därmed numerisk integrering låg Eulers stegmetod och Runge-Kuttametoden (Ljung \& Glad 2003). Nedanstående ekvationer beskriver numerisk integrering som krävs för lösning av första ordningens differentialekvationer, se (5).
 %EKVATION 5
 \\\\Här är x(t) den sökta funktionen, och dess derivata är en funktion av tiden t samt funktionen x(t) själv.
 \paragraph{Euler}%subsubsub
-Eulers stegmetod för att lösa första ordningens differentialekvationer beskrivs i ekvation 6,
+Eulers stegmetod för att lösa första ordningens differentialekvationer beskrivs i (6),
 %Ekvation 6
 \\\\där h är tidssteget, och f fås från differentialekvationen. För att hitta funktionsvärdet vid tidpunkten t+h, alltså h tidsenheter efter det föregående, används funktionen f från differentialekvationen samt funktionsvärdet i det nuvarande steget, x(t). Efter ett givet startvärde kan en numerisk lösning tas fram genom stegning med jämna intervall.
 \paragraph{Runge Kutta}%subsubsub
-Att lösa differentialekvationen med Runge-Kuttametoden innebär att flera derivator beräknas vid olika tidssteg. Detta innebär att funktionen f har olika argument för att beräkna förändringshastigheterna k1, ..., k4. Funktionsvärdet i tidpunkten t+h baseras på en viktad summa av förändringshastigheterna enligt (7) nedan.
+Att lösa differentialekvationen med Runge-Kuttametoden innebär att flera derivator beräknas vid olika tidssteg Detta ger en mer korrekt integrering jämfört med Eulers stegmetod (Jönsson 2010). Detta innebär att funktionen f har olika argument för att beräkna förändringshastigheterna k1, ..., k4. Funktionsvärdet i tidpunkten t+h baseras på en viktad summa av förändringshastigheterna enligt (7) nedan.
 %EKVATION 7
 \\\\Funktionen f har här givits olika argument som leder till de olika förändringshastigheterna k1, …,k4. Med vikterna satta enlig (BÖS7) ovan ges i detta fall Runges metod (Jönsson 2010).
 \subsubsection{Kraftekvation}
@@ -274,9 +274,17 @@ Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KR
 \caption{Algoritm baserad på kopplingarna mellan partiklar\label{alg3}}
 \end{algorithm}
 \noindent \\\\I Algoritm 2 utnyttjas det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm 2 användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.
-%Figur
-I MSD-systemet ovan har varje partikel tre hopkopplade grannar. Det totala antalet grannar blir således tolv, vilket är dubbla antalet kopplingar, som är sex.
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=3cm]{Bilder/2D_2x2.png} 
+  \end{center}
+  \caption{Enkelt system med fyra hopkopplade partiklar}
+  \label{enkelfyra}
+\end{figure}
+\\I Figur \ref{enkelfyra} har varje partikel tre hopkopplade grannar. Det totala antalet grannar blir således tolv, vilket är dubbla antalet kopplingar, som är sex.
+
 \subsection{Implementering}
+Programkoden från Matlab porterades till C++ där systemet utvecklades vidare. Fördelen med C++ är att det är snabbt, objektorienterat (Skansholm 2012), samt att en utvecklare får mer kontroll, inte minst över grafikprogrammeringen. Grafikprogrammeringen gjordes med OpenGL som är plattformsoberoende och ger utvecklaren möjlighet att använda hårdvaruaccelererad grafik (Gortler 2012).
 \subsubsection{Grundläggande systemarkitektur}
 Att övergå till ett objektorienterat system innebar att en systemarkitektur behövde tas fram. 
 För att ge en grundläggande förståelse av systemarkitekturen beskrivs denna med ett blockdiagram där de primära modulerna är separerade från varandra. 
@@ -288,8 +296,7 @@ Se Figur \ref{systemark}.
   \caption{Övergripande systemarkitektur}
   \label{systemark}
 \end{figure}
-\\Klassen MCS (Mass Connection System) är den klass som lagrar all den huvudsakliga datan. 
-Den innehåller samtliga partiklar och kopplingar för ett system.
+\\Klassen MCS (Mass Connection System) är den klass som lagrar all huvudsaklig data. Den innehåller samtliga partiklar och kopplingar för ett system.
 \\\\Alla partiklar identifieras med ett index, och definieras av följande information:
 \begin{itemize}
   \item p, position
@@ -307,23 +314,27 @@ Samtliga kopplingar identifieras med ett index, och definieras av följande info
   \item p2, index till den partikel som utgör kopplingens andra ändpunkt
 \end{itemize}
 Vad som också framgår i Figur Figur \ref{systemark} är att all numerisk integrering beräknas i en separat modul vilket gjorde det enkelt att ändra integreringsmetod vid behov, då den var oberoende av resten av systemet.
-
+%OBS OBS OBS fixa ekvationer!!!!! här under
 \subsubsection{Implementering av numeriska integreringsmetoder}
+Efter att accelerationen för varje partikel hade beräknats genom (BLAHA (den med g)), approximerades deras positioner med en numerisk stegmetod. Den numeriska integreringen gjordes två gånger per tidssteg, då det var en andra ordningens differentialekvation som skulle lösas. Se ekvation (DIFF EKV). Nedan beskrivs hur de två olika integreringsmetoderna i systemet implementerades.
 \paragraph{Eulers stegmetod} 
+Med ett givet tidssteg h beräknades den nya hastigheten utifrån accelerationen a. Hastigheten användes i sin tur för att beräkna den nya positionen. 034i342
+	\begin{equation} 
+	v = v_old + a*h;		%OBS!!!! ATT FIXA TILL 
+	p = p_old + v*h; 
+	\end{equation}
 \paragraph{Runge Kutta}
+En algoritm för att simulera MSD-systemet med Runge-Kutta implementerades. Genom att kalla på kraftekvationen med olika steglängder kunde värdena $k1$, ..., $k4$ beräknas. Här användes en specifik variant av Runge-Kuttametoden, nämligen Runges variant, med vikterna \begin{math} w_1 = 1, w_2 = 3, w_3 = 3, w_4 = 1 \end{math}.
 \subsubsection{Rendering}
+För att rendera MSD-systemet skickades hörnpunkter, en triangellista, en lista med färger för varje hörnpunkt samt en lista med normaler till grafikkortet via OpenGL. På grafikkortet kunde det elastiska materialet färgas. Dessutom kunde Phong shading implementeras för att simulera att modellen belyses från en viss riktning. Denna rendering gjordes 60 gånger per sekund.
 \subsection{Stabilitets- och prestandatest}
-
 
 %Resultat
 \section{Resultat}
 \subsection{Resultat från förstudier}
 
 \subsubsection{En dimension}
-Resultatet från förstudierna i en dimension presenteras i Figur \ref{endim}. 
-Här illustreras fem sammankopplade partiklars samverkan efter att en av dem har givits en förskjuten startposition. 
-Den kraft som bildas av denna förskjutning kan ses påverka de andra partiklarna och fortplantas genom systemet över tid. 
-Krafterna ses också dämpas och tillslut avta, vilket stabiliserar systemet.
+Resultatet från förstudierna i en dimension presenteras i Figur \ref{endim}. Här illustreras fem sammankopplade partiklars samverkan efter att en av dem har givits en förskjuten startposition. Den kraft som bildas av denna förskjutning kan ses påverka de andra partiklarna och fortplantas genom systemet över tid. Krafterna ses också dämpas och tillslut avta, vilket stabiliserar systemet.
 
 \begin{figure}[h!]
   \begin{center}
@@ -334,8 +345,7 @@ Krafterna ses också dämpas och tillslut avta, vilket stabiliserar systemet.
 \end{figure}
 
 \subsubsection{Två dimensioner}
-I Figur \ref{tvådim} åskådliggörs resultatet av förstudierna i två dimensioner. 
-Här illustreras ett 4x4 MSD-system som faller från sin startposition och därefter kolliderar med ett markplan.
+I Figur \ref{tvådim} åskådliggörs resultatet av förstudierna i två dimensioner. Här illustreras ett 4x4 MSD-system som faller från sin startposition och därefter kolliderar med ett markplan.
 Fjädrarnas inverkande krafter visualiseras genom att låta färgen bero på kopplingens längd. 
 Kopplingen är grön i sitt viloläge och färgen går mot rött ju mer längden avviker från denna.
 
