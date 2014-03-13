@@ -204,11 +204,16 @@ Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{mat
 \begin{algorithm}[H]
   \For{varje partikel $i$}{
     \If{partikeln befinner sig under kollisionsplanet:}{
+%    spegla hastighetsvektorn i kollisionsplanet\;
+ %   projicera positionsvektorn upp på kollisionsplanet\;
+ %   multiplicera den komponent av hastighetsvektorn som är parallell med kollisionsplanet med en friktionskoefficient\;
+%    multiplicera den komponent av hastighetsvektorn, som är ortogonal med\\ kollisionsplanet, med en elasticitetskoefficient\;
+    
       \begin{itemize}
-      \item Spegla hastighetsvektorn i kollisionsplanet, se Figur \ref{kol3}.\
-      \item Ortogonalprojicera positionsvektorn på kollisionsplanet, se Figur \ref{kol3}.\
-      \item Multiplicera den komponent av hastighetsvektorn som är parallell med\\ kollisionsplanet med en friktionskoefficient, se Figur \ref{kol4}\
-      \item Multiplicera den komponent av hastighetsvektorn, som är ortogonal med\\ kollisionsplanet, med en elasticitetskoefficient, se Figur \ref{kol4}.\
+      \item Spegla i:s hastighetsvektor i kollisionsplanet, se Figur \ref{kol3}.\
+      \item Ortogonalprojicera i:s positionsvektor upp på kollisionsplanet, se Figur \ref{kol3}.\
+      \item Multiplicera den komponent av i:s hastighetsvektor som är parallell med\\ kollisionsplanet med en friktionskoefficient, se Figur \ref{kol4}\
+      \item Multiplicera den komponent av i:s hastighetsvektor, som är ortogonal med\\ kollisionsplanet, med en elasticitetskoefficient, se Figur \ref{kol4}.\
     \end{itemize}
     }
   }
@@ -246,30 +251,24 @@ Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KR
 \begin{algorithm}[H]
   \For{varje partikel $i$}{
     \For{varje partikel $j$, som är kopplad till $i$}{
-      \begin{itemize}
-        \item Beräkna den kraftvektor, $f$, som fjädern och dämparen mellan $i$ och $j$ påverkar\\ partikel $i$ med.
-        \item Addera $f$ till den totala kraften $F[i]$, som påverkar partikel $i$.
-      \end{itemize}
+	f = kraften på i från kopplingen mellan i och j\;
+	F[i] += f\;
     }
-    \begin{itemize}
-    \item{Beräkna accelerationen för partikel $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.}
-    \end{itemize}
+    beräkna accelerationen genom att dividera F[i] med i:s massa\;
+    nollställ F[i]\;
   }
 \caption{Algoritm baserad på partiklar\label{alg2}}
 \end{algorithm}
 %Algorithm 3: baserad på kopplingarna mellan massorna
 \begin{algorithm}[H]
   \For{varje koppling $c$ (där $c$ är kopplingen mellan partikel $i$ och $j$) :}{
-      \begin{itemize}
-        \item Beräkna den kraft, $f$, som $c$ påverkar partikel $i$ med.\
-        \item Addera $f$ till den totala kraften $F[i]$ som påverkar partikel $i$.\
-        \item Subtrahera $f$ från den totala kraften $F[j]$ som påverkar partikel $j$.\
-      \end{itemize}
+ 	f = kraften på i från koppling c\;
+	F[i] += f\;
+	F[j] -= f\;
   }
   \For{varje partikel $i$}{
-    \begin{itemize}
-        \item Beräkna accelerationen för partikel $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.\
-     \end{itemize}
+      beräkna accelerationen genom att dividera F[i] med i:s massa\;
+      nollställ F[i]\;
   }
 \caption{Algoritm baserad på kopplingarna mellan partiklar\label{alg3}}
 \end{algorithm}
