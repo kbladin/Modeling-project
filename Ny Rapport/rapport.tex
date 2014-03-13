@@ -12,6 +12,7 @@
 \usepackage[affil-it]{authblk}
 \usepackage{geometry}	%lets you customize the page size
 \usepackage{hyperref}
+\usepackage[ruled,vlined]{algorithm2e}
 \geometry{
  margin=20mm
 } 
@@ -121,6 +122,20 @@ En liknande funktion implementerades för att finna triangelindexar som använde
 
 \subsubsection{Interaktion med omgivning}
 %Algoritm 1: Kollision
+\begin{algorithm}[H]
+  \For{varje partikel i}{
+    \If{partikeln befinner sig under kollisionsplanet:}{
+      \begin{itemize}
+      \item Spegla hastighetsvektorn i kollisionsplanet, se figur BLAHA c).\\
+      \item Ortogonalprojicera positionsvektorn på kollisionsplanet, se figur BLAHA c).\\
+      \item Multiplicera den komponent av hastighetsvektorn som är parallell med kollisionsplanet med en friktionskoefficient, se figur BLAHA d).\\
+      \item Multiplicara den komponent av hastighetsvektorn som är ortogonal med kollisionsplanet med en elasticitetskoefficient, se figur BLAHA d).\\
+    \end{itemize}
+    }
+  }
+\caption{Kollision\label{IR}}
+\end{algorithm}
+
 \subsubsection{Implementering av kraftekvationen}
 %Algorithm 2: baserad på massorna
 %Algorithm 3: baserad på kopplingarna mellan massorna
