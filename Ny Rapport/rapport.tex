@@ -74,7 +74,6 @@
 \addtocontents{lot}{\protect\thispagestyle{empty}}
 
 %-----------------------------------------------------------
-%Inledning
 %\pagestyle{plain}
 \pagebreak
 \pagestyle{plain}
@@ -82,7 +81,7 @@
 
 %Inledning
 \section{Inledning}
-Inledande text är alltid lite trevligt
+Simulering av elastiska material används flitigt i moderna fysikmotorer. Dessa kan användas både i datorspel och animeringsmjukvara där realism är en viktig faktor. Med hjälp av simulering behöver inte en animatör explicit hantera vissa rörelser hos objekten.
 \subsection{Bakgrund}
 Grundidén till systemet ligger i tidigare presenterade studier kring liknande ämnen. Partikelsystem i sin helhet kan anta många olika former. Elastiska material täcker flera sådana då det går att göra en väldigt generell modell för att simulera många olika material. Bristen med många fysikaliska simuleringar är att modellen endast täcker ett väldigt specifikt område som till exempel tygsimulering eller endast hårda material.
 \subsection{Syfte}
@@ -143,7 +142,7 @@ I figur \ref{2D_simple} nedan introduceras den nya notationen av ett system med 
   \caption{Två sammankopplade partiklar}
   \label{2D_simple}
 \end{figure}
-I MATLAB utvecklades först ett MSD-system i en dimension, där partiklar sammankopplades i serie enligt Figur \ref{simple1D4} nedan.
+\noindent I MATLAB utvecklades först ett MSD-system i en dimension, där partiklar sammankopplades i serie enligt Figur \ref{simple1D4} nedan.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=6cm]{Bilder/simple1D4.png} 
@@ -152,7 +151,7 @@ I MATLAB utvecklades först ett MSD-system i en dimension, där partiklar samman
   \label{simple1D4}
 \end{figure}
 
-Genom att simulera detta system med Euler-metoden samt undersöka hur partiklarnas positioner förändrades över tid, kunde implementationen av den framtagna kraftekvationen enkelt verifieras.
+\noindent Genom att simulera detta system med Euler-metoden samt undersöka hur partiklarnas positioner förändrades över tid, kunde implementeringen av den framtagna kraftekvationen enkelt verifieras.
 
 \paragraph{Två dimensioner}
 Nästa steg i utvecklingen av MSD-systemet var att implementera det i två dimensioner. 
@@ -160,7 +159,7 @@ Detta innebar en övergång från skalärer till vektorer i de framtagna ekvatio
 \pagebreak
 
 
-För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors} nedan.
+\noindent För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors} nedan.
 
 \begin{figure}
   \begin{minipage}[h!]{.5\linewidth}
@@ -176,9 +175,7 @@ För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur 
   \caption{Två olika sätt att koppla samman partiklar}\label{2D_Neighbors}
 \end{figure}
 
-
-Kopplingsregeln i Figur \ref{2D_Neighbors} a) ger upphov till en struktur som är instabil. Detta beror på att kopplingarnas ändpunkter endast har en position; ingen riktning eller orientering. Detta medför att strukturen kollapsar, vilket visas i Figur \ref{2D_Instabil}.
-
+\noindent \\Kopplingsregeln i Figur \ref{2D_Neighbors} a) ger upphov till en struktur som är instabil. Detta beror på att kopplingarnas ändpunkter endast har en position; ingen riktning eller orientering. Detta medför att strukturen kollapsar, vilket visas i Figur \ref{2D_Instabil}.
 
 \begin{figure}[h!]
   \begin{center}
@@ -188,7 +185,7 @@ Kopplingsregeln i Figur \ref{2D_Neighbors} a) ger upphov till en struktur som ä
   \label{2D_Instabil}
 \end{figure}
 
-Med regeln enligt Figur \ref{2D_Neighbors} b) erhålls däremot en struktur som är mer stabil, men fortfarande inte alltför komplex. Att materialet inte skulle kollapsa var en förutsättning för att elastiska material skulle kunna modelleras på ett trovärdigt sätt. Detta motiverade valet att använda kopplingar enligt figur \ref{2D_Neighbors} b). Strukturen som ges med denna regel redovisas i Figur \ref{2D_stabil} nedan.
+\noindent Med regeln enligt Figur \ref{2D_Neighbors} b) erhålls däremot en struktur som är mer stabil, men fortfarande inte alltför komplex. Att materialet inte skulle kollapsa var en förutsättning för att elastiska material skulle kunna modelleras på ett trovärdigt sätt. Detta motiverade valet att använda kopplingar enligt figur \ref{2D_Neighbors} b). Strukturen som ges med denna regel redovisas i Figur \ref{2D_stabil} nedan.
 
 \begin{figure}[h!]
   \begin{center}
@@ -275,7 +272,7 @@ Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KR
   }
 \caption{Algoritm baserad på kopplingarna mellan partiklar\label{alg3}}
 \end{algorithm}
-\noindent \\\\I Algoritm 2 utnyttjas det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm 2 användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.
+\noindent \\\\I Algoritm \ref{alg2} utnyttjas det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm \ref{alg2} användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=3cm]{Bilder/2D_2x2.png} 
@@ -335,9 +332,8 @@ För att jämföra stabiliteten i de två numeriska metoderna gjordes en enkel u
 \\\\För att jämföra de två olika numeriska integreringsmetoderna som har implementerats utfördes ett stabiltets- och prestandatest. Först användes Runge-Kuttametoden med ett visst antal tidssteg per utritning så att en jämförbar utritningsfrekvens erhölls. Därefter undersöktes hur många tidssteg per utritning som krävdes för att Eulers metod skulle ge samma utritningsfrekvens. Simuleringarna tog då lika lång tid att genomföra och stabilitetsgränsen kunde kontrolleras genom att öka fjäderkonstanterna eller dämparkonstanterna oberoende av varandra.
 %Resultat
 \section{Resultat}
+Resultaten från förstudier och implementering presenteras nedan.
 \subsection{Resultat från förstudier}
-
-\subsubsection{En dimension}
 Resultatet från förstudierna i en dimension presenteras i Figur \ref{endim}. Här illustreras fem sammankopplade partiklars samverkan efter att en av dem har givits en förskjuten startposition. Den kraft som bildas av denna förskjutning kan ses påverka de andra partiklarna och fortplantas genom systemet över tid. Krafterna ses också dämpas och tillslut avta, vilket stabiliserar systemet.
 
 \begin{figure}[h!]
@@ -348,8 +344,7 @@ Resultatet från förstudierna i en dimension presenteras i Figur \ref{endim}. H
   \label{endim}
 \end{figure}
 
-\subsubsection{Två dimensioner}
-I Figur \ref{tvådim} åskådliggörs resultatet av förstudierna i två dimensioner. Här illustreras ett 4x4 MSD-system som faller från sin startposition och därefter kolliderar med ett markplan.
+\noindent \\I Figur \ref{tvådim} åskådliggörs resultatet av förstudierna i två dimensioner. Här illustreras ett 4x4 MSD-system som faller från sin startposition och därefter kolliderar med ett markplan.
 Fjädrarnas inverkande krafter visualiseras genom att låta färgen bero på kopplingens längd. 
 Kopplingen är grön i sitt viloläge och färgen går mot rött ju mer längden avviker från denna.
 
@@ -363,25 +358,58 @@ Kopplingen är grön i sitt viloläge och färgen går mot rött ju mer längden
 
 \subsection{Resultat från implementering}
 \subsection{Resultat från stabilitets- och prestandatest}
+%Tabeller
+Testet av stabilitetsgränser för de numeriska metoderna presenteras i Tabell \ref{table_example1} , och testet av stabilitet utifrån önskad prestanda presenteras i Tabell \ref{table_example2}.
+\begin{table}[htbp]
+    \caption{Erhållna resultat för en bestämd steglängd.}
+    \label{table_example1}
+    \begin{tabular*}{\hsize}{lllll}
+      \hline %streck
+       & \bfseries Fjäderkonstant (för marginell stabilitet)\\
+      \hline
+      \bfseries Runge Kutta: & xxx\\
+      \bfseries Euler: & xxx\\
+      \hline
+    \end{tabular*}
+\end{table}
 
+\begin{table}[htbp]
+    \caption{Erhållna resultat för ett bestämt antal utritningar per sekund.}
+    \label{table_example2}
+    \begin{tabular*}{\hsize}{lllll}
+      \hline %streck
+       & \bfseries Simuleringar per utritning & \bfseries Fjäderkonstant(för marginell stabilitet)\\
+      \hline
+      \bfseries Runge Kutta: & 7 & 40 000\\
+      \bfseries Euler: & 44 & 2150000\\
+      \hline
+    \end{tabular*}
+\end{table}
 %Diskussion
 \section{Diskussion}
 
 
 %Slutsats
 \section{Slutsats}
+Fausett, L.V , 2008, \textit{Applied Numerical Analysis Using Matlab}, Pearson Prentice Hall.
 
+\noindent \\Gelenbe, E, Lent, R, Stakellari, G, 2012, \textit{Computer and Information Sciences II: 26th International Symposium on Computer and Information Sciences}, Springer-Verlag London Limited.
 
+\noindent \\Gortler, S.J, 2012, \textit{Foundations of 3D Computer Graphics}, The MIT Press.
+
+\noindent \\Halliday, D, 2007, \textit{Fundamentals of Physics}, 8th Rev edn. John Wiley Sons.
+
+\noindent \\Jönsson, P, 2010, \textit{Matlab beräkningar inom teknik och naturvetenskap}, Studentlitteratur AB
+
+\noindent \\Ljung, L \& Glad, T, 2004, \textit{Modellbygge och simulering}, Andra upplagan, Studentlitteratur AB.
+
+\noindent \\Skansholm, J, 2012, \textit{C++ direkt}, Studentlitteratur AB.
 
 
 
 %Referenser
-\begin{thebibliography}{9}
+\section{Referenser}
 
-\bibitem{pfleeger10softwareengineering}
-Shari Lawrence Pfleeger och Joanne M. Atlee, \emph{Software Engineering, Fourth Edition, International Edition}, Pearson 2010
-  
-\end{thebibliography}
 
 %Bilagor
 \appendix
