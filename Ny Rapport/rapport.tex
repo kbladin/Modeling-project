@@ -15,6 +15,7 @@
 \usepackage{hyperref}
 \usepackage[ruled,vlined]{algorithm2e} %,vlined
 \usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+\usepackage{amsmath}
 
 \geometry{
  margin=20mm
@@ -36,6 +37,10 @@
 \makeatother
 \setcounter{secnumdepth}{4} % how many sectioning levels to assign numbers to
 \setcounter{tocdepth}{4}    % how many sectioning levels to show in ToC
+
+% För att sätta inventeringen för hela dokumentet
+\setlength\parindent{0pt}
+%\setlength{\parskip}{1cm plus4mm minus3mm}
 
 
 %-------------------------------------------------------------Här börjar dokumentet 
@@ -102,6 +107,7 @@ En modell som kan användas för simulering av elastiska material är ett så ka
 \end{figure}
 \\Det enkla systemet i Figur \ref{m1m2} utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
 \\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna som beskrevs av Newton (Halliday 2007). Newtons andra lag anges i (2),
+
 \begin{equation}
 	{ \mathbf F }_{ k }(t)=-k(\Delta x(t)-{ l }_{ o })
 \end{equation}
@@ -109,26 +115,51 @@ där F(t) är den resulterande kraften på en partikel, x’’(t) är partikeln
 Newtons tredje lag summeras i ett citat:
 \begin{quote}\begin{center}\textit{''If A puts a force on B, then B puts a force on A, and the two forces are equal in magnitude and have opposite direction.''} (Halliday 2007)\end{center}\end{quote}
 Fjädrarna modellerades med Hookes lag som anges i (3),
+
 \begin{equation}
 	{ F }_{ k }(t)=-k(\Delta x(t)-{ l }_{ o })
 \end{equation}
+
 där Fk(t) är kraften som fjädern uträttar, k är fjäderkonstanten, l0(t) är fjäderns utsträckning, och l0 är fjäderns vilolängd.
 \\\\Dämparna modellerades utifrån ekvation 4,
-\\%Ekvation 4 - HÄÄÄÄR SKA EKVATIONEN IN PLUS ANPASSA TEXTEN
-\\där Fb(t) är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
+
+\begin{equation}
+{ F }_{ b }(t)=-bl'(t)
+\end{equation}
+
+där Fb(t) är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
 
 \subsubsection{Numerisk lösning av differentialekvationer}
 Som bakgrund till simuleringen och därmed numerisk integrering låg Eulers stegmetod och Runge-Kuttametoden (Ljung \& Glad 2003). Nedanstående ekvationer beskriver numerisk integrering som krävs för lösning av första ordningens differentialekvationer, se (5).
-%EKVATION 5
-\\\\Här är x(t) den sökta funktionen, och dess derivata är en funktion av tiden t samt funktionen x(t) själv.
+
+\begin{equation}
+\mathbf x'(t)=\mathbf f(t,\mathbf x(t))
+\end{equation}
+
+Här är x(t) den sökta funktionen, och dess derivata är en funktion av tiden t samt funktionen x(t) själv.
 \paragraph{Euler}%subsubsub
 Eulers stegmetod för att lösa första ordningens differentialekvationer beskrivs i (6),
-%Ekvation 6
-\\\\där h är tidssteget, och f fås från differentialekvationen. För att hitta funktionsvärdet vid tidpunkten t+h, alltså h tidsenheter efter det föregående, används funktionen f från differentialekvationen samt funktionsvärdet i det nuvarande steget, x(t). Efter ett givet startvärde kan en numerisk lösning tas fram genom stegning med jämna intervall.
+
+\begin{equation}
+\mathbf x(t+h)=\mathbf x(t)+\mathbf f(t,\mathbf x(t))h
+\end{equation}
+
+där h är tidssteget, och f fås från differentialekvationen. För att hitta funktionsvärdet vid tidpunkten t+h, alltså h tidsenheter efter det föregående, används funktionen f från differentialekvationen samt funktionsvärdet i det nuvarande steget, x(t). Efter ett givet startvärde kan en numerisk lösning tas fram genom stegning med jämna intervall.
 \paragraph{Runge Kutta}%subsubsub
 Att lösa differentialekvationen med Runge-Kuttametoden innebär att flera derivator beräknas vid olika tidssteg. Detta ger en mer korrekt integrering jämfört med Eulers stegmetod (Jönsson 2010). Detta innebär att funktionen f har olika argument för att beräkna förändringshastigheterna k1, ..., k4. Funktionsvärdet i tidpunkten t+h baseras på en viktad summa av förändringshastigheterna enligt (7) nedan.
-%EKVATION 7
-\\\\Funktionen f har här givits olika argument som leder till de olika förändringshastigheterna k1, …, k4. Med vikterna satta enlig (BÖS7) ovan ges i detta fall Runges metod (Jönsson 2010).
+
+\begin{equation}
+\begin{split}
+\mathbf x(t+h)=\mathbf x(t)+\frac { 1 }{ 6 } ({ k }_{ 1 }+2{ k }_{ 2 }+2{ k }_{ 3 }+{ k }_{ 4 })
+\\ där
+\\ \mathbf{ k }_{ 1 }=h\mathbf f(t,\mathbf x(t))
+\\ \mathbf{ k }_{ 2 }=h\mathbf f(t+h/2,\mathbf x(t)+\mathbf { k }_{ 1 }/2)
+\\ \mathbf{ k }_{ 3 }=h\mathbf f(t+h/2,\mathbf x(t)+\mathbf{ k }_{ 2 }/2)
+\\ \mathbf{ k }_{ 4 }=h\mathbf f(t+h,\mathbf x(t)+\mathbf{ k }_{ 3 })
+\end{split}
+\end{equation}
+
+Funktionen f har här givits olika argument som leder till de olika förändringshastigheterna k1, …, k4. Med vikterna satta enlig (BÖS7) ovan ges i detta fall Runges metod (Jönsson 2010).
 \subsubsection{Kraftekvation}
 \subsubsection{Utveckling av MSD-system}
 \paragraph{En dimension}
