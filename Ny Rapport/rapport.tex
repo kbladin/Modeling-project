@@ -159,9 +159,9 @@ Detta innebar en övergång från skalärer till vektorer i de framtagna ekvatio
 \pagebreak
 
 
-\noindent För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors} nedan.
+\noindent För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors::nonfloat} nedan.
 
-\begin{figure}
+\begin{figure}[h]
   \begin{minipage}[h!]{.5\linewidth}
     \centering
     \includegraphics[width=4cm]{Bilder/2D_4Neighbors.png} 
@@ -172,35 +172,37 @@ Detta innebar en övergång från skalärer till vektorer i de framtagna ekvatio
     \includegraphics[width=4cm]{Bilder/2D_8Neighbors.png} 
     \subcaption{Partiklar med åtta kopplingar}\label{fig:1b}
   \end{minipage}
-  \caption{Två olika sätt att koppla samman partiklar}\label{2D_Neighbors}
+  \caption{Två olika sätt att koppla samman partiklar}
+  \label{2D_Neighbors::nonfloat}
 \end{figure}
 
-\noindent \\Kopplingsregeln i Figur \ref{2D_Neighbors} a) ger upphov till en struktur som är instabil. Detta beror på att kopplingarnas ändpunkter endast har en position; ingen riktning eller orientering. Detta medför att strukturen kollapsar, vilket visas i Figur \ref{2D_Instabil}.
+\noindent \\Kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat} a) ger upphov till en struktur som är instabil. Detta beror på att kopplingarnas ändpunkter endast har en position; ingen riktning eller orientering. Detta medför att strukturen kollapsar, vilket visas i Figur \ref{2D_Instabil::nonfloat}.
 
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=8cm]{Bilder/2D_Instabil.png} 
   \end{center}
-  \caption{Instabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors} a) }
-  \label{2D_Instabil}
+  \caption{Instabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat} a) }
+  \label{2D_Instabil::nonfloat}
 \end{figure}
 
-\noindent Med regeln enligt Figur \ref{2D_Neighbors} b) erhålls däremot en struktur som är mer stabil, men fortfarande inte alltför komplex. Att materialet inte skulle kollapsa var en förutsättning för att elastiska material skulle kunna modelleras på ett trovärdigt sätt. Detta motiverade valet att använda kopplingar enligt figur \ref{2D_Neighbors} b). Strukturen som ges med denna regel redovisas i Figur \ref{2D_stabil} nedan.
+\noindent Med regeln enligt Figur \ref{2D_Neighbors::nonfloat} b) erhålls däremot en struktur som är mer stabil, men fortfarande inte alltför komplex. Att materialet inte skulle kollapsa var en förutsättning för att elastiska material skulle kunna modelleras på ett trovärdigt sätt. Detta motiverade valet att använda kopplingar enligt figur \ref{2D_Neighbors::nonfloat} b). Strukturen som ges med denna regel redovisas i Figur \ref{2D_stabil::nonfloat} nedan.
 
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=3cm]{Bilder/2D_stabil.png} 
   \end{center}
-  \caption{Stabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors} b)}
-  \label{2D_stabil}
+  \caption{Stabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat} b)}
+  \label{2D_stabil::nonfloat}
 \end{figure}
 
 \subsubsection{Indexering av partiklar och kopplingar}
 Ett stort problem som kopplingsmetoden i ovanstående stycke medförde var vilka partiklar som skulle höra till varje koppling. För att detta skulle kunna lösas för godtyckligt stora objekt, behövdes ett systematiskt sätt att tilldela kopplingarna deras partiklar. Detta löstes med en funktion som utifrån index till en viss koppling gav indexar till de två partiklar som den kopplade samman. Genom att låta funktionen genomlöpa alla kopplingar innan simuleringen genomfördes kunde indexeringen användas för att finna de rätta konstanterna (massorna) och variablerna (positionerna och hastigheterna) för de sammankopplade partiklarna. En liknande funktion implementerades för att finna triangelindexar som användes för renderingen.
 
 \subsubsection{Interaktion med omgivning}
-Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{math}9.82 m/s^2 \end{math} adderades på samtliga partiklars acceleration i samband med beräkningen av krafterna. Tillsammans med detta implementerades hantering av kollision med ett markplan för att materialets beteende skulle kunna studeras under bekanta förhållanden (se Figur \ref{2D_Neighbors}). Kollisionen implementerades genom en enkel algoritm.
-%Algoritm 1: Kollision
+Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{math}9.82 m/s^2 \end{math} adderades på samtliga partiklars acceleration i samband med beräkningen av krafterna. Tillsammans med detta implementerades hantering av kollision med ett markplan för att materialets beteende skulle kunna studeras under bekanta förhållanden (se Figur \ref{blaa::nonfloat}). Kollisionen implementerades genom en enkel algoritm.
+
+  %Algoritm 1: Kollision
 \begin{algorithm}[H]
   \For{varje partikel $i$}{
     \If{partikeln befinner sig under kollisionsplanet:}{
@@ -219,8 +221,8 @@ Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{mat
   }
 \caption{Kollision\label{alg1}}
 \end{algorithm}
-
-\begin{figure}
+  %Bilder
+\begin{figure}[h]
   \begin{minipage}[b]{.5\linewidth}
     \centering
     \includegraphics[width=4cm]{Bilder/kollision_01.png} 
@@ -242,7 +244,7 @@ Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{mat
     \subcaption{Komponenterna multipliceras med deras respektive koefficient.}\label{kol4}
   \end{minipage}
   \caption{Två olika sätt att koppla samman partiklar}
-  \label{2D_Neighbors}
+  \label{blaa::nonfloat}
 \end{figure}
 
 \subsubsection{Implementering av kraftekvationen}
@@ -278,22 +280,22 @@ Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KR
     \includegraphics[width=3cm]{Bilder/2D_2x2.png} 
   \end{center}
   \caption{Enkelt system med fyra hopkopplade partiklar}
-  \label{enkelfyra}
+  \label{enkelfyra::nonfloat}
 \end{figure}
-\\I Figur \ref{enkelfyra} har varje partikel tre hopkopplade grannar. Det totala antalet grannar blir således tolv, vilket är dubbla antalet kopplingar, som är sex.
+\\I Figur \ref{enkelfyra::nonfloat} har varje partikel tre hopkopplade grannar. Det totala antalet grannar blir således tolv, vilket är dubbla antalet kopplingar, som är sex.
 
 \subsection{Implementering}
 Programkoden från Matlab porterades till C++ där systemet utvecklades vidare. Fördelen med C++ är att det är snabbt, objektorienterat (Skansholm 2012), samt att en utvecklare får mer kontroll, inte minst över grafikprogrammeringen. Grafikprogrammeringen gjordes med OpenGL som är plattformsoberoende och ger utvecklaren möjlighet att använda hårdvaruaccelererad grafik (Gortler 2012).
 \subsubsection{Grundläggande systemarkitektur}
 Att övergå till ett objektorienterat system innebar att en systemarkitektur behövde tas fram. 
 För att ge en grundläggande förståelse av systemarkitekturen beskrivs denna med ett blockdiagram där de primära modulerna är separerade från varandra. 
-Se Figur \ref{systemark}.
+Se Figur \ref{systemark::nonfloat}.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=16cm]{Bilder/Arkitektur.png} 
   \end{center}
   \caption{Övergripande systemarkitektur}
-  \label{systemark}
+  \label{systemark::nonfloat}
 \end{figure}
 \\Klassen MCS (Mass Connection System) är den klass som lagrar all huvudsaklig data. Den innehåller samtliga partiklar och kopplingar för ett system.
 \\\\Alla partiklar identifieras med ett index, och definieras av följande information:
@@ -334,17 +336,17 @@ För att jämföra stabiliteten i de två numeriska metoderna gjordes en enkel u
 \section{Resultat}
 Resultaten från förstudier och implementering presenteras nedan.
 \subsection{Resultat från förstudier}
-Resultatet från förstudierna i en dimension presenteras i Figur \ref{endim}. Här illustreras fem sammankopplade partiklars samverkan efter att en av dem har givits en förskjuten startposition. Den kraft som bildas av denna förskjutning kan ses påverka de andra partiklarna och fortplantas genom systemet över tid. Krafterna ses också dämpas och tillslut avta, vilket stabiliserar systemet.
+Resultatet från förstudierna i en dimension presenteras i Figur \ref{endim::nonfloat}. Här illustreras fem sammankopplade partiklars samverkan efter att en av dem har givits en förskjuten startposition. Den kraft som bildas av denna förskjutning kan ses påverka de andra partiklarna och fortplantas genom systemet över tid. Krafterna ses också dämpas och tillslut avta, vilket stabiliserar systemet.
 
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=16cm]{Bilder/1D_matlab.png} 
   \end{center}
   \caption{Endimensionellt MSD-system i MATLAB}
-  \label{endim}
+  \label{endim::nonfloat}
 \end{figure}
 
-\noindent \\I Figur \ref{tvådim} åskådliggörs resultatet av förstudierna i två dimensioner. Här illustreras ett 4x4 MSD-system som faller från sin startposition och därefter kolliderar med ett markplan.
+\noindent \\I Figur \ref{tvådim::nonfloat} åskådliggörs resultatet av förstudierna i två dimensioner. Här illustreras ett 4x4 MSD-system som faller från sin startposition och därefter kolliderar med ett markplan.
 Fjädrarnas inverkande krafter visualiseras genom att låta färgen bero på kopplingens längd. 
 Kopplingen är grön i sitt viloläge och färgen går mot rött ju mer längden avviker från denna.
 
@@ -353,10 +355,27 @@ Kopplingen är grön i sitt viloläge och färgen går mot rött ju mer längden
     \includegraphics[width=16cm]{Bilder/boing.png} 
   \end{center}
   \caption{Tvådimensionellt 4x4 MSD-system i MATLAB}
-  \label{tvådim}
+  \label{tvådim::nonfloat}
 \end{figure}
 
 \subsection{Resultat från implementering}
+
+\begin{figure} [h] 
+ \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=8cm]{Bilder/Anim1.png} 
+    \subcaption{Hej.}\label{kol4::nonfloat}
+  \end{minipage}
+ \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=8cm]{Bilder/Anim2.png} 
+    \subcaption{Hej.}\label{kol4::nonfloat}
+  \end{minipage}
+  \caption{Resultat från implementering}
+  \label{res_imp}
+\end{figure}
+
+
 \subsection{Resultat från stabilitets- och prestandatest}
 %Tabeller
 Testet av stabilitetsgränser för de numeriska metoderna presenteras i Tabell \ref{table_example1} , och testet av stabilitet utifrån önskad prestanda presenteras i Tabell \ref{table_example2}.
