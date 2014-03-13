@@ -55,62 +55,74 @@ Här ska sammanfattningen skrivas in
 \pagebreak
 \pagestyle{plain}
 \setcounter{page}{1}
+
 %Inledning
 \section{Inledning}
 Inledande text är alltid lite trevligt
-
+\subsection{Introduktion}
+  %Syfte
 \subsection{Syfte}
-Denna rapport syftar till att undersöka hur verklighetstrogna simuleringar av elastiska material kan göras i tre dimensioner med hjälp av mass-fjäder-dämparsystem. Simuleringarna som demonstreras är menade att kunna göras i realtid, och erbjuda en användare viss interaktion. 
+Denna rapport syftar till att undersöka hur verklighetstrogna simuleringar av elastiska material kan göras i tre dimensioner med hjälp av mass-fjäder-dämparsystem. Simuleringarna som demonstreras är menade att kunna göras i realtid, och erbjuda en användare viss interaktion.
+  %Bakgrund
+\subsection{Bakgrund}
+\subsubsection{Fysikalisk modellering}
+En modell som kan användas för simulering av elastiska material är ett så kallat ''mass spring damper system'' (Gelenbe, Lent \& Stakellari 2012) eller MSD-system; en modell som beskrivs av partiklar sammankopplade med fjädrar och dämpare.
+\\%Figur
+\\Det enkla systemet i Figur X utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande elastiska material. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
+\\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna (Halliday 2007) som beskrevs av Newton. Newtons andra lag anges i Ekvation 2, 
+\\%Ekvation 2
+\\där F är den resulterande kraften på en partikel, x?? är partikelns acceleration, m är partikelns massa och t är tidsvariabeln. Newtons tredje lag summeras i ett citat:
+\begin{quote}''If A puts a force on B, then B puts a force on A, and the two forces are equal in magnitude and have opposite direction.'' (Halliday 2007)\end{quote}
+Fjädrarna modellerades med Hookes lag som anges i ekvation 3,
+\\%Ekvation 3
+\\där F är kraften som fjädern uträttar, k är fjäderkonstanten, l(t) är fjäderns utsträckning, och l0 är fjäderns vilolängd.
+\\\\Dämparna modellerades utifrån ekvation 4,
+\\%Ekvation 4
+\\där F är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
+\subsubsection{Numerisk lösning av differentialekvationer}
+\subsubsection{Euler}%subsubsub
+\subsubsection{Runge Kutta}%subsubsub
 
-%Bakgrund
-\section{Bakgrund}
-\subsection{Numeriska metoder}
 
-%Förstudier i MATLAB
-\section{Förstudier i MATLAB}
-\subsection{Kraftekvation}
-
-\subsection{Utveckling av MSD-system}
-
-%Implementering
-\section{Implementering}
-\subsection{Grundläggande systemarkitektur}
-
-\subsection{Indexeringsproblem}
-
-\subsection{Implementering av kraftekvation}
-Att implementera kraftekvationen för varje massa i ett MSD-system enligt Ekvation N, innebär att kraftvektorn till varje massa i, beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje massa. I detta projekt utforskades två algoritmer för detta ändamål.
-\subsubsection{Algoritm 1: baserad på massorna}
-\subsubsection{Algoritm 2: baserad på kopplingarna mellan massorna}
-
-\subsection{Implementering av numeriska integreringsmetoder}
-\subsubsection{Eulers stegmetod}
-\subsubsection{Runge Kutta}
-
+%Metod
+\section{Metod}
+\subsection{Förstudier}
+\subsubsection{Kraftekvation}
+\subsubsection{Utveckling av MSD-system}
+\subsubsection{En dimension}%subsubsub
+\subsubsection{Två dimensioner}%subsubsub
+\subsubsection{Indexering av partiklar och kopplingar}
+\subsubsection{Interaktion med omgivning}
+%Algoritm 1: Kollision
+\subsubsection{Implementering av kraftekvationen}
+%Algorithm 2: baserad på massorna
+%Algorithm 3: baserad på kopplingarna mellan massorna
+\subsection{Implementering}
+\subsubsection{Grundläggande systemarkitektur}
+\subsubsection{Implementering av numeriska integreringsmetoder}
+\subsubsection{Eulers stegmetod}%subsubsub
+\subsubsection{Runge Kutta}%subsubsub
+\subsubsection{Rendering}
 \subsection{Stabilitets- och prestandatest}
+
 
 %Resultat
 \section{Resultat}
 \subsection{Resultat från förstudier}
 \subsubsection{En dimension}
 \subsubsection{Två dimensioner}
-
 \subsection{Resultat från implementering}
-\subsection{Stabilitets- och prestandakrav}
-
-%Beskrivning av systemet
-\section{Beskrivning av systemet}
-\subsection{Systemkrav}
-\subsubsection{Hårdvara}
-\subsubsection{Mjukvara}
-
-\subsection{Köra programmet}
+\subsection{Resultat från stabilitets- och prestandatest}
 
 %Diskussion
 \section{Diskussion}
 
-%Resultat
-\section{Resultat}
+
+%Slutsats
+\section{Slutsats}
+
+
+
 
 
 %Referenser
@@ -124,7 +136,13 @@ Shari Lawrence Pfleeger och Joanne M. Atlee, \emph{Software Engineering, Fourth 
 %Bilagor
 \appendix
 
-\section{Bilaga om ditten}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+%Bilaga 1: Beskrivning av systemet
+\section{Beskrivning av systemet}
+\subsection{Systemkrav}
+\subsubsection{Hårdvara}
+\subsubsection{Mjukvara}
+
+\subsection{Köra programmet}
+
 
 \end{document}
