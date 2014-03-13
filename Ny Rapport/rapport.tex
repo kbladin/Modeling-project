@@ -103,9 +103,9 @@ En modell som kan användas för simulering av elastiska material är ett så ka
     \includegraphics[width=5cm]{Bilder/simple1D.png} 
   \end{center}
   \caption{Två partiklar med massorna $m1$ och $m2$, sammankopplade med en fjäder med fjäderkonstanten $k$ och en dämpare med dämparkonstanten $b$.}
-  \label{m1m2}
+  \label{m1m2::nonfloat}
 \end{figure}
-\\Det enkla systemet i Figur \ref{m1m2} utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
+\\Det enkla systemet i Figur \ref{m1m2::nonfloat} utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
 \\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna som beskrevs av Newton (Halliday 2007). Newtons andra lag anges i (2),
 
 \begin{equation}
@@ -164,22 +164,22 @@ Funktionen f har här givits olika argument som leder till de olika förändring
 \subsubsection{Utveckling av MSD-system}
 \paragraph{En dimension}
 Då det enkla systemet med två sammankopplade partiklar utökades med fler partiklar och kopplingar, krävdes en mer överskådlig notation för att beskriva systemet. 
-I figur \ref{2D_simple} nedan introduceras den nya notationen av ett system med två sammankopplade massor.
+I figur \ref{2D_simple::nonfloat} nedan introduceras den nya notationen av ett system med två sammankopplade massor.
 
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=3cm]{Bilder/2D_simple.png} 
   \end{center}
   \caption{Två sammankopplade partiklar}
-  \label{2D_simple}
+  \label{2D_simple::nonfloat}
 \end{figure}
-\noindent I MATLAB utvecklades först ett MSD-system i en dimension, där partiklar sammankopplades i serie enligt Figur \ref{simple1D4} nedan.
+\noindent I MATLAB utvecklades först ett MSD-system i en dimension, där partiklar sammankopplades i serie enligt Figur \ref{simple1D4::nonfloat} nedan.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=6cm]{Bilder/simple1D4.png} 
   \end{center}
   \caption{Fyra sammankopplade partiklar i serie}
-  \label{simple1D4}
+  \label{simple1D4::nonfloat}
 \end{figure}
 
 \noindent Genom att simulera detta system med Euler-metoden samt undersöka hur partiklarnas positioner förändrades över tid, kunde implementeringen av den framtagna kraftekvationen enkelt verifieras.
@@ -390,20 +390,20 @@ Kopplingen är grön i sitt viloläge och färgen går mot rött ju mer längden
 \end{figure}
 
 \subsection{Resultat från implementering}
-
+I Figur (\ref{b1::nonfloat}) och (\ref{b2::nonfloat}) visas bilder från simuleringar av två olika material. Materialen skiljer sig åt både i form och parametervärden. Det första materialet har relativt höga fjäderkonstanter och låga dämparkonstanter, medan det andra materialets egenskaper är de motsatta.
 \begin{figure} [h] 
  \begin{minipage}[b]{.5\linewidth}
     \centering
     \includegraphics[width=8cm]{Bilder/Anim1.png} 
-    \subcaption{Hej.}\label{kol4::nonfloat}
+    \subcaption{}\label{b1::nonfloat}
   \end{minipage}
  \begin{minipage}[b]{.5\linewidth}
     \centering
     \includegraphics[width=8cm]{Bilder/Anim2.png} 
-    \subcaption{Hej.}\label{kol4::nonfloat}
+    \subcaption{}\label{b2::nonfloat}
   \end{minipage}
   \caption{Resultat från implementering}
-  \label{res_imp}
+  \label{res_imp::nonfloat}
 \end{figure}
 
 
@@ -437,10 +437,25 @@ Testet av stabilitetsgränser för de numeriska metoderna presenteras i Tabell \
 \end{table}
 %Diskussion
 \section{Diskussion}
+Under projektets gång gjordes ett antal val. Dessa är val av numerisk metod, algoritm för kraftkvation, fjädersortering/indexering samt dämpare.
+
+\noindent\\Den största anledningen till att Runge-Kuttametoden var mer beräkningstung var att mycket data behövde kopieras under simuleringen. Runge-Kuttametoden gav visserligen en mer korrekt simulering men eftersom det var kritiskt att med hög prestanda erhålla ett relativt stabilt system gjordes valet att använda Eulers metod i slutprodukten.
+
+\noindent\\Valet av algoritm för kraftekvationen grundade sig i antalet gånger kraftekvationen behövde beräknas. Med Algoritm \ref{alg3} behövde beräkningen göras hälften så många gånger. Dock krävde algoritmen att partiklarna loopades igenom en gång efter det att krafterna hade beräknats för att applicera accerelationen på dem. Trots detta hölls antalet beräkningar på en lägre nivå för Algoritm \ref{alg3} än för Algoritm \ref{alg2}, varför Algoritm \ref{alg3} valdes för slutimplementeringen.
+
+\noindent\\Vid skapande av MSD-systemet gjordes begränsningar i val av dämpare med enbart dynamisk friktion. Att införa andra ekvationer för hur dämparna modelleras skulle kunna vara en vidareutveckling av systemet. En möjlighet är att införa statisk friktion i dämparna för att simulera deformation i materialet så att det inte återfår sin ursprungliga form.
+
+\noindent\\Vid utveckling av MSD-systemet underlättade MATLABs inbyggda renderingsfunktion. Med hjälp av den kunde kraftekvationen valideras utan att tid behövde spenderas på implementering av en egen renderingsfunktion. Med den tidiga visuella återkopplingen var felsökning lättare, vilket gav upphov till ett smidigare arbetsflöde och fokus kunde läggas på rätt del i början av arbetet.
+
+\noindent\\En annan del av systemet som tål att diskuteras är hur andra former än rätblock skulle kunna ställas upp. Indexeringsfunktionen förutsätter att modellen är uppbyggd i rätblocksformation medan simuleringen i sig inte förutsätter något sådant. Fördelen är alltså att man kan implementera andra indexeringsfunktioner för att bygga upp modeller av andra former, som sfärer eller koner.
+
+\noindent\\Indexeringsfunktionen i sig kunde också ha implementerats annorlunda för att göra arbetet med den lättare. I stället för en funktion som utifrån fjäderindex ger två partikelindexar kunde listan med partiklar loopas igenom vartefter en koppling kunde läggas till för partikelns alla grannar. Denna metod hade varit lättare att implementera men saknar fördelen att listan med kopplingar blir ordnad på ett systemetiskt sätt. Fördelen med den första metoden var att kopplingarna ordnades efter längderna, vilket underlättade proceduren att ändra dessa under körning. Möjligheten att veta exakt vilken koppling som tillhörde vilket index ger möjlighet till större kontroll.
+
+\noindent\\Fortsatt utveckling av grafiken skulle främst vara införandet av texturer. Detta är en naturlig vidareutveckling då det skulle innebära införandet av en lista med UV-koordinater i stället för listan med färger som användes i renderingen. För detta skulle en ny indexeringsfunktion krävas för att ta fram vilken hörnpunkt som tillhör en viss UV-koordinat. Med texturer ges möjligheten att rendera mer verklighetstrogna och intressanta material. Rendering av andra element såsom markplan skulle också tillföra ett mervärde genom att förtydliga kollisionen med detta. Skuggkastning är också något grafiskt som skulle förtydliga interaktionen mellan materialet och markplan genom att ge en känsla för avstånd.
 
 
-%Slutsats
-\section{Slutsats}
+%Referenser
+\section{Referenser}
 Fausett, L.V , 2008, \textit{Applied Numerical Analysis Using Matlab}, Pearson Prentice Hall.
 
 \noindent \\Gelenbe, E, Lent, R, Stakellari, G, 2012, \textit{Computer and Information Sciences II: 26th International Symposium on Computer and Information Sciences}, Springer-Verlag London Limited.
@@ -456,9 +471,6 @@ Fausett, L.V , 2008, \textit{Applied Numerical Analysis Using Matlab}, Pearson P
 \noindent \\Skansholm, J, 2012, \textit{C++ direkt}, Studentlitteratur AB.
 
 
-
-%Referenser
-\section{Referenser}
 
 
 %Bilagor
