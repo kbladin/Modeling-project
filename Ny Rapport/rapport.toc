@@ -16,9 +16,9 @@
 \contentsline {paragraph}{\numberline {2.1.2.2}Tv\IeC {\r a} dimensioner}{2}{paragraph.2.1.2.2}
 \contentsline {subsubsection}{\numberline {2.1.3}Indexering av partiklar och kopplingar}{2}{subsubsection.2.1.3}
 \contentsline {subsubsection}{\numberline {2.1.4}Interaktion med omgivning}{3}{subsubsection.2.1.4}
-\contentsline {subsubsection}{\numberline {2.1.5}Implementering av kraftekvationen}{3}{subsubsection.2.1.5}
-\contentsline {subsection}{\numberline {2.2}Implementering}{3}{subsection.2.2}
-\contentsline {subsubsection}{\numberline {2.2.1}Grundl\IeC {\"a}ggande systemarkitektur}{3}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.1.5}Implementering av kraftekvationen}{4}{subsubsection.2.1.5}
+\contentsline {subsection}{\numberline {2.2}Implementering}{4}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Grundl\IeC {\"a}ggande systemarkitektur}{4}{subsubsection.2.2.1}
 \contentsline {subsubsection}{\numberline {2.2.2}Implementering av numeriska integreringsmetoder}{5}{subsubsection.2.2.2}
 \contentsline {paragraph}{\numberline {2.2.2.1}Eulers stegmetod}{5}{paragraph.2.2.2.1}
 \contentsline {paragraph}{\numberline {2.2.2.2}Runge Kutta}{5}{paragraph.2.2.2.2}
@@ -27,13 +27,13 @@
 \contentsline {section}{\numberline {3}Resultat}{5}{section.3}
 \contentsline {subsection}{\numberline {3.1}Resultat fr\IeC {\r a}n f\IeC {\"o}rstudier}{5}{subsection.3.1}
 \contentsline {subsubsection}{\numberline {3.1.1}En dimension}{5}{subsubsection.3.1.1}
-\contentsline {subsubsection}{\numberline {3.1.2}Tv\IeC {\r a} dimensioner}{5}{subsubsection.3.1.2}
-\contentsline {subsection}{\numberline {3.2}Resultat fr\IeC {\r a}n implementering}{6}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Resultat fr\IeC {\r a}n stabilitets- och prestandatest}{6}{subsection.3.3}
-\contentsline {section}{\numberline {4}Diskussion}{6}{section.4}
-\contentsline {section}{\numberline {5}Slutsats}{6}{section.5}
-\contentsline {section}{\numberline {A}Beskrivning av systemet}{6}{appendix.A}
-\contentsline {subsection}{\numberline {A.1}Systemkrav}{6}{subsection.A.1}
-\contentsline {subsubsection}{\numberline {A.1.1}H\IeC {\r a}rdvara}{6}{subsubsection.A.1.1}
-\contentsline {subsubsection}{\numberline {A.1.2}Mjukvara}{6}{subsubsection.A.1.2}
-\contentsline {subsection}{\numberline {A.2}K\IeC {\"o}ra programmet}{6}{subsection.A.2}
+\contentsline {subsubsection}{\numberline {3.1.2}Tv\IeC {\r a} dimensioner}{6}{subsubsection.3.1.2}
+\contentsline {subsection}{\numberline {3.2}Resultat fr\IeC {\r a}n implementering}{7}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Resultat fr\IeC {\r a}n stabilitets- och prestandatest}{7}{subsection.3.3}
+\contentsline {section}{\numberline {4}Diskussion}{7}{section.4}
+\contentsline {section}{\numberline {5}Slutsats}{7}{section.5}
+\contentsline {section}{\numberline {A}Beskrivning av systemet}{7}{appendix.A}
+\contentsline {subsection}{\numberline {A.1}Systemkrav}{7}{subsection.A.1}
+\contentsline {subsubsection}{\numberline {A.1.1}H\IeC {\r a}rdvara}{7}{subsubsection.A.1.1}
+\contentsline {subsubsection}{\numberline {A.1.2}Mjukvara}{7}{subsubsection.A.1.2}
+\contentsline {subsection}{\numberline {A.2}K\IeC {\"o}ra programmet}{7}{subsection.A.2}
