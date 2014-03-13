@@ -13,6 +13,8 @@
 \usepackage[affil-it]{authblk}
 \usepackage{geometry}	%lets you customize the page size
 \usepackage{hyperref}
+\usepackage[ruled,vlined]{algorithm2e} %,vlined
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
 
 \geometry{
  margin=20mm
@@ -20,6 +22,10 @@
 
 \usepackage{fancyhdr} %include this to customize headers/footers
 \usepackage{titling}
+
+% Algoritm
+\renewcommand{\algorithmcfname}{Algoritm}% Afrikaans "Algorithm"
+\newlength\marincrease
 
 %test \paragraph -subsubsub
 \makeatletter
@@ -143,6 +149,7 @@ Detta innebar en övergång från skalärer till vektorer i de framtagna ekvatio
 
 För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors} nedan.
 
+%<<<<<<< HEAD
 \begin{figure}
   \begin{minipage}[h!]{.5\linewidth}
     \centering
@@ -188,11 +195,79 @@ En liknande funktion implementerades för att finna triangelindexar som använde
 
 \subsubsection{Interaktion med omgivning}
 %Algoritm 1: Kollision
+\begin{algorithm}[H]
+  \For{varje partikel $i$}{
+    \If{partikeln befinner sig under kollisionsplanet:}{
+      \begin{itemize}
+      \item Spegla hastighetsvektorn i kollisionsplanet, se Figur \ref{kol3}.\
+      \item Ortogonalprojicera positionsvektorn på kollisionsplanet, se Figur \ref{kol3}.\
+      \item Multiplicera den komponent av hastighetsvektorn som är parallell med\\ kollisionsplanet med en friktionskoefficient, se Figur \ref{kol4}\
+      \item Multiplicara den komponent av hastighetsvektorn som är ortogonal med\\ kollisionsplanet med en elasticitetskoefficient, se Figur \ref{kol4}.\
+    \end{itemize}
+    }
+  }
+\caption{Kollisionshantering\label{IR}}
+\end{algorithm}
+
+\begin{figure}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/kollision_01.png} 
+    \subcaption{Partikeln rör sig mot kollisionsplanet.}\label{kol1}
+  \end{minipage}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/kollision_02.png} 
+    \subcaption{Partikeln har kolliderat med planet.}\label{kol2}
+  \end{minipage}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/kollision_03.png} 
+    \subcaption{Partikelns position och hastighetsvektor ändras.}\label{kol3}
+  \end{minipage}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/kollision_04.png} 
+    \subcaption{Komponenterna multipliceras med dess respektive komponenter.}\label{kol4}
+  \end{minipage}
+  \caption{Två olika sätt att koppla samman partiklar}\label{2D_Neighbors}
+\end{figure}
+
 \subsubsection{Implementering av kraftekvationen}
 %Algorithm 2: baserad på massorna
-%Algorithm 3: baserad på kopplingarna mellan massorna
-\subsection{Implementering}
+\begin{algorithm}[H]
+  \For{varje massa $i$}{
+    \For{varje massa $j$, som är kopplad till $i$}{
+      \begin{itemize}
+        \item Beräkna den kraftvektor, $f$, som fjädern och dämparen mellan $i$ och $j$ påverkar\\ massa $i$ med.
+        \item Addera $f$ till den totala kraften $F[i]$, som påverkar massa $i$.
+      \end{itemize}
+    }
+    \begin{itemize}
+    \item{Beräkna accelerationen för massa $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.}
+    \end{itemize}
+  }
+\caption{Algoritm baserad på massorna\label{IR}}
+\end{algorithm}
 
+%Algorithm 3: baserad på kopplingarna mellan massorna
+\begin{algorithm}[H]
+  \For{varje koppling $c$ (där $c$ är kopplingen mellan massa $i$ och $j$) :}{
+      \begin{itemize}
+        \item Beräkna den kraft, $f$, som $c$ påverkar massa $i$ med.\
+        \item Addera $f$ till den totala kraften $F[i]$ som påverkar massa $i$.\
+        \item Subtrahera $f$ från den totala kraften $F[j]$ som påverkar massa $j$.\
+      \end{itemize}
+  }
+  \For{varje massa $i$}{
+    \begin{itemize}
+        \item Beräkna accelerationen för massa $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.\
+     \end{itemize}
+  }
+\caption{Algoritm baserad på kopplingarna mellan massorna\label{IR}}
+\end{algorithm}
+
+\subsection{Implementering}
 \subsubsection{Grundläggande systemarkitektur}
 Att övergå till ett objektorienterat system innebar att en systemarkitektur behövde tas fram. 
 För att ge en grundläggande förståelse av systemarkitekturen beskrivs denna med ett blockdiagram där de primära modulerna är separerade från varandra. 
