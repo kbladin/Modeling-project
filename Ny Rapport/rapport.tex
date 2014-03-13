@@ -184,6 +184,30 @@ En liknande funktion implementerades för att finna triangelindexar som använde
 \caption{Kollision\label{IR}}
 \end{algorithm}
 
+\begin{figure}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/kollision_01.png} 
+    \subcaption{Partikeln rör sig mot kollisionsplanet.}\label{kol1}
+  \end{minipage}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/kollision_02.png} 
+    \subcaption{Partikeln har kolliderat med planet.}\label{kol2}
+  \end{minipage}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/kollision_03.png} 
+    \subcaption{Partikelns position och hastighetsvektor ändras.}\label{kol3}
+  \end{minipage}
+  \begin{minipage}[b]{.5\linewidth}
+    \centering
+    \includegraphics[width=4cm]{Bilder/kollision_04.png} 
+    \subcaption{Komponenterna multipliceras med dess respektive komponenter.}\label{kol4}
+  \end{minipage}
+  \caption{Två olika sätt att koppla samman partiklar}\label{2D_Neighbors}
+\end{figure}
+
 \subsubsection{Implementering av kraftekvationen}
 %Algorithm 2: baserad på massorna
 \begin{algorithm}[H]
