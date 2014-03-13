@@ -212,7 +212,7 @@ Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{mat
     \end{itemize}
     }
   }
-\caption{Kollision\label{IR}}
+\caption{Kollision\label{alg1}}
 \end{algorithm}
 
 \begin{figure}
@@ -241,39 +241,41 @@ Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{mat
 \end{figure}
 
 \subsubsection{Implementering av kraftekvationen}
-Att implementera kraftekvationen för varje massa i ett MSD-system enligt (KRAFTEKV), innebär att kraftvektorn till varje massa i beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje massa enligt (DIFFEKV). I detta projekt undersöktes två algoritmer för detta ändamål.\\\\
+Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KRAFTEKV), innebär att kraftvektorn till varje partikel $i$ beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje partikel enligt (DIFFEKV). I detta projekt undersöktes två algoritmer för detta ändamål.\\\\
 %Algorithm 2: baserad på massorna
 \begin{algorithm}[H]
-  \For{varje massa $i$}{
-    \For{varje massa $j$, som är kopplad till $i$}{
+  \For{varje partikel $i$}{
+    \For{varje partikel $j$, som är kopplad till $i$}{
       \begin{itemize}
-        \item Beräkna den kraftvektor, $f$, som fjädern och dämparen mellan $i$ och $j$ påverkar\\ massa $i$ med.
-        \item Addera $f$ till den totala kraften $F[i]$, som påverkar massa $i$.
+        \item Beräkna den kraftvektor, $f$, som fjädern och dämparen mellan $i$ och $j$ påverkar\\ partikel $i$ med.
+        \item Addera $f$ till den totala kraften $F[i]$, som påverkar partikel $i$.
       \end{itemize}
     }
     \begin{itemize}
-    \item{Beräkna accelerationen för massa $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.}
+    \item{Beräkna accelerationen för partikel $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.}
     \end{itemize}
   }
-\caption{Baserad på massorna\label{IR}}
+\caption{Algoritm baserad på partiklar\label{alg2}}
 \end{algorithm}
 %Algorithm 3: baserad på kopplingarna mellan massorna
 \begin{algorithm}[H]
-  \For{varje koppling $c$ (där $c$ är kopplingen mellan massa $i$ och $j$) :}{
+  \For{varje koppling $c$ (där $c$ är kopplingen mellan partikel $i$ och $j$) :}{
       \begin{itemize}
-        \item Beräkna den kraft, $f$, som $c$ påverkar massa $i$ med.\
-        \item Addera $f$ till den totala kraften $F[i]$ som påverkar massa $i$.\
-        \item Subtrahera $f$ från den totala kraften $F[j]$ som påverkar massa $j$.\
+        \item Beräkna den kraft, $f$, som $c$ påverkar partikel $i$ med.\
+        \item Addera $f$ till den totala kraften $F[i]$ som påverkar partikel $i$.\
+        \item Subtrahera $f$ från den totala kraften $F[j]$ som påverkar partikel $j$.\
       \end{itemize}
   }
-  \For{varje massa $i$}{
+  \For{varje partikel $i$}{
     \begin{itemize}
-        \item Beräkna accelerationen för massa $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.\
+        \item Beräkna accelerationen för partikel $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.\
      \end{itemize}
   }
-\caption{Baserad på kopplingarna mellan massorna\label{IR}}
+\caption{Algoritm baserad på kopplingarna mellan partiklar\label{alg3}}
 \end{algorithm}
-\noindent \\\\I Algoritm 2 utnyttjas det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm 2 användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.\\\\I MSD-systemet ovan har varje partikel tre hopkopplade grannar. Det totala antalet grannar blir således tolv, vilket är dubbla antalet kopplingar, som är sex.
+\noindent \\\\I Algoritm 2 utnyttjas det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm 2 användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.
+%Figur
+I MSD-systemet ovan har varje partikel tre hopkopplade grannar. Det totala antalet grannar blir således tolv, vilket är dubbla antalet kopplingar, som är sex.
 \subsection{Implementering}
 \subsubsection{Grundläggande systemarkitektur}
 Att övergå till ett objektorienterat system innebar att en systemarkitektur behövde tas fram. 
