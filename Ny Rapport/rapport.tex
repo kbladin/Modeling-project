@@ -56,11 +56,11 @@
 %Sammanfattning
 \begin{abstract}
 \thispagestyle{empty}
-Fysikbaserad animering av elastiska material kan sägas bestå av två skilda delar: fysikalisk simulering och grafikrendering. Materialen kan fysikaliskt beskrivas på flera olika sätt, men denna rapport är begränsad till att behandla endast en modell. Realismen i den simulering som presenteras är av stor vikt, varför fysikalisk korrekthet eftersträvas, och all beräkning grundar sig i vedertagna fysikaliska samband. För simuleringen undersöks två olika integreringsmetoder, Eulers stegmetod och Runge-Kuttas metod, och deras respektive för- och nackdelar med hänsyn till snabbhet och stabilitet.
+\noindent Fysikbaserad animering av elastiska material kan sägas bestå av två skilda delar: fysikalisk simulering och grafikrendering. Materialen kan fysikaliskt beskrivas på flera olika sätt, men denna rapport är begränsad till att behandla endast en modell. Realismen i den simulering som presenteras är av stor vikt, varför fysikalisk korrekthet eftersträvas, och all beräkning grundar sig i vedertagna fysikaliska samband. För simuleringen undersöks två olika integreringsmetoder, Eulers stegmetod och Runge-Kuttas metod, och deras respektive för- och nackdelar med hänsyn till snabbhet och stabilitet.
 
-De förstudier som presenteras härleder den ekvation som simuleringen bygger på. Denna grundar sig i sin tur på de fysikaliska samband som presenteras i Bakgrund. Förstudierna tar också upp modelleringen av det system som simuleras, och även de numeriska metoder som är implementerade. Resultaten från förstudierna valideras och ligger som grund för den slutgiltiga implementeringen.
+\noindent \\De förstudier som presenteras härleder den ekvation som simuleringen bygger på. Denna grundar sig i sin tur på de fysikaliska samband som presenteras i Bakgrund. Förstudierna tar också upp modelleringen av det system som simuleras, och även de numeriska metoder som är implementerade. Resultaten från förstudierna valideras och ligger som grund för den slutgiltiga implementeringen.
 
-De slutliga simuleringar som presenteras visar att den valda modellen kan efterlikna ett antal olika material och deras egenskaper. Utritningen sker med en bestämd frekvens, och noggrannheten i integreringarna bestäms utifrån denna. Undersökningen av integreringsmetoderna visar att Eulers stegmetod är att föredra i detta sammanhang.
+\noindent \\De slutliga simuleringar som presenteras visar att den valda modellen kan efterlikna ett antal olika material och deras egenskaper. Utritningen sker med en bestämd frekvens, och noggrannheten i integreringarna bestäms utifrån denna. Undersökningen av integreringsmetoderna visar att Eulers stegmetod är att föredra i detta sammanhang.
 \hfill
 \end{abstract}
 \pagebreak 
@@ -93,24 +93,39 @@ Denna rapport syftar till att undersöka hur verklighetstrogna simuleringar av e
 \subsection{Förstudier}
 I förstudierna ingick dels framtagandet av en kraftekvation, dels utvecklingen av MSD-system i en och två dimensioner. Detta grundar sig i den fysikaliska modelleringen samt numerisk lösning av differentialekvationer. Som verktyg användes MATLAB för att få en visuell återkoppling på kraftekvationen, med hjälp av programmets inbyggda renderingsfunktion.
 \subsubsection{Fysikalisk modellering}
-En modell som kan användas för simulering av elastiska material är ett så kallat ''mass spring damper system'' (Gelenbe, Lent \& Stakellari 2012) eller MSD-system; en modell som beskrivs av partiklar sammankopplade med fjädrar och dämpare.
-\\%Figur
-\\Det enkla systemet i Figur X utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande elastiska material. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
-\\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna (Halliday 2007) som beskrevs av Newton. 
-Newtons andra lag anges i Ekvation 2, 
+En modell som kan användas för simulering av elastiska material är ett så kallat ''mass spring damper system'' (Gelenbe, Lent \& Stakellari 2012) eller MSD-system; en modell som beskrivs av partiklar sammankopplade med fjädrar och dämpare.\\
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=5cm]{Bilder/simple1D.png} 
+  \end{center}
+  \caption{Två partiklar med massorna $m1$ och $m2$, sammankopplade med en fjäder med fjäderkonstanten $k$ och en dämpare med dämparkonstanten $b$.}
+  \label{m1m2}
+\end{figure}
+\\Det enkla systemet i Figur \ref{m1m2} utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
+\\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna som beskrevs av Newton (Halliday 2007). Newtons andra lag anges i Ekvation 2,
 \\%Ekvation 2
-\\där F är den resulterande kraften på en partikel, x?? är partikelns acceleration, m är partikelns massa och t är tidsvariabeln. 
+\\där F(t) är den resulterande kraften på en partikel, x’’(t) är partikelns acceleration, m är partikelns massa och t är tidsvariabeln. Newtons tredje lag summeras i ett citat:
 Newtons tredje lag summeras i ett citat:
 \begin{quote}''If A puts a force on B, then B puts a force on A, and the two forces are equal in magnitude and have opposite direction.'' (Halliday 2007)\end{quote}
 Fjädrarna modellerades med Hookes lag som anges i ekvation 3,
 \\%Ekvation 3
-\\där F är kraften som fjädern uträttar, k är fjäderkonstanten, l(t) är fjäderns utsträckning, och l0 är fjäderns vilolängd.
+\\där Fk(t) är kraften som fjädern uträttar, k är fjäderkonstanten, l0(t) är fjäderns utsträckning, och l0 är fjäderns vilolängd.
 \\\\Dämparna modellerades utifrån ekvation 4,
-\\%Ekvation 4
-\\där F är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
+\\%Ekvation 4 - HÄÄÄÄR SKA EKVATIONEN IN PLUS ANPASSA TEXTEN
+\\där Fb(t) är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
+
 \subsubsection{Numerisk lösning av differentialekvationer}
+Som bakgrund till simuleringen och därmed numerisk integrering låg Eulers stegmetod och Runge-Kuttametoden (Ljung \& Glad 2003). Nedanstående ekvationer beskriver numerisk integrering som krävs för lösning av första ordningens differentialekvationer, se ekvation 5.
+%EKVATION 5
+\\\\Här är x(t) den sökta funktionen, och dess derivata är en funktion av tiden t samt funktionen x(t) själv.
 \paragraph{Euler}%subsubsub
+Eulers stegmetod för att lösa första ordningens differentialekvationer beskrivs i ekvation 6,
+%Ekvation 6
+\\\\där h är tidssteget, och f fås från differentialekvationen. För att hitta funktionsvärdet vid tidpunkten t+h, alltså h tidsenheter efter det föregående, används funktionen f från differentialekvationen samt funktionsvärdet i det nuvarande steget, x(t). Efter ett givet startvärde kan en numerisk lösning tas fram genom stegning med jämna intervall.
 \paragraph{Runge Kutta}%subsubsub
+Att lösa differentialekvationen med Runge-Kuttametoden innebär att flera derivator beräknas vid olika tidssteg. Detta innebär att funktionen f har olika argument för att beräkna förändringshastigheterna k1, ..., k4. Funktionsvärdet i tidpunkten t+h baseras på en viktad summa av förändringshastigheterna enligt (7) nedan.
+%EKVATION 7
+\\\\Funktionen f har här givits olika argument som leder till de olika förändringshastigheterna k1, …,k4. Med vikterna satta enlig (BÖS7) ovan ges i detta fall Runges metod (Jönsson 2010).
 \subsubsection{Kraftekvation}
 \subsubsection{Utveckling av MSD-system}
 \paragraph{En dimension}
@@ -182,13 +197,10 @@ Med regeln enligt Figur \ref{2D_Neighbors} b) erhålls däremot en struktur som 
 \end{figure}
 
 \subsubsection{Indexering av partiklar och kopplingar}
-Ett stort problem, som ovanstående stycke implicerar, var att ta reda på vilka partiklar som skulle höra till varje koppling. 
-För att detta skulle kunna lösas för godtyckligt stora objekt, behövdes ett systematiskt sätt att tilldela kopplingarna deras partiklar.
-Detta löstes med en funktion som utifrån index till en viss koppling gav indexar till de två partiklar som den kopplade samman. 
-Genom att låta funktionen genomlöpa alla kopplingar innan simuleringen genomfördes kunde indexeringen användas för att finna de rätta konstanterna (massorna) och variablerna (positionerna och hastigheterna) för de kopplade massorna. 
-En liknande funktion implementerades för att finna triangelindexar som användes för renderingen.
+Ett stort problem som kopplingsmetoden i ovanstående stycke medförde var vilka partiklar som skulle höra till varje koppling. För att detta skulle kunna lösas för godtyckligt stora objekt, behövdes ett systematiskt sätt att tilldela kopplingarna deras partiklar. Detta löstes med en funktion som utifrån index till en viss koppling gav indexar till de två partiklar som den kopplade samman. Genom att låta funktionen genomlöpa alla kopplingar innan simuleringen genomfördes kunde indexeringen användas för att finna de rätta konstanterna (massorna) och variablerna (positionerna och hastigheterna) för de sammankopplade partiklarna. En liknande funktion implementerades för att finna triangelindexar som användes för renderingen.
 
 \subsubsection{Interaktion med omgivning}
+Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{math}9.82 m/s^2 \end{math} adderades på samtliga partiklars acceleration i samband med beräkningen av krafterna. Tillsammans med detta implementerades hantering av kollision med ett markplan för att materialets beteende skulle kunna studeras under bekanta förhållanden (se Figur \ref{2D_Neighbors}). Kollisionen implementerades genom en enkel algoritm.
 %Algoritm 1: Kollision
 \begin{algorithm}[H]
   \For{varje partikel $i$}{
@@ -225,10 +237,12 @@ En liknande funktion implementerades för att finna triangelindexar som använde
     \includegraphics[width=4cm]{Bilder/kollision_04.png} 
     \subcaption{Komponenterna multipliceras med deras respektive koefficient.}\label{kol4}
   \end{minipage}
-  \caption{Två olika sätt att koppla samman partiklar}\label{2D_Neighbors}
+  \caption{Två olika sätt att koppla samman partiklar}
+  \label{2D_Neighbors}
 \end{figure}
 
 \subsubsection{Implementering av kraftekvationen}
+Att implementera kraftekvationen för varje massa i ett MSD-system enligt (KRAFTEKV), innebär att kraftvektorn till varje massa i beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje massa enligt (DIFFEKV). I detta projekt undersöktes två algoritmer för detta ändamål.\\\\
 %Algorithm 2: baserad på massorna
 \begin{algorithm}[H]
   \For{varje massa $i$}{
@@ -244,7 +258,6 @@ En liknande funktion implementerades för att finna triangelindexar som använde
   }
 \caption{Baserad på massorna\label{IR}}
 \end{algorithm}
-
 %Algorithm 3: baserad på kopplingarna mellan massorna
 \begin{algorithm}[H]
   \For{varje koppling $c$ (där $c$ är kopplingen mellan massa $i$ och $j$) :}{
@@ -261,7 +274,7 @@ En liknande funktion implementerades för att finna triangelindexar som använde
   }
 \caption{Baserad på kopplingarna mellan massorna\label{IR}}
 \end{algorithm}
-
+\noindent \\\\I Algoritm 2 utnyttjas det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm 2 användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.\\\\I MSD-systemet ovan har varje partikel tre hopkopplade grannar. Det totala antalet grannar blir således tolv, vilket är dubbla antalet kopplingar, som är sex.
 \subsection{Implementering}
 \subsubsection{Grundläggande systemarkitektur}
 Att övergå till ett objektorienterat system innebar att en systemarkitektur behövde tas fram. 
