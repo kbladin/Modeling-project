@@ -56,7 +56,11 @@
 %Sammanfattning
 \begin{abstract}
 \thispagestyle{empty}
-Här ska sammanfattningen skrivas in
+Fysikbaserad animering av elastiska material kan sägas bestå av två skilda delar: fysikalisk simulering och grafikrendering. Materialen kan fysikaliskt beskrivas på flera olika sätt, men denna rapport är begränsad till att behandla endast en modell. Realismen i den simulering som presenteras är av stor vikt, varför fysikalisk korrekthet eftersträvas, och all beräkning grundar sig i vedertagna fysikaliska samband. För simuleringen undersöks två olika integreringsmetoder, Eulers stegmetod och Runge-Kuttas metod, och deras respektive för- och nackdelar med hänsyn till snabbhet och stabilitet.
+
+De förstudier som presenteras härleder den ekvation som simuleringen bygger på. Denna grundar sig i sin tur på de fysikaliska samband som presenteras i Bakgrund. Förstudierna tar också upp modelleringen av det system som simuleras, och även de numeriska metoder som är implementerade. Resultaten från förstudierna valideras och ligger som grund för den slutgiltiga implementeringen.
+
+De slutliga simuleringar som presenteras visar att den valda modellen kan efterlikna ett antal olika material och deras egenskaper. Utritningen sker med en bestämd frekvens, och noggrannheten i integreringarna bestäms utifrån denna. Undersökningen av integreringsmetoderna visar att Eulers stegmetod är att föredra i detta sammanhang.
 \hfill
 \end{abstract}
 \pagebreak 
@@ -79,20 +83,19 @@ Här ska sammanfattningen skrivas in
 %Inledning
 \section{Inledning}
 Inledande text är alltid lite trevligt
-\subsection{Introduktion}
-  %Syfte
-\subsection{Syfte}
-Denna rapport syftar till att undersöka hur verklighetstrogna simuleringar av elastiska material kan göras i tre dimensioner med hjälp av mass-fjäder-dämparsystem. 
-Simuleringarna som demonstreras är menade att kunna göras i realtid, och erbjuda en användare viss interaktion.
-
-  %Bakgrund
 \subsection{Bakgrund}
+Grundidén till systemet ligger i tidigare presenterade studier kring liknande ämnen. Partikelsystem i sin helhet kan anta många olika former. Elastiska material täcker flera sådana då det går att göra en väldigt generell modell för att simulera många olika material. Bristen med många fysikaliska simuleringar är att modellen endast täcker ett väldigt specifikt område som till exempel tygsimulering eller endast hårda material.
+\subsection{Syfte}
+Denna rapport syftar till att undersöka hur verklighetstrogna simuleringar av elastiska material kan göras i tre dimensioner med hjälp av mass-fjäder-dämparsystem. Simuleringarna som demonstreras är menade att kunna göras i realtid, och erbjuda en användare viss interaktion. Det är även viktigt att modellen ska kunna täcka många olika delar av newtonsk fysik; allt från elastiskt tyg till tärningskast med hårda tärningar.
+
+%Metod
+\section{Metod}
+\subsection{Förstudier}
+I förstudierna ingick dels framtagandet av en kraftekvation, dels utvecklingen av MSD-system i en och två dimensioner. Detta grundar sig i den fysikaliska modelleringen samt numerisk lösning av differentialekvationer. Som verktyg användes MATLAB för att få en visuell återkoppling på kraftekvationen, med hjälp av programmets inbyggda renderingsfunktion.
 \subsubsection{Fysikalisk modellering}
 En modell som kan användas för simulering av elastiska material är ett så kallat ''mass spring damper system'' (Gelenbe, Lent \& Stakellari 2012) eller MSD-system; en modell som beskrivs av partiklar sammankopplade med fjädrar och dämpare.
 \\%Figur
-\\Det enkla systemet i Figur X utgör grunden för den struktur som används i detta projekt. 
-Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande elastiska material. 
-Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
+\\Det enkla systemet i Figur X utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande elastiska material. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
 \\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna (Halliday 2007) som beskrevs av Newton. 
 Newtons andra lag anges i Ekvation 2, 
 \\%Ekvation 2
@@ -106,16 +109,8 @@ Fjädrarna modellerades med Hookes lag som anges i ekvation 3,
 \\%Ekvation 4
 \\där F är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
 \subsubsection{Numerisk lösning av differentialekvationer}
-\subsubsection{Euler}%subsubsub
-\subsubsection{Runge Kutta}%subsubsub
-
-
-%Metod
-\section{Metod}
-\subsection{Förstudier}
-I förstudierna ingick dels framtagandet av en kraftekvation, dels utvecklingen av MSD-system i en och två dimensioner. 
-Som verktyg användes MATLAB för att få en visuell återkoppling på kraftekvationen, med hjälp av programmets inbyggda renderingsfunktion.
-
+\paragraph{Euler}%subsubsub
+\paragraph{Runge Kutta}%subsubsub
 \subsubsection{Kraftekvation}
 \subsubsection{Utveckling av MSD-system}
 \paragraph{En dimension}
@@ -177,7 +172,7 @@ En liknande funktion implementerades för att finna triangelindexar som använde
       \item Spegla hastighetsvektorn i kollisionsplanet, se Figur \ref{kol3}.\
       \item Ortogonalprojicera positionsvektorn på kollisionsplanet, se Figur \ref{kol3}.\
       \item Multiplicera den komponent av hastighetsvektorn som är parallell med\\ kollisionsplanet med en friktionskoefficient, se Figur \ref{kol4}\
-      \item Multiplicara den komponent av hastighetsvektorn som är ortogonal med\\ kollisionsplanet med en elasticitetskoefficient, se Figur \ref{kol4}.\
+      \item Multiplicera den komponent av hastighetsvektorn, som är ortogonal med\\ kollisionsplanet, med en elasticitetskoefficient, se Figur \ref{kol4}.\
     \end{itemize}
     }
   }
@@ -203,7 +198,7 @@ En liknande funktion implementerades för att finna triangelindexar som använde
   \begin{minipage}[b]{.5\linewidth}
     \centering
     \includegraphics[width=4cm]{Bilder/kollision_04.png} 
-    \subcaption{Komponenterna multipliceras med dess respektive komponenter.}\label{kol4}
+    \subcaption{Komponenterna multipliceras med deras respektive koefficient.}\label{kol4}
   \end{minipage}
   \caption{Två olika sätt att koppla samman partiklar}\label{2D_Neighbors}
 \end{figure}

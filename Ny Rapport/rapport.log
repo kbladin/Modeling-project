@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.2.4)  13 MAR 2014 16:48
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.2.4)  13 MAR 2014 17:12
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -698,16 +698,16 @@ Package babel Info: Redefining swedish shorthand "~
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 57.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 63.
+(babel)             in language  on input line 67.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 63.
+(babel)             in language  on input line 67.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 63.
+(babel)             in language  on input line 67.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 63.
+(babel)             in language  on input line 67.
  [2]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 65.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 69.
  (./rapport.toc
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 3.
@@ -719,13 +719,13 @@ LaTeX Font Info:    External font `cmex7' loaded for size
 
  (./rapport.lof
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 7.
+(babel)             in language  on input line 8.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 7.
+(babel)             in language  on input line 8.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 7.
+(babel)             in language  on input line 8.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 7.
+(babel)             in language  on input line 8.
  [3])
 \tf@lof=\write5
 \openout5 = `rapport.lof'.
@@ -736,421 +736,416 @@ Package babel Info: Redefining swedish shorthand "~
 \openout6 = `rapport.lot'.
 
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 76.
+(babel)             in language  on input line 80.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 76.
+(babel)             in language  on input line 80.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 76.
+(babel)             in language  on input line 80.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 76.
+(babel)             in language  on input line 80.
  [4]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 80.
+(babel)             in language  on input line 84.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 80.
+(babel)             in language  on input line 84.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 82.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 86.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 82.
+(babel)             in language  on input line 86.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 82.
+(babel)             in language  on input line 86.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 84.
+(babel)             in language  on input line 88.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 84.
+(babel)             in language  on input line 88.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 89.
+(babel)             in language  on input line 92.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 89.
+(babel)             in language  on input line 92.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 90.
+(babel)             in language  on input line 93.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 90.
+(babel)             in language  on input line 93.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 95.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 95.
 
-Underfull \hbox (badness 10000) in paragraph at lines 91--101
+Underfull \hbox (badness 10000) in paragraph at lines 96--104
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 91--101
+Underfull \hbox (badness 10000) in paragraph at lines 96--104
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 91--101
+Underfull \hbox (badness 10000) in paragraph at lines 96--104
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 102--108
+Underfull \hbox (badness 10000) in paragraph at lines 105--111
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 102--108
+Underfull \hbox (badness 10000) in paragraph at lines 105--111
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 102--108
+Underfull \hbox (badness 10000) in paragraph at lines 105--111
 
  []
 
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 108.
+(babel)             in language  on input line 111.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 108.
+(babel)             in language  on input line 111.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 109.
+(babel)             in language  on input line 111.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 109.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 110.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 110.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 114.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 114.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 115.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 115.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 118.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 118.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 118.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 118.
+(babel)             in language  on input line 111.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.118 
-       [1]
+l.111 \subsubsection
+                    {Numerisk lösning av differentialekvationer} [1]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 119.
+(babel)             in language  on input line 111.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 119.
+(babel)             in language  on input line 111.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 120.
+(babel)             in language  on input line 112.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 120.
+(babel)             in language  on input line 112.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 121.
+(babel)             in language  on input line 113.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 121.
- <Bilder/2D_simple.png, id=231, 113.42375pt x 29.10875pt>
+(babel)             in language  on input line 113.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 114.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 114.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 115.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 115.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 116.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 116.
+
+<Bilder/2D_simple.png, id=226, 113.42375pt x 29.10875pt>
 File: Bilder/2D_simple.png Graphic file (type png)
 
 <use Bilder/2D_simple.png>
-Package pdftex.def Info: Bilder/2D_simple.png used on input line 127.
+Package pdftex.def Info: Bilder/2D_simple.png used on input line 122.
 (pdftex.def)             Requested size: 85.35826pt x 21.90611pt.
 
-<Bilder/simple1D4.png, id=234, 132.7359pt x 25.5354pt>
+<Bilder/simple1D4.png, id=229, 132.7359pt x 25.5354pt>
 File: Bilder/simple1D4.png Graphic file (type png)
 
 <use Bilder/simple1D4.png>
-Package pdftex.def Info: Bilder/simple1D4.png used on input line 136.
+Package pdftex.def Info: Bilder/simple1D4.png used on input line 131.
 (pdftex.def)             Requested size: 170.71652pt x 32.8422pt.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 144.
+(babel)             in language  on input line 139.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 144.
+(babel)             in language  on input line 139.
 
-<Bilder/2D_4Neighbors.png, id=236, 199.74625pt x 196.735pt>
+<Bilder/2D_4Neighbors.png, id=231, 199.74625pt x 196.735pt>
 File: Bilder/2D_4Neighbors.png Graphic file (type png)
 
 <use Bilder/2D_4Neighbors.png>
-Package pdftex.def Info: Bilder/2D_4Neighbors.png used on input line 153.
+Package pdftex.def Info: Bilder/2D_4Neighbors.png used on input line 148.
 (pdftex.def)             Requested size: 113.81102pt x 112.09506pt.
 
-<Bilder/2D_8Neighbors.png, id=237, 196.735pt x 207.77625pt>
+<Bilder/2D_8Neighbors.png, id=232, 196.735pt x 207.77625pt>
 File: Bilder/2D_8Neighbors.png Graphic file (type png)
 
 <use Bilder/2D_8Neighbors.png>
-Package pdftex.def Info: Bilder/2D_8Neighbors.png used on input line 158.
+Package pdftex.def Info: Bilder/2D_8Neighbors.png used on input line 153.
 (pdftex.def)             Requested size: 113.81102pt x 120.19643pt.
 
-Overfull \hbox (2.28003pt too wide) in paragraph at lines 151--161
+Overfull \hbox (2.28003pt too wide) in paragraph at lines 146--156
 [][] [] 
  []
 
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 164.
+(babel)             in language  on input line 159.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 164.
+(babel)             in language  on input line 159.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 165.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 165.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 165.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 170.
+(babel)             in language  on input line 165.
 pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.170 
+l.165 
        [2 <./Bilder/2D_simple.png> <./Bilder/simple1D4.png>]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 171.
+(babel)             in language  on input line 166.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 171.
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 183.
+(babel)             in language  on input line 166.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 178.
 
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 183.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 178.
 
-Overfull \hbox (53.6662pt too wide) detected at line 185
+Overfull \hbox (53.6662pt too wide) detected at line 180
 [][] 
  []
 
-<Bilder/kollision_01.png, id=247, 15803.04pt x 10527.33pt>
+<Bilder/kollision_01.png, id=242, 15803.04pt x 10527.33pt>
 File: Bilder/kollision_01.png Graphic file (type png)
 
 <use Bilder/kollision_01.png>
-Package pdftex.def Info: Bilder/kollision_01.png used on input line 190.
+Package pdftex.def Info: Bilder/kollision_01.png used on input line 185.
 (pdftex.def)             Requested size: 113.81102pt x 75.65857pt.
 
-<Bilder/kollision_02.png, id=248, 156.585pt x 96.36pt>
+<Bilder/kollision_02.png, id=243, 156.585pt x 96.36pt>
 File: Bilder/kollision_02.png Graphic file (type png)
 
 <use Bilder/kollision_02.png>
-Package pdftex.def Info: Bilder/kollision_02.png used on input line 195.
+Package pdftex.def Info: Bilder/kollision_02.png used on input line 190.
 (pdftex.def)             Requested size: 113.81102pt x 70.0393pt.
 
-<Bilder/kollision_03.png, id=249, 156.585pt x 96.36pt>
+<Bilder/kollision_03.png, id=244, 156.585pt x 96.36pt>
 File: Bilder/kollision_03.png Graphic file (type png)
 
 <use Bilder/kollision_03.png>
-Package pdftex.def Info: Bilder/kollision_03.png used on input line 200.
+Package pdftex.def Info: Bilder/kollision_03.png used on input line 195.
 (pdftex.def)             Requested size: 113.81102pt x 70.0393pt.
 
-<Bilder/kollision_04.png, id=250, 156.585pt x 96.36pt>
+<Bilder/kollision_04.png, id=245, 156.585pt x 96.36pt>
 File: Bilder/kollision_04.png Graphic file (type png)
 
 <use Bilder/kollision_04.png>
-Package pdftex.def Info: Bilder/kollision_04.png used on input line 205.
+Package pdftex.def Info: Bilder/kollision_04.png used on input line 200.
 (pdftex.def)             Requested size: 113.81102pt x 70.0393pt.
 
-Overfull \hbox (2.28003pt too wide) in paragraph at lines 188--208
+Overfull \hbox (2.28003pt too wide) in paragraph at lines 183--203
 [][] []
  []
 
 
-Overfull \hbox (2.28003pt too wide) in paragraph at lines 188--208
+Overfull \hbox (2.28003pt too wide) in paragraph at lines 183--203
 [] [] 
  []
 
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 211.
+(babel)             in language  on input line 206.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 211.
+(babel)             in language  on input line 206.
 
-Overfull \hbox (53.6662pt too wide) detected at line 226
+Overfull \hbox (53.6662pt too wide) detected at line 221
 [][] 
  []
 
 
-Overfull \hbox (35.64551pt too wide) detected at line 243
+Overfull \hbox (35.64551pt too wide) detected at line 238
 [][] 
  []
 
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 245.
+(babel)             in language  on input line 240.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 245.
+(babel)             in language  on input line 240.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 245.
+(babel)             in language  on input line 240.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 245.
+(babel)             in language  on input line 240.
 pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.245 \subsection
+l.240 \subsection
                  {Implementering} [3 <./Bilder/2D_4Neighbors.png> <./Bilder/2D_
-8Neighbors.png> <./Bilder/kollision_01.png> <./Bilder/kollision_02.png> <./Bild
-er/kollision_03.png> <./Bilder/kollision_04.png>]
+8Neighbors.png>]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 245.
+(babel)             in language  on input line 240.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 245.
+(babel)             in language  on input line 240.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 246.
+(babel)             in language  on input line 241.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 246.
-
-<Bilder/Arkitektur.png, id=266, 634.2897pt x 354.8457pt>
+(babel)             in language  on input line 241.
+ <Bilder/Arkitektur.png, id=257, 634.2897pt x 354.8457pt>
 File: Bilder/Arkitektur.png Graphic file (type png)
 
 <use Bilder/Arkitektur.png>
-Package pdftex.def Info: Bilder/Arkitektur.png used on input line 252.
+Package pdftex.def Info: Bilder/Arkitektur.png used on input line 247.
 (pdftex.def)             Requested size: 455.24408pt x 254.68193pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 247--260
+Underfull \hbox (badness 10000) in paragraph at lines 242--255
 
  []
+
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 255.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 255.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 255.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 255.
+pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.255 \begin{itemize}
+                      [4 <./Bilder/kollision_01.png> <./Bilder/kollision_02.png
+> <./Bilder/kollision_03.png> <./Bilder/kollision_04.png>]
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 272.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 272.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 272.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 272.
+ [5 <./Bilder/Arkitektur.png>]
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 272.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 272.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 273.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 273.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 274.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 274.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 275.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 275.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 276.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 276.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 280.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 280.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 281.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 281.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 283.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 283.
+ <Bilder/1D_matlab.png, id=277, 778.91pt x 358.33875pt>
+File: Bilder/1D_matlab.png Graphic file (type png)
+
+<use Bilder/1D_matlab.png>
+Package pdftex.def Info: Bilder/1D_matlab.png used on input line 291.
+(pdftex.def)             Requested size: 455.24408pt x 209.43321pt.
+Package babel Info: Redefining swedish shorthand "|
+(babel)             in language  on input line 297.
+Package babel Info: Redefining swedish shorthand "~
+(babel)             in language  on input line 297.
+ <Bilder/boing.png, id=279, 750.805pt x 404.51125pt>
+File: Bilder/boing.png Graphic file (type png)
+
+<use Bilder/boing.png>
+Package pdftex.def Info: Bilder/boing.png used on input line 305.
+(pdftex.def)             Requested size: 455.24408pt x 245.2763pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 271.
+(babel)             in language  on input line 311.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 271.
+(babel)             in language  on input line 311.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 271.
+(babel)             in language  on input line 312.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 271.
-pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
-been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.271   \item b
-               , dämparkonstant [4]
+(babel)             in language  on input line 312.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 277.
+(babel)             in language  on input line 315.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 277.
+(babel)             in language  on input line 315.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 278.
+(babel)             in language  on input line 319.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 278.
+(babel)             in language  on input line 319.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 279.
+(babel)             in language  on input line 331.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 279.
+(babel)             in language  on input line 331.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 280.
+(babel)             in language  on input line 331.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 280.
+(babel)             in language  on input line 331.
+[6 <./Bilder/1D_matlab.png (PNG copy)>]
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 281.
+(babel)             in language  on input line 337.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 281.
+(babel)             in language  on input line 337.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 285.
+(babel)             in language  on input line 338.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 285.
+(babel)             in language  on input line 338.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 286.
+(babel)             in language  on input line 339.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 286.
+(babel)             in language  on input line 339.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 288.
+(babel)             in language  on input line 340.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 288.
-
-<Bilder/1D_matlab.png, id=277, 778.91pt x 358.33875pt>
-File: Bilder/1D_matlab.png Graphic file (type png)
-
-<use Bilder/1D_matlab.png>
-Package pdftex.def Info: Bilder/1D_matlab.png used on input line 296.
-(pdftex.def)             Requested size: 455.24408pt x 209.43321pt.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 300.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 300.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 300.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 300.
- [5 <./Bilder/Arkitektur.png>]
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 302.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 302.
-
-<Bilder/boing.png, id=284, 750.805pt x 404.51125pt>
-File: Bilder/boing.png Graphic file (type png)
- <use Bilder/boing.png>
-Package pdftex.def Info: Bilder/boing.png used on input line 310.
-(pdftex.def)             Requested size: 455.24408pt x 245.2763pt.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 316.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 316.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 317.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 317.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 320.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 320.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 324.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 324.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 336.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 336.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 336.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 336.
-
-[6 <./Bilder/1D_matlab.png (PNG copy)> <./Bilder/boing.png>]
+(babel)             in language  on input line 340.
 Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 342.
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 342.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 343.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 343.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 344.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 344.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 345.
 Package babel Info: Redefining swedish shorthand "|
 (babel)             in language  on input line 345.
 Package babel Info: Redefining swedish shorthand "~
 (babel)             in language  on input line 345.
 Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 347.
+(babel)             in language  on input line 345.
 Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 347.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 350.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 350.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 350.
-Package babel Info: Redefining swedish shorthand "|
-(babel)             in language  on input line 350.
-Package babel Info: Redefining swedish shorthand "~
-(babel)             in language  on input line 350.
- [7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 350.
+(babel)             in language  on input line 345.
+ [7 <./Bilder/boing.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 345.
  (./rapport.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 350.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 350.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 345.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 345.
 Package rerunfilecheck Info: File `rapport.out' has not changed.
-(rerunfilecheck)             Checksum: F873B4DD328DF73B5D26668172F775B9;2664.
+(rerunfilecheck)             Checksum: 81992E9F316E64048DFD5A918BF20D41;2608.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 350.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 345.
  ) 
 Here is how much of TeX's memory you used:
- 9768 strings out of 493315
- 146227 string characters out of 6137905
- 261821 words of memory out of 5000000
- 13011 multiletter control sequences out of 15000+600000
+ 9766 strings out of 493315
+ 146189 string characters out of 6137905
+ 261823 words of memory out of 5000000
+ 13010 multiletter control sequences out of 15000+600000
  38391 words of font info for 52 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 42i,13n,43p,290b,451s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,13n,43p,634b,451s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2013/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/te
 xlive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texl
@@ -1158,10 +1153,10 @@ ive/2013/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texli
 ve/2013/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2013/te
 xmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2013/texmf-dist/f
 onts/type1/urw/times/utmri8a.pfb>
-Output written on rapport.pdf (11 pages, 271537 bytes).
+Output written on rapport.pdf (11 pages, 273056 bytes).
 PDF statistics:
- 334 PDF objects out of 1000 (max. 8388607)
- 292 compressed objects within 3 object streams
- 63 named destinations out of 1000 (max. 500000)
- 352 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 329 PDF objects out of 1000 (max. 8388607)
+ 287 compressed objects within 3 object streams
+ 62 named destinations out of 1000 (max. 500000)
+ 344 words of extra memory for PDF output out of 10000 (max. 10000000)
 
