@@ -139,21 +139,46 @@ Genom att simulera detta system med Euler-metoden samt undersöka hur partiklarn
 \paragraph{Två dimensioner}
 Nästa steg i utvecklingen av MSD-systemet var att implementera det i två dimensioner. 
 Detta innebar en övergång från skalärer till vektorer i de framtagna ekvationerna.
+\pagebreak
+
 
 För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors} nedan.
 
+%<<<<<<< HEAD
 \begin{figure}
-  \begin{minipage}[b]{.5\linewidth}
+  \begin{minipage}[h!]{.5\linewidth}
     \centering
     \includegraphics[width=4cm]{Bilder/2D_4Neighbors.png} 
     \subcaption{Partiklar med fyra kopplingar}\label{fig:1a}
   \end{minipage}
-  \begin{minipage}[b]{.5\linewidth}
+  \begin{minipage}[h!]{.5\linewidth}
     \centering
     \includegraphics[width=4cm]{Bilder/2D_8Neighbors.png} 
     \subcaption{Partiklar med åtta kopplingar}\label{fig:1b}
   \end{minipage}
   \caption{Två olika sätt att koppla samman partiklar}\label{2D_Neighbors}
+\end{figure}
+
+
+Kopplingsregeln i Figur \ref{2D_Neighbors} a) ger upphov till en struktur som är instabil. Detta beror på att kopplingarnas ändpunkter endast har en position; ingen riktning eller orientering. Detta medför att strukturen kollapsar, vilket visas i Figur \ref{2D_Instabil}.
+
+
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=8cm]{Bilder/2D_Instabil.png} 
+  \end{center}
+  \caption{Instabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors} a) }
+  \label{2D_Instabil}
+\end{figure}
+
+Med regeln enligt Figur \ref{2D_Neighbors} b) erhålls däremot en struktur som är mer stabil, men fortfarande inte alltför komplex. Att materialet inte skulle kollapsa var en förutsättning för att elastiska material skulle kunna modelleras på ett trovärdigt sätt. Detta motiverade valet att använda kopplingar enligt figur \ref{2D_Neighbors} b). Strukturen som ges med denna regel redovisas i Figur \ref{2D_stabil} nedan.
+
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=3cm]{Bilder/2D_stabil.png} 
+  \end{center}
+  \caption{Stabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors} b)}
+  \label{2D_stabil}
 \end{figure}
 
 \subsubsection{Indexering av partiklar och kopplingar}
@@ -176,7 +201,7 @@ En liknande funktion implementerades för att finna triangelindexar som använde
     \end{itemize}
     }
   }
-\caption{Kollisionshantering\label{IR}}
+\caption{Kollision\label{IR}}
 \end{algorithm}
 
 \begin{figure}
@@ -217,7 +242,7 @@ En liknande funktion implementerades för att finna triangelindexar som använde
     \item{Beräkna accelerationen för massa $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.}
     \end{itemize}
   }
-\caption{Algoritm baserad på massorna\label{IR}}
+\caption{Baserad på massorna\label{IR}}
 \end{algorithm}
 
 %Algorithm 3: baserad på kopplingarna mellan massorna
@@ -234,7 +259,7 @@ En liknande funktion implementerades för att finna triangelindexar som använde
         \item Beräkna accelerationen för massa $i$ genom att dividera den totala kraften $F[i]$ med \\dess massa.\
      \end{itemize}
   }
-\caption{Algoritm baserad på kopplingarna mellan massorna\label{IR}}
+\caption{Baserad på kopplingarna mellan massorna\label{IR}}
 \end{algorithm}
 
 \subsection{Implementering}
