@@ -138,6 +138,8 @@ Genom att simulera detta system med Euler-metoden samt undersöka hur partiklarn
 \paragraph{Två dimensioner}
 Nästa steg i utvecklingen av MSD-systemet var att implementera det i två dimensioner. 
 Detta innebar en övergång från skalärer till vektorer i de framtagna ekvationerna.
+\pagebreak
+
 
 För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors} nedan.
 
@@ -158,9 +160,10 @@ För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur 
 
 Kopplingsregeln i Figur \ref{2D_Neighbors} a) ger upphov till en struktur som är instabil. Detta beror på att kopplingarnas ändpunkter endast har en position; ingen riktning eller orientering. Detta medför att strukturen kollapsar, vilket visas i Figur \ref{2D_Instabil}.
 
+
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=12cm]{Bilder/2D_Instabil.png} 
+    \includegraphics[width=8cm]{Bilder/2D_Instabil.png} 
   \end{center}
   \caption{Kopplingsregeln i Figur \ref{2D_Neighbors} a) ger en instabil struktur}
   \label{2D_Instabil}
@@ -170,7 +173,7 @@ Med regeln enligt Figur \ref{2D_Neighbors} b) erhålls däremot en struktur som 
 
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=5cm]{Bilder/2D_stabil.png} 
+    \includegraphics[width=3cm]{Bilder/2D_stabil.png} 
   \end{center}
   \caption{Kopplingsregeln i Figur \ref{2D_Neighbors} b) ger en stabilare struktur}
   \label{2D_stabil}
