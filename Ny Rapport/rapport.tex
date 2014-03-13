@@ -328,7 +328,9 @@ En algoritm för att simulera MSD-systemet med Runge-Kutta implementerades. Geno
 \subsubsection{Rendering}
 För att rendera MSD-systemet skickades hörnpunkter, en triangellista, en lista med färger för varje hörnpunkt samt en lista med normaler till grafikkortet via OpenGL. På grafikkortet kunde det elastiska materialet färgas. Dessutom kunde Phong shading implementeras för att simulera att modellen belyses från en viss riktning. Denna rendering gjordes 60 gånger per sekund.
 \subsection{Stabilitets- och prestandatest}
-
+För att jämföra stabiliteten i de två numeriska metoderna gjordes en enkel undersökning. För ett givet MSD-system och en viss steglängd hittades metodernas stabilitetsgränser genom en stegvis ökning av fjäderkonstanterna.
+\\\\När stabilitetsgränser för de numeriska metoderna hade bestämts, behövde en avvägning mellan fysikalisk noggrannhet och renderingsfrekvens göras. För att simuleringen skulle kunna erbjuda responsiv interaktion och jämn animering togs beslutet att antalet tidssteg i simuleringen skulle anpassas för att uppnå en bestämd utritningsfrekvens.
+\\\\För att jämföra de två olika numeriska integreringsmetoderna som har implementerats utfördes ett stabiltets- och prestandatest. Först användes Runge-Kuttametoden med ett visst antal tidssteg per utritning så att en jämförbar utritningsfrekvens erhölls. Därefter undersöktes hur många tidssteg per utritning som krävdes för att Eulers metod skulle ge samma utritningsfrekvens. Simuleringarna tog då lika lång tid att genomföra och stabilitetsgränsen kunde kontrolleras genom att öka fjäderkonstanterna eller dämparkonstanterna oberoende av varandra.
 %Resultat
 \section{Resultat}
 \subsection{Resultat från förstudier}
