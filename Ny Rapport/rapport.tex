@@ -186,7 +186,7 @@ Ekvationen bestämmer kraften som påverkar partikel $i$. Ekvationen grundar sig
 \\\\Utifrån kraftekvationen kunde en differentialekvation för systemet ställas upp, se (\ref{second_order_diff}).
 \begin{equation}
 \begin{split}
-\mathbf X(t)=\mathbf G(\mathbf X(t),\mathbf X'(t))\\ där\\ \mathbf X''(t)=\begin{pmatrix} \mathbf{ x }_{ 1 }''(t)
+\mathbf X''(t)=\mathbf G(\mathbf X(t),\mathbf X'(t))\\ där\\ \mathbf X''(t)=\begin{pmatrix} \mathbf{ x }_{ 1 }''(t)
 \\ \mathbf{ x }_{ 2 }''(t)
 \\ \vdots 
 \\ \mathbf{ x }_{ N }''(t) \end{pmatrix}
@@ -197,28 +197,28 @@ Ekvationen bestämmer kraften som påverkar partikel $i$. Ekvationen grundar sig
 \end{split}
 \label{second_order_diff}
 \end{equation}
-\\Detta är en andra ordningens differentialekvation. Accelerationen för systemets samtliga partiklar ges av \begin{math}\mathbf X''(t) \end{math} och (\ref{kraft}) används för uttrycken \begin{math}\mathbf F_1(t), …,\mathbf F_N(t) \end{math}. Massan för partikel $i$ ges av $m_i$. För att lösa ekvationssystemet numeriskt med metoderna som har introducerats (2.1.2.1) och (2.1.2.2) skrivs ekvationssystemet om till ett system av två första ordningens differentialekvationer, se (\ref{eq_system}).
+\\Detta är en andra ordningens differentialekvation. Accelerationen för systemets samtliga partiklar ges av \begin{math}\mathbf X''(t) \end{math} och (\ref{kraft}) används för uttrycken \begin{math}\mathbf F_1(t), …,\mathbf F_N(t) \end{math}. Massan för partikel $i$ ges av $m_i$. För att lösa ekvationssystemet numeriskt med metoderna som har introducerats (2.1.2.1 och 2.1.2.2) skrivs ekvationssystemet om till ett system av två första ordningens differentialekvationer, se (\ref{eq_system}).
 \begin{equation}
 \begin{split}
   \begin{cases}
-    { X }_{ 1 }'(t)=H(X_{ 2 }(t))\\
-    { X }_{ 2 }'(t)=G(X_{ 1 }(t),X_{ 2 }(t))
+    { Y }_{ 1 }'(t)=H(Y_{ 2 }(t))\\
+    { Y }_{ 2 }'(t)=G(Y_{ 1 }(t),Y_{ 2 }(t))
   \end{cases}\\
   där\\
   \begin{cases}
-    { X }_{ 1 }(t)=X(t)\\
-    { X }_{ 2 }(t)={ X }'(t)
+    { Y }_{ 1 }(t)=X(t)\\
+    { Y }_{ 2 }(t)={ X }'(t)
   \end{cases}\\
-  h(X_{ 2 }(t))=X_{ 2 }(t)
+  h(Y_{ 2 }(t))=Y_{ 2 }(t)
 \end{split}
 \label{eq_system}
 \end{equation}
 \\Här introduceras tillståndsvariablerna \begin{math}\mathbf Y_1 \end{math} och \begin{math}\mathbf Y_2 \end{math} samt funktionen \begin{math}\mathbf H \end{math}. För att applicera (\ref{Euler}) eller (\ref{RK4}) på detta system läggs ett extra argument till funktionen \begin{math}\mathbf f \end{math} för att funktionen \begin{math}\mathbf G \end{math} ska kunna användas. Argumentet $t$ kan ignoreras då funktionerna inte beror på tiden separat.
 
 \subsubsection{Utveckling av MSD-system}
-För att kunna skapa ett MSD-system i tre dimensioner, valdes det att först utveckla och verifiera ett system i en respektive två dimensioner.
+För att skapa ett MSD-system i tre dimensioner, lades först en grund genom simulering och verifiering i en respektive två dimensioner.
 \paragraph{En dimension}
-Då det enkla systemet med två sammankopplade partiklar utökades med fler partiklar och kopplingar, krävdes en mer överskådlig notation för att beskriva systemet. 
+Då det enkla systemet med två sammankopplade partiklar skulle utökas med fler partiklar och kopplingar, krävdes en mer överskådlig notation för att beskriva systemet. 
 I Figur \ref{2D_simple::nonfloat} nedan introduceras den nya notationen av ett system med två sammankopplade massor.
 
 \begin{figure}[h!]
@@ -237,26 +237,21 @@ I Figur \ref{2D_simple::nonfloat} nedan introduceras den nya notationen av ett s
   \label{simple1D4::nonfloat}
 \end{figure}
 
-\noindent Genom att simulera detta system med Euler-metoden samt undersöka hur partiklarnas positioner förändrades över tid, kunde implementeringen av den framtagna kraftekvationen enkelt verifieras.
+Genom att simulera detta system med Euler-metoden samt undersöka hur partiklarnas positioner förändrades över tid, kunde implementeringen av den framtagna kraftekvationen enkelt verifieras.
 
 \paragraph{Två dimensioner}
-Nästa steg i utvecklingen av MSD-systemet var att implementera det i två dimensioner. 
-Detta innebar en övergång från skalärer till vektorer i de framtagna ekvationerna.
-\pagebreak
-
-
-\noindent För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors::nonfloat} nedan.
+Nästa steg i utvecklingen av MSD-systemet var att implementera det i två dimensioner. För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors::nonfloat} nedan.
 
 \begin{figure}[h]
   \begin{minipage}[h!]{.5\linewidth}
     \centering
     \includegraphics[width=4cm]{Bilder/2D_4Neighbors.png} 
-    \subcaption{Partiklar med fyra kopplingar}\label{fig:1a}
+    \subcaption{Partikel med fyra kopplingar}\label{fig:1a}
   \end{minipage}
   \begin{minipage}[h!]{.5\linewidth}
     \centering
     \includegraphics[width=4cm]{Bilder/2D_8Neighbors.png} 
-    \subcaption{Partiklar med åtta kopplingar}\label{fig:1b}
+    \subcaption{Partikel med åtta kopplingar}\label{fig:1b}
   \end{minipage}
   \caption{Två olika sätt att koppla samman partiklar}
   \label{2D_Neighbors::nonfloat}
@@ -360,7 +355,7 @@ Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KR
   }
 \caption{Algoritm baserad på kopplingarna mellan partiklar\label{alg3}}
 \end{algorithm}
-\noindent \\\\I Algoritm \ref{alg3} utnyttjas det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm \ref{alg2} användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.
+\noindent \\\\I Algoritm \ref{alg3} utnyttjas Newtons andra lag, dvs det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm \ref{alg2} användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=3cm]{Bilder/2D_2x2.png} 
@@ -384,7 +379,7 @@ Se Figur \ref{systemark::nonfloat}.
   \label{systemark::nonfloat}
 \end{figure}
 \\Klassen MCS (Mass Connection System) är den klass som lagrar all huvudsaklig data. Den innehåller samtliga partiklar och kopplingar för ett system.
-\\\\Alla partiklar identifieras med ett index, och definieras av följande information:
+\\\\Samtliga partiklar identifieras med ett index, och definieras av följande information:
 \begin{itemize}
   \item p, position
   \item v, hastighet
