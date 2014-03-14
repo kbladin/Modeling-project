@@ -102,51 +102,55 @@ En modell som kan användas för simulering av elastiska material är ett så ka
   \begin{center}
     \includegraphics[width=5cm]{Bilder/simple1D.png} 
   \end{center}
-  \caption{Två partiklar med massorna $m1$ och $m2$, sammankopplade med en fjäder med fjäderkonstanten $k$ och en dämpare med dämparkonstanten $b$.}
+  \caption{Två partiklar med massorna $m_1$ och $m_2$, sammankopplade med en fjäder med fjäderkonstanten $k$ och en dämpare med dämparkonstanten $b$.}
   \label{m1m2}
 \end{figure}
 \\Det enkla systemet i Figur \ref{m1m2} utgör grunden för den struktur som används i detta projekt. Genom att utöka systemet med partiklar och samma typ av kopplingar, kan många olika material och former beskrivas, exempelvis tyg, gelé, skumgummi eller liknande. Beroende på parametrarna fjäderkonstanter, dämparkonstanter, massor och fjäderlängder kan realistiska simuleringar av dessa material uppnås.
-\\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna som beskrevs av Newton (Halliday 2007). Newtons andra lag anges i (2),
+\\\\Som bakgrund till den fysikaliska modellen låg de grundläggande rörelse- och kraftlagarna som beskrevs av Newton (Halliday 2007). Newtons andra lag anges i (\ref{N2}),
 
 \begin{equation}
-	{ \mathbf F }_{ k }(t)=-k(\Delta x(t)-{ l }_{ o })
+\mathbf F(t)=m\mathbf x''(t)
+\label{N2}
 \end{equation}
-där F(t) är den resulterande kraften på en partikel, x’’(t) är partikelns acceleration, m är partikelns massa och t är tidsvariabeln. Newtons tredje lag summeras i ett citat:
-Newtons tredje lag summeras i ett citat:
+där $F(t)$ är den resulterande kraften på en partikel, $x''(t)$ är partikelns acceleration, $m$ är partikelns massa och $t$ är tidsvariabeln. Newtons tredje lag summeras i ett citat:
 \begin{quote}\begin{center}\textit{''If A puts a force on B, then B puts a force on A, and the two forces are equal in magnitude and have opposite direction.''} (Halliday 2007)\end{center}\end{quote}
-Fjädrarna modellerades med Hookes lag som anges i (3),
+Fjädrarna modellerades med Hookes lag som anges i (\ref{Hooke}),
 
 \begin{equation}
-	{ F }_{ k }(t)=-k(\Delta x(t)-{ l }_{ o })
+	{ F }_{ k }(t)=-k(l(t)-{ l }_{ o })
+\label{Hooke}
 \end{equation}
 
-där Fk(t) är kraften som fjädern uträttar, k är fjäderkonstanten, l0(t) är fjäderns utsträckning, och l0 är fjäderns vilolängd.
-\\\\Dämparna modellerades utifrån ekvation 4,
+där $F_k(t)$ är kraften som fjädern uträttar, $k$ är fjäderkonstanten, $l(t)$ är fjäderns utsträckning, och $l_0$ är fjäderns vilolängd.
+\\\\Dämparna modellerades utifrån (\ref{Damp}),
 
 \begin{equation}
 { F }_{ b }(t)=-bl'(t)
+\label{Damp}
 \end{equation}
 
-där Fb(t) är kraften som dämparen uträttar, b är dämparkonstanten och l är fjäderns utsträckning.
+där $F_b(t)$ är kraften som dämparen uträttar, $b$ är dämparkonstanten och $l(t)$ är fjäderns utsträckning.
 
 \subsubsection{Numerisk lösning av differentialekvationer}
-Som bakgrund till simuleringen och därmed numerisk integrering låg Eulers stegmetod och Runge-Kuttametoden (Ljung \& Glad 2003). Nedanstående ekvationer beskriver numerisk integrering som krävs för lösning av första ordningens differentialekvationer, se (5).
+Som bakgrund till simuleringen och därmed numerisk integrering låg Eulers stegmetod och Runge-Kuttametoden (Ljung \& Glad 2003). Nedanstående ekvationer beskriver numerisk integrering som krävs för lösning av första ordningens differentialekvationer, se (\ref{diffeq}).
 
 \begin{equation}
 \mathbf x'(t)=\mathbf f(t,\mathbf x(t))
+\label{diffeq}
 \end{equation}
 
-Här är x(t) den sökta funktionen, och dess derivata är en funktion av tiden t samt funktionen x(t) själv.
+Här är $x(t)$ den sökta funktionen, och dess derivata är en funktion av tiden $t$ samt funktionen $x(t)$ själv.
 \paragraph{Euler}%subsubsub
-Eulers stegmetod för att lösa första ordningens differentialekvationer beskrivs i (6),
+Eulers stegmetod för att lösa första ordningens differentialekvationer beskrivs i (\ref{Euler}),
 
 \begin{equation}
 \mathbf x(t+h)=\mathbf x(t)+\mathbf f(t,\mathbf x(t))h
+\label{Euler}
 \end{equation}
 
-där h är tidssteget, och f fås från differentialekvationen. För att hitta funktionsvärdet vid tidpunkten t+h, alltså h tidsenheter efter det föregående, används funktionen f från differentialekvationen samt funktionsvärdet i det nuvarande steget, x(t). Efter ett givet startvärde kan en numerisk lösning tas fram genom stegning med jämna intervall.
+där $h$ är tidssteget, och \begin{math}\mathbf f \end{math} fås från differentialekvationen. För att hitta funktionsvärdet vid tidpunkten $t+h$, alltså $h$ tidsenheter efter det föregående, används funktionen \begin{math}\mathbf f \end{math} från differentialekvationen samt funktionsvärdet i det nuvarande steget, $x(t)$. Efter ett givet startvärde kan en numerisk lösning tas fram genom stegning med jämna intervall.
 \paragraph{Runge Kutta}%subsubsub
-Att lösa differentialekvationen med Runge-Kuttametoden innebär att flera derivator beräknas vid olika tidssteg. Detta ger en mer korrekt integrering jämfört med Eulers stegmetod (Jönsson 2010). Detta innebär att funktionen f har olika argument för att beräkna förändringshastigheterna k1, ..., k4. Funktionsvärdet i tidpunkten t+h baseras på en viktad summa av förändringshastigheterna enligt (7) nedan.
+Att lösa differentialekvationen med Runge-Kuttametoden innebär att flera derivator beräknas vid olika tidssteg. Detta ger en mer korrekt integrering jämfört med Eulers stegmetod (Jönsson 2010). Detta innebär att funktionen \begin{math}\mathbf f \end{math} har olika argument för att beräkna förändringshastigheterna $k1, ..., k4$. Funktionsvärdet i tidpunkten $t+h$ baseras på en viktad summa av förändringshastigheterna enligt (\ref{RK4}) nedan.
 
 \begin{equation}
 \begin{split}
@@ -157,10 +161,58 @@ Att lösa differentialekvationen med Runge-Kuttametoden innebär att flera deriv
 \\ \mathbf{ k }_{ 3 }=h\mathbf f(t+h/2,\mathbf x(t)+\mathbf{ k }_{ 2 }/2)
 \\ \mathbf{ k }_{ 4 }=h\mathbf f(t+h,\mathbf x(t)+\mathbf{ k }_{ 3 })
 \end{split}
+\label{RK4}
 \end{equation}
 
-Funktionen f har här givits olika argument som leder till de olika förändringshastigheterna k1, …, k4. Med vikterna satta enlig (BÖS7) ovan ges i detta fall Runges metod (Jönsson 2010).
+Funktionen \begin{math}\mathbf f \end{math} har här givits olika argument som leder till de olika förändringshastigheterna $k1, …, k4$. Med vikterna satta enlig (\ref{RK4}) ovan ges i detta fall Runges metod (Jönsson 2010).
 \subsubsection{Kraftekvation}
+
+För att kunna beskriva hur kraften på partiklarna i ett MSD-system påverkar varandra härleddes en kraftekvation, se (\ref{kraft}).
+
+\begin{equation}
+\begin{split}
+{ \mathbf{ F }_{ i } }(t)=\sum _{ j\epsilon { A }_{ i } }{ ({ F }_{ { k }_{ i,j } }(t)+{ F }_{ { b }_{ i,j } }(t))\Delta \hat { \mathbf{ x }_{ i,j } } (t) }
+\\ där
+\\ { F }_{ { k }_{ i,j } }(t)=-{ k }_{ i,j }(\left| \Delta { \mathbf{ x }_{ i,j }(t) } \right| -l_{ { 0 }_{ i,j } })
+\\ { F }_{ { b }_{ i,j } }(t)=-{ b }_{ i,j }\Delta { \mathbf{ x }_{ i,j }'(t)\cdot  }\Delta { \hat { \mathbf{ x }_{ i,j } } (t) }
+\\ \Delta \mathbf{ x }_{ i,j }(t)=\mathbf{ x }_{ i }(t)-\mathbf{ x }_{ j }(t)
+\end{split}
+\label{kraft}
+\end{equation}
+
+Ekvationen bestämmer kraften som påverkar partikel $i$. Ekvationen grundar sig i (\ref{N2}), (\ref{Hooke}) och (\ref{Damp}) och beskriver hur den totala kraftvektorn för partikel $i$ ges av summan av kraftpåverkan från mängden av alla sammankopplade partiklar $A_i$. Varje sammankopplad partikel ger en kraftkomponent som beräknas utifrån skillnad i position och hastighet samt med hjälp av kopplingarnas egenskaper. Absolutbeloppet $F_{k_{i,j}}$ av fjäderkraften togs fram med Hookes lag enligt (\ref{Hooke}). Fjäderns längd är här absolutbeloppet av skillnaderna mellan partiklarnas positioner, d.v.s. \begin{math} \Delta \mathbf{x_{i,j}}  \end{math}. Absolutbeloppet $F_{b_{i,j}}$ av dämparkraften är proportionell mot hastighetsskillnaden enligt (\ref{Damp}). Hastighetsskillnaden är den som sker i fjäderns riktning, varför hastighetsvektorn ortogonalprojiceras på \begin{math} \Delta \mathbf{x_{i,j}}  \end{math}. Den resulterande storheten vektoriseras, varvid den ges riktningen \begin{math} \Delta \mathbf{\hat{x_{i,j}}}  \end{math} mellan de två sammankopplade partiklarna, d.v.s. all kraft sker i fjäderns riktning.
+\\\\Utifrån kraftekvationen kunde en differentialekvation för systemet ställas upp, se (\ref{second_order_diff}).
+\begin{equation}
+\begin{split}
+\mathbf X(t)=\mathbf G(\mathbf X(t),\mathbf X'(t))\\ där\\ \mathbf X''(t)=\begin{pmatrix} \mathbf{ x }_{ 1 }''(t)
+\\ \mathbf{ x }_{ 2 }''(t)
+\\ \vdots 
+\\ \mathbf{ x }_{ N }''(t) \end{pmatrix}
+\\ \mathbf G(\mathbf X(t),\mathbf X'(t))=\begin{pmatrix} \frac { \mathbf{ F }_{ 1 }(t) }{ { m }_{ 1 } } 
+\\ \frac { \mathbf{ F }_{ 2 }(t) }{ { m }_{ 2 } }
+\\ \vdots 
+\\ \frac { \mathbf{ F }_{ N }(t) }{ { m }_{ N } }  \end{pmatrix}
+\end{split}
+\label{second_order_diff}
+\end{equation}
+\\Detta är en andra ordningens differentialekvation. Accelerationen för systemets samtliga partiklar ges av \begin{math}\mathbf X''(t) \end{math} och (\ref{kraft}) används för uttrycken \begin{math}\mathbf F_1(t), …,\mathbf F_N(t) \end{math}. Massan för partikel $i$ ges av $m_i$. För att lösa ekvationssystemet numeriskt med metoderna som har introducerats (2.1.2.1) och (2.1.2.2) skrivs ekvationssystemet om till ett system av två första ordningens differentialekvationer, se (\ref{eq_system}).
+\begin{equation}
+\begin{split}
+  \begin{cases}
+    { X }_{ 1 }'(t)=H(X_{ 2 }(t))\\
+    { X }_{ 2 }'(t)=G(X_{ 1 }(t),X_{ 2 }(t))
+  \end{cases}\\
+  där\\
+  \begin{cases}
+    { X }_{ 1 }(t)=X(t)\\
+    { X }_{ 2 }(t)={ X }'(t)
+  \end{cases}\\
+  h(X_{ 2 }(t))=X_{ 2 }(t)
+\end{split}
+\label{eq_system}
+\end{equation}
+\\Här introduceras tillståndsvariablerna \begin{math}\mathbf Y_1 \end{math} och \begin{math}\mathbf Y_2 \end{math} samt funktionen \begin{math}\mathbf H \end{math}. För att applicera (\ref{Euler}) eller (\ref{RK4}) på detta system läggs ett extra argument till funktionen \begin{math}\mathbf f \end{math} för att funktionen \begin{math}\mathbf G \end{math} ska kunna användas. Argumentet $t$ kan ignoreras då funktionerna inte beror på tiden separat.
+
 \subsubsection{Utveckling av MSD-system}
 \paragraph{En dimension}
 Då det enkla systemet med två sammankopplade partiklar utökades med fler partiklar och kopplingar, krävdes en mer överskådlig notation för att beskriva systemet. 
