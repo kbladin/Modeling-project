@@ -184,8 +184,23 @@ För att kunna beskriva hur kraften på partiklarna i ett MSD-system påverkar v
 \label{kraft}
 \end{equation}
 
-Ekvationen bestämmer kraften som påverkar partikel $i$. Ekvationen grundar sig i (\ref{N2}), (\ref{Hooke}) och (\ref{Damp}) och beskriver hur den totala kraftvektorn för partikel $i$ ges av summan av kraftpåverkan från mängden av alla sammankopplade partiklar $A_i$. Varje sammankopplad partikel ger en kraftkomponent som beräknas utifrån skillnad i position och hastighet samt med hjälp av kopplingarnas egenskaper. Absolutbeloppet $F_{k_{i,j}}$ av fjäderkraften togs fram med Hookes lag enligt (\ref{Hooke}). Fjäderns längd är här absolutbeloppet av skillnaderna mellan partiklarnas positioner, d.v.s. \begin{math} \Delta \mathbf{x_{i,j}}  \end{math}. Absolutbeloppet $F_{b_{i,j}}$ av dämparkraften är proportionell mot hastighetsskillnaden enligt (\ref{Damp}). Hastighetsskillnaden är den som sker i fjäderns riktning, varför hastighetsvektorn ortogonalprojiceras på \begin{math} \Delta \mathbf{x_{i,j}}  \end{math}. Den resulterande storheten vektoriseras, varvid den ges riktningen \begin{math} \Delta \mathbf{\hat{x_{i,j}}}  \end{math} mellan de två sammankopplade partiklarna, d.v.s. all kraft sker i fjäderns riktning.
-\\\\Utifrån kraftekvationen kunde en differentialekvation för systemet ställas upp, se (\ref{second_order_diff}).
+Ekvationen bestämmer kraften som påverkar partikel $i$. Ekvationen grundar sig i (\ref{N2}), (\ref{Hooke}) och (\ref{Damp}) och beskriver hur den totala kraftvektorn för partikel $i$ ges av summan av kraftpåverkan från mängden av alla sammankopplade partiklar $A_i$. Varje sammankopplad partikel ger en kraftkomponent som beräknas utifrån skillnad i position och hastighet samt med hjälp av kopplingarnas egenskaper. Absolutbeloppet $F_{k_{i,j}}$ av fjäderkraften togs fram med Hookes lag enligt (\ref{Hooke}). Fjäderns längd är här absolutbeloppet av skillnaderna mellan partiklarnas positioner, d.v.s. \begin{math} | \Delta \mathbf{x_{i,j}} | \end{math}, se Figur \ref{Hookes_image::nonfloat}. Absolutbeloppet $F_{b_{i,j}}$ av dämparkraften är proportionell mot hastighetsskillnaden enligt (\ref{Damp}). Hastighetsskillnaden är den som sker i fjäderns riktning, varför hastighetsvektorn ortogonalprojiceras på \begin{math} \Delta \mathbf{x_{i,j}}  \end{math}, se figur \ref{damper_image::nonfloat}. Den resulterande storheten vektoriseras, varvid den ges riktningen \begin{math} \Delta \mathbf{\hat{x_{i,j}}}  \end{math} mellan de två sammankopplade partiklarna, d.v.s. all kraft sker i fjäderns riktning.
+
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=10cm]{Bilder/Hookes.png} 
+  \end{center}
+  \caption{Fjäderkraften på partikel i från kopplingen till j.}
+  \label{Hookes_image::nonfloat}
+\end{figure}
+\begin{figure}[h!]
+  \begin{center}
+    \includegraphics[width=10cm]{Bilder/damper.png} 
+  \end{center}
+  \caption{Dämparkraften på partikel i från kopplingen till j}
+  \label{damper_image::nonfloat}
+\end{figure}
+Utifrån kraftekvationen kunde en differentialekvation för systemet ställas upp, se (\ref{second_order_diff}).
 \begin{equation}
 \begin{split}
 \mathbf X''(t)=\mathbf G(\mathbf X(t),\mathbf X'(t))\\ där\\ \mathbf X''(t)=\begin{pmatrix} \mathbf{ x }_{ 1 }''(t)
@@ -499,13 +514,13 @@ Testet av stabilitetsgränser för de numeriska metoderna presenteras i Tabell \
 %Diskussion
 \pagebreak
 \section{Diskussion}
-Under projektets gång gjordes ett antal val. Dessa är val av numerisk metod, algoritm för kraftkvation, fjädersortering/indexering samt dämpare.
+Under projektets gång gjordes ett antal val. Dessa var val av numerisk metod, algoritm för kraftkvation, fjädersortering/indexering samt dämpare.
 
 \noindent\\Den största anledningen till att Runge-Kuttametoden var mer beräkningstung var att mycket data behövde kopieras under simuleringen. Runge-Kuttametoden gav visserligen en mer korrekt simulering men eftersom det var kritiskt att med hög prestanda erhålla ett relativt stabilt system gjordes valet att använda Eulers metod i slutprodukten.
 
 \noindent\\Valet av algoritm för kraftekvationen grundade sig i antalet gånger kraftekvationen behövde beräknas. Med Algoritm \ref{alg3} behövde beräkningen göras hälften så många gånger. Dock krävde algoritmen att partiklarna loopades igenom en gång efter det att krafterna hade beräknats för att applicera accelerationen på dem. Trots detta hölls antalet beräkningar på en lägre nivå för Algoritm \ref{alg3} än för Algoritm \ref{alg2}, varför Algoritm \ref{alg3} valdes för slutimplementeringen.
 
-\noindent\\Vid skapande av MSD-systemet gjordes begränsningar i val av dämpare med enbart dynamisk friktion. Att införa andra ekvationer för hur dämparna modelleras skulle kunna vara en vidareutveckling av systemet. En möjlighet är att införa statisk friktion i dämparna för att simulera deformation i materialet så att det inte återfår sin ursprungliga form.
+\noindent\\Vid skapande av MSD-systemet gjordes begränsningar i val av dämpare med enbart dynamisk friktion. Att införa andra ekvationer för hur dämparna skulle modelleras skulle kunna vara en vidareutveckling av systemet. En möjlighet är att införa statisk friktion i dämparna för att simulera deformation i materialet så att det inte återfår sin ursprungliga form.
 
 \noindent\\Vid utveckling av MSD-systemet underlättade MATLABs inbyggda renderingsfunktion. Med hjälp av den kunde kraftekvationen valideras utan att tid behövde spenderas på implementering av en egen renderingsfunktion. Med den tidiga visuella återkopplingen var felsökning lättare, vilket gav upphov till ett smidigare arbetsflöde och fokus kunde läggas på rätt del i början av arbetet.
 
@@ -547,6 +562,24 @@ Programmet kräver ett grafikkort som stödjer OpenGL 3.3+.
 \subsubsection{Mjukvara}
 Utöver ramverket OpenGL (3.3+) kräver programmet vissa externa C++-bibliotek för att kompileras och köras. De bibliotek som krävs är GLEW och GLFW3.
 \subsection{Köra programmet}
-
+Programmet startas i terminalen/konsolen. När programmet körs kan användaren göra olika val i scenen med hjälp av knapptryck. Dessa listas här nedan:
+\subsubsection{Välja material/objekt:}
+1 - madrass
+\\2 - tärning
+\\3 - mask
+\\4 - tyg
+\\5 - glass
+\subsubsection{Ändra parametrar:}
+Klicka någon av kommandona nedan, och ange sedan värdet i terminalen/konsolen.
+\\m - ändra massa
+\\s - ändra fjäderkonstanter
+\\l - ändra fjäderlängder
+\\d - ändra dämparkonstanter
+\\f - sätt kopplingarnas vilolängder till deras nuvarande längder
+\subsubsection{ Styrning:}
+scroll/pekplatta - uppåt/nedåt - zooma in/ut
+\\scroll/pekplatta- vänster/höger - vrida kameran
+\\mellanslag - pausa simulering
+\\mellanslag följt av höger- eller vänsterpil - rendera i lägre hastighet
 
 \end{document}
