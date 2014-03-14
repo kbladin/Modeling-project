@@ -349,6 +349,7 @@ Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{mat
 Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (\ref{kraft}), innebär att kraftvektorn till varje partikel $i$ beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje partikel enligt (\ref{second_order_diff}). I detta projekt undersöktes två algoritmer för detta ändamål.\\\\
 %Algorithm 2: baserad på massorna
 \begin{algorithm}[H]
+
   \For{varje partikel $i$}{
     \For{varje partikel $j$, som är kopplad till $i$}{
 	f = kraften på i från kopplingen mellan i och j\;
@@ -580,6 +581,6 @@ Klicka någon av kommandona nedan, och ange sedan värdet i terminalen/konsolen.
 scroll/pekplatta - uppåt/nedåt - zooma in/ut
 \\scroll/pekplatta- vänster/höger - vrida kameran
 \\mellanslag - pausa simulering
-\\mellanslag följt av höger- eller vänsterpil - rendera i lägre hastighet
+\\mellanslag följt av höger- eller vänsterpil - simulera med kortare steglängd
 
 \end{document}
