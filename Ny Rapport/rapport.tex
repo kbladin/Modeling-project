@@ -94,6 +94,7 @@ Grundidén till systemet ligger i tidigare presenterade studier kring liknande �
 Denna rapport syftar till att undersöka hur verklighetstrogna simuleringar av elastiska material kan göras i tre dimensioner med hjälp av mass-fjäder-dämparsystem. Simuleringarna som demonstreras är menade att kunna göras i realtid, och erbjuda en användare viss interaktion. Det är även viktigt att modellen ska kunna täcka många olika delar av Newtonsk fysik; allt från elastiskt tyg till tärningskast med hårda tärningar.
 
 %Metod
+\pagebreak
 \section{Metod}
 För utvecklingen av simuleringarna delades projektet upp i tre delar. Dessa var förstudier, implementering och stabilitets- och prestandatest.
 \subsection{Förstudier}
@@ -242,7 +243,6 @@ I Figur \ref{2D_simple::nonfloat} nedan introduceras den nya notationen av ett s
 \paragraph{Två dimensioner}
 Nästa steg i utvecklingen av MSD-systemet var att implementera det i två dimensioner. 
 Detta innebar en övergång från skalärer till vektorer i de framtagna ekvationerna.
-\pagebreak
 
 
 \noindent För att kunna generera godtyckligt stora MSD-system krävdes en regel för hur partiklarna skulle kopplas ihop med varandra. Två exempel på en partikels möjliga kopplingar visas i Figur \ref{2D_Neighbors::nonfloat} nedan.
@@ -423,6 +423,7 @@ För att jämföra stabiliteten i de två numeriska metoderna gjordes en enkel u
 \\\\När stabilitetsgränser för de numeriska metoderna hade bestämts, behövde en avvägning mellan fysikalisk noggrannhet och renderingsfrekvens göras. För att simuleringen skulle kunna erbjuda responsiv interaktion och jämn animering togs beslutet att antalet tidssteg i simuleringen skulle anpassas för att uppnå en bestämd utritningsfrekvens.
 \\\\För att jämföra de två olika numeriska integreringsmetoderna som har implementerats utfördes ett stabiltets- och prestandatest. Först användes Runge-Kuttametoden med ett visst antal tidssteg per utritning så att en jämförbar utritningsfrekvens erhölls. Därefter undersöktes hur många tidssteg per utritning som krävdes för att Eulers metod skulle ge samma utritningsfrekvens. Simuleringarna tog då lika lång tid att genomföra och stabilitetsgränsen kunde kontrolleras genom att öka fjäderkonstanterna eller dämparkonstanterna oberoende av varandra.
 %Resultat
+\pagebreak
 \section{Resultat}
 Resultaten från förstudier och implementering presenteras nedan.
 \subsection{Resultat från förstudier}
@@ -430,7 +431,7 @@ Resultatet från förstudierna i en dimension presenteras i Figur \ref{endim::no
 
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=16cm]{Bilder/1D_matlab.png} 
+    \includegraphics[width=13cm]{Bilder/1D_matlab.png} 
   \end{center}
   \caption{Endimensionellt MSD-system i MATLAB}
   \label{endim::nonfloat}
@@ -442,7 +443,7 @@ Kopplingen är grön i sitt viloläge och färgen går mot rött ju mer längden
 
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=16cm]{Bilder/boing.png} 
+    \includegraphics[width=13cm]{Bilder/boing.png} 
   \end{center}
   \caption{Tvådimensionellt 4x4 MSD-system i MATLAB}
   \label{tvådim::nonfloat}
@@ -495,6 +496,7 @@ Testet av stabilitetsgränser för de numeriska metoderna presenteras i Tabell \
     \end{tabular*}
 \end{table}
 %Diskussion
+\pagebreak
 \section{Diskussion}
 Under projektets gång gjordes ett antal val. Dessa är val av numerisk metod, algoritm för kraftkvation, fjädersortering/indexering samt dämpare.
 
