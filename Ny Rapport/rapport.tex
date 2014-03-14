@@ -332,7 +332,10 @@ Se Figur \ref{systemark::nonfloat}.
   \label{systemark::nonfloat}
 \end{figure}
 \\Klassen MCS (Mass Connection System) är den klass som lagrar all huvudsaklig data. Den innehåller samtliga partiklar och kopplingar för ett system vilka definieras av information enligt nedan.
-\\\\
+\\
+%\centering
+\begin{table}[h!]
+\centering
 \begin{tabular}{|r l | r l|}
 \hline
  & Kopplingar & & Partiklar\\
@@ -344,6 +347,8 @@ p1 & index till den ena partikeln & F & total momentan kraftpåverkan\\
 p2 & index till den andra partikel & m & massa\\
 \hline
 \end{tabular}
+\label{table:ark} % is used to refer this table in the text
+\end{table}
 \\\\
 Vad som också framgår i Figur \ref{systemark::nonfloat} är att all numerisk integrering beräknas i en separat modul vilket gjorde det enkelt att ändra integreringsmetod vid behov, då den var oberoende av resten av systemet.
 
