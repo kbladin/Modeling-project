@@ -147,7 +147,7 @@ Eulers stegmetod för att lösa första ordningens differentialekvationer beskri
 \end{equation}
 
 där h är tidssteget, och f fås från differentialekvationen. För att hitta funktionsvärdet vid tidpunkten t+h, alltså h tidsenheter efter det föregående, används funktionen f från differentialekvationen samt funktionsvärdet i det nuvarande steget, x(t). Efter ett givet startvärde kan en numerisk lösning tas fram genom stegning med jämna intervall.
-\paragraph{Runge Kutta}%subsubsub
+\paragraph{Runge-Kutta}%subsubsub
 Att lösa differentialekvationen med Runge-Kuttametoden innebär att flera derivator beräknas vid olika tidssteg. Detta ger en mer korrekt integrering jämfört med Eulers stegmetod (Jönsson 2010). Detta innebär att funktionen f har olika argument för att beräkna förändringshastigheterna k1, ..., k4. Funktionsvärdet i tidpunkten t+h baseras på en viktad summa av förändringshastigheterna enligt (7) nedan.
 
 \begin{equation}
@@ -167,7 +167,7 @@ Funktionen f har här givits olika argument som leder till de olika förändring
 För att kunna skapa ett MSD-system i tre dimensioner, valdes det att först utveckla och verifiera ett system i en respektive två dimensioner.
 \paragraph{En dimension}
 Då det enkla systemet med två sammankopplade partiklar utökades med fler partiklar och kopplingar, krävdes en mer överskådlig notation för att beskriva systemet. 
-I figur \ref{2D_simple::nonfloat} nedan introduceras den nya notationen av ett system med två sammankopplade massor.
+I Figur \ref{2D_simple::nonfloat} nedan introduceras den nya notationen av ett system med två sammankopplade massor.
 
 \begin{figure}[h!]
   \begin{center}
@@ -210,23 +210,23 @@ Detta innebar en övergång från skalärer till vektorer i de framtagna ekvatio
   \label{2D_Neighbors::nonfloat}
 \end{figure}
 
-\noindent \\Kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat} a) ger upphov till en struktur som är instabil. Detta beror på att kopplingarnas ändpunkter endast har en position; ingen riktning eller orientering. Detta medför att strukturen kollapsar, vilket visas i Figur \ref{2D_Instabil::nonfloat}.
+\noindent \\Kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat}a ger upphov till en struktur som är instabil. Detta beror på att kopplingarnas ändpunkter endast har en position; ingen riktning eller orientering. Detta medför att strukturen kollapsar, vilket visas i Figur \ref{2D_Instabil::nonfloat}.
 
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=8cm]{Bilder/2D_Instabil.png} 
   \end{center}
-  \caption{Instabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat} a) }
+  \caption{Instabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat}a}
   \label{2D_Instabil::nonfloat}
 \end{figure}
 
-\noindent Med regeln enligt Figur \ref{2D_Neighbors::nonfloat} b) erhålls däremot en struktur som är mer stabil, men fortfarande inte alltför komplex. Att materialet inte skulle kollapsa var en förutsättning för att elastiska material skulle kunna modelleras på ett trovärdigt sätt. Detta motiverade valet att använda kopplingar enligt figur \ref{2D_Neighbors::nonfloat} b). Strukturen som ges med denna regel redovisas i Figur \ref{2D_stabil::nonfloat} nedan.
+\noindent Med regeln enligt Figur \ref{2D_Neighbors::nonfloat}b erhålls däremot en struktur som är mer stabil, men fortfarande inte alltför komplex. Att materialet inte skulle kollapsa var en förutsättning för att elastiska material skulle kunna modelleras på ett trovärdigt sätt. Detta motiverade valet att använda kopplingar enligt Figur \ref{2D_Neighbors::nonfloat}b. Strukturen som ges med denna regel redovisas i Figur \ref{2D_stabil::nonfloat} nedan.
 
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=3cm]{Bilder/2D_stabil.png} 
   \end{center}
-  \caption{Stabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat} b)}
+  \caption{Stabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat} }
   \label{2D_stabil::nonfloat}
 \end{figure}
 
@@ -345,7 +345,8 @@ p2 & index till den andra partikel & m & massa\\
 \hline
 \end{tabular}
 \\\\
-Vad som också framgår i Figur \ref{systemark} är att all numerisk integrering beräknas i en separat modul vilket gjorde det enkelt att ändra integreringsmetod vid behov, då den var oberoende av resten av systemet.
+Vad som också framgår i Figur \ref{systemark::nonfloat} är att all numerisk integrering beräknas i en separat modul vilket gjorde det enkelt att ändra integreringsmetod vid behov, då den var oberoende av resten av systemet.
+
 %OBS OBS OBS fixa ekvationer!!!!! här under
 \subsubsection{Implementering av numeriska integreringsmetoder}
 Efter att accelerationen för varje partikel hade beräknats genom (BLAHA (den med g)), approximerades deras positioner med en numerisk stegmetod. Den numeriska integreringen gjordes två gånger per tidssteg, då det var en andra ordningens differentialekvation som skulle lösas. Se ekvation (DIFF EKV). Nedan beskrivs hur de två olika integreringsmetoderna i systemet implementerades.
@@ -355,7 +356,7 @@ Med ett givet tidssteg h beräknades den nya hastigheten utifrån accelerationen
 	v = v_old + a*h;		%OBS!!!! ATT FIXA TILL 
 	p = p_old + v*h; 
 	\end{equation}
-\paragraph{Runge Kutta}
+\paragraph{Runge-Kutta}
 En algoritm för att simulera MSD-systemet med Runge-Kutta implementerades. Genom att kalla på kraftekvationen med olika steglängder kunde värdena $k1$, ..., $k4$ beräknas. Här användes en specifik variant av Runge-Kuttametoden, nämligen Runges variant, med vikterna \begin{math} w_1 = 1, w_2 = 3, w_3 = 3, w_4 = 1 \end{math}.
 \subsubsection{Rendering}
 För att rendera MSD-systemet skickades hörnpunkter, en triangellista, en lista med färger för varje hörnpunkt samt en lista med normaler till grafikkortet via OpenGL. På grafikkortet kunde det elastiska materialet färgas. Dessutom kunde Phong shading implementeras för att simulera att modellen belyses från en viss riktning. Denna rendering gjordes 60 gånger per sekund.
@@ -390,7 +391,7 @@ Kopplingen är grön i sitt viloläge och färgen går mot rött ju mer längden
 \end{figure}
 
 \subsection{Resultat från implementering}
-I Figur (\ref{b1::nonfloat}) och (\ref{b2::nonfloat}) visas bilder från simuleringar av två olika material. Materialen skiljer sig åt både i form och parametervärden. Det första materialet har relativt höga fjäderkonstanter och låga dämparkonstanter, medan det andra materialets egenskaper är de motsatta.
+I Figur \ref{b1::nonfloat} och \ref{b2::nonfloat} visas bilder från simuleringar av två olika material. Materialen skiljer sig åt både i form och parametervärden. Det första materialet har relativt höga fjäderkonstanter och låga dämparkonstanter, medan det andra materialets egenskaper är de motsatta.
 \begin{figure} [h] 
  \begin{minipage}[b]{.5\linewidth}
     \centering
@@ -417,7 +418,7 @@ Testet av stabilitetsgränser för de numeriska metoderna presenteras i Tabell \
       \hline %streck
        & \bfseries Fjäderkonstant (för marginell stabilitet)\\
       \hline
-      \bfseries Runge Kutta: & xxx\\
+      \bfseries Runge-Kutta: & xxx\\
       \bfseries Euler: & xxx\\
       \hline
     \end{tabular*}
@@ -430,7 +431,7 @@ Testet av stabilitetsgränser för de numeriska metoderna presenteras i Tabell \
       \hline %streck
        & \bfseries Simuleringar per utritning & \bfseries Fjäderkonstant(för marginell stabilitet)\\
       \hline
-      \bfseries Runge Kutta: & 7 & 40 000\\
+      \bfseries Runge-Kutta: & 7 & 40 000\\
       \bfseries Euler: & 44 & 2150000\\
       \hline
     \end{tabular*}
@@ -479,9 +480,11 @@ Fausett, L.V , 2008, \textit{Applied Numerical Analysis Using Matlab}, Pearson P
 %Bilaga 1: Beskrivning av systemet
 \section{Beskrivning av systemet}
 \subsection{Systemkrav}
+För att köra programmet krävs särskild hårdvara och mjukvara. Programmet är utvecklat på Mac OSX men bör teoretiskt kunna köras även på Windows- eller Linuxsystem.
 \subsubsection{Hårdvara}
+Programmet kräver ett grafikkort som stödjer OpenGL 3.3+.
 \subsubsection{Mjukvara}
-
+Utöver ramverket OpenGL (3.3+) kräver programmet vissa externa C++-bibliotek för att kompileras och köras. De bibliotek som krävs är GLEW och GLFW3.
 \subsection{Köra programmet}
 
 
