@@ -334,7 +334,7 @@ Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{mat
 \end{figure}
 
 \subsubsection{Implementering av kraftekvationen}
-Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KRAFTEKV), innebär att kraftvektorn till varje partikel $i$ beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje partikel enligt (DIFFEKV). I detta projekt undersöktes två algoritmer för detta ändamål.\\\\
+Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (\ref{kraft}), innebär att kraftvektorn till varje partikel $i$ beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje partikel enligt (\ref{second_order_diff}). I detta projekt undersöktes två algoritmer för detta ändamål.\\\\
 %Algorithm 2: baserad på massorna
 \begin{algorithm}[H]
   \For{varje partikel $i$}{
@@ -371,7 +371,7 @@ Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KR
 \\I Figur \ref{enkelfyra::nonfloat} har varje partikel tre hopkopplade grannar. Det totala antalet grannar blir således tolv, vilket är dubbla antalet kopplingar, som är sex.
 
 \subsection{Implementering}
-Programkoden från Matlab porterades till C++ där systemet utvecklades vidare. Fördelen med C++ är att det är snabbt, objektorienterat (Skansholm 2012), samt att en utvecklare får mer kontroll, inte minst över grafikprogrammeringen. Grafikprogrammeringen gjordes med OpenGL som är plattformsoberoende och ger utvecklaren möjlighet att använda hårdvaruaccelererad grafik (Gortler 2012).
+Programkoden från MATLAB porterades till C++ där systemet utvecklades vidare. Fördelen med C++ är att det är snabbt, objektorienterat (Skansholm 2012), samt att en utvecklare får mer kontroll, inte minst över grafikprogrammeringen. Grafikprogrammeringen gjordes med OpenGL som är plattformsoberoende och ger utvecklaren möjlighet att använda hårdvaruaccelererad grafik (Gortler 2012).
 \subsubsection{Grundläggande systemarkitektur}
 Att övergå till ett objektorienterat system innebar att en systemarkitektur behövde tas fram. 
 För att ge en grundläggande förståelse av systemarkitekturen beskrivs denna med ett blockdiagram där de primära modulerna är separerade från varandra. 
@@ -406,7 +406,7 @@ Vad som också framgår i Figur \ref{systemark::nonfloat} är att all numerisk i
 
 %OBS OBS OBS fixa ekvationer!!!!! här under
 \subsubsection{Implementering av numeriska integreringsmetoder}
-Efter att accelerationen för varje partikel hade beräknats utifrån (\ref{second_order_diff}), approximerades deras positioner med en numerisk stegmetod. Den numeriska integreringen gjordes två gånger per tidssteg, då det var en andra ordningens differentialekvation som skulle lösas. Se ekvation (DIFF EKV). Nedan beskrivs hur de två olika integreringsmetoderna i systemet implementerades.
+Efter att accelerationen för varje partikel hade beräknats utifrån (\ref{second_order_diff}), approximerades deras positioner med en numerisk stegmetod. Den numeriska integreringen gjordes två gånger per tidssteg, då det var en andra ordningens differentialekvation som skulle lösas. Se ekvation (\ref{second_order_diff}). Nedan beskrivs hur de två olika integreringsmetoderna i systemet implementerades.
 \paragraph{Eulers stegmetod} 
 Med ett givet tidssteg h beräknades den nya hastigheten utifrån accelerationen a. Hastigheten användes i sin tur för att beräkna den nya positionen. 034i342
 	\begin{equation} 
