@@ -42,7 +42,6 @@
 \setlength\parindent{0pt}
 %\setlength{\parskip}{1cm plus4mm minus3mm}
 
-
 %-------------------------------------------------------------Här börjar dokumentet 
 \begin{document}
 % Framsida
@@ -329,7 +328,7 @@ Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{mat
 \end{figure}
 
 \subsubsection{Implementering av kraftekvationen}
-Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KRAFTEKV), innebär att kraftvektorn till varje partikel $i$ beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje partikel enligt (DIFFEKV). I detta projekt undersöktes två algoritmer för detta ändamål.\\\\
+Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (\ref{kraft}), innebär att kraftvektorn till varje partikel $i$ beräknas. Med denna kraftvektor kan i sin tur accelerationen beräknas för varje partikel enligt (\ref{second_order_diff}). I detta projekt undersöktes två algoritmer för detta ändamål.\\\\
 %Algorithm 2: baserad på massorna
 \begin{algorithm}[H]
   \For{varje partikel $i$}{
@@ -366,7 +365,7 @@ Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (KR
 \\I Figur \ref{enkelfyra::nonfloat} har varje partikel tre hopkopplade grannar. Det totala antalet grannar blir således tolv, vilket är dubbla antalet kopplingar, som är sex.
 
 \subsection{Implementering}
-Programkoden från Matlab porterades till C++ där systemet utvecklades vidare. Fördelen med C++ är att det är snabbt, objektorienterat (Skansholm 2012), samt att en utvecklare får mer kontroll, inte minst över grafikprogrammeringen. Grafikprogrammeringen gjordes med OpenGL som är plattformsoberoende och ger utvecklaren möjlighet att använda hårdvaruaccelererad grafik (Gortler 2012).
+Programkoden från MATLAB porterades till C++ där systemet utvecklades vidare. Fördelen med C++ är att det är snabbt, objektorienterat (Skansholm 2012), samt att en utvecklare får mer kontroll, inte minst över grafikprogrammeringen. Grafikprogrammeringen gjordes med OpenGL som är plattformsoberoende och ger utvecklaren möjlighet att använda hårdvaruaccelererad grafik (Gortler 2012).
 \subsubsection{Grundläggande systemarkitektur}
 Att övergå till ett objektorienterat system innebar att en systemarkitektur behövde tas fram. 
 För att ge en grundläggande förståelse av systemarkitekturen beskrivs denna med ett blockdiagram där de primära modulerna är separerade från varandra. 
@@ -378,33 +377,41 @@ Se Figur \ref{systemark::nonfloat}.
   \caption{Övergripande systemarkitektur}
   \label{systemark::nonfloat}
 \end{figure}
-\\Klassen MCS (Mass Connection System) är den klass som lagrar all huvudsaklig data. Den innehåller samtliga partiklar och kopplingar för ett system.
-\\\\Samtliga partiklar identifieras med ett index, och definieras av följande information:
-\begin{itemize}
-  \item p, position
-  \item v, hastighet
-  \item a, acceleration
-  \item F, total momentan kraftpåverkan
-  \item m, massa
-\end{itemize}
-Samtliga kopplingar identifieras med ett index, och definieras av följande information:
-\begin{itemize}
-  \item l, vilolängd
-  \item k, fjäderkonstant
-  \item b, dämparkonstant
-  \item p1, index till den partikel som utgör kopplingens ena ändpunkt
-  \item p2, index till den partikel som utgör kopplingens andra ändpunkt
-\end{itemize}
+\\Klassen MCS (Mass Connection System) är den klass som lagrar all huvudsaklig data. Den innehåller samtliga partiklar och kopplingar för ett system vilka definieras av information enligt Tabell \ref{table_ark} nedan.
+\\
+%\centering
+\begin{table}[h!]
+  \centering
+  \caption{Lagrad data i kopplingar och partiklar}
+  \begin{tabular}{| r r l | r r l |}
+    \hline
+     Typ & Namn & Förklaring & Typ & Namn & Förklaring\\
+    \hline
+    float & l & vilolängd & vec3 & p & position\\ 
+    float & k & fjäderkonstant & vec3 & v & hastighet\\ 
+    float & b & dämparkonstant & vec3 & a & acceleration\\ 
+    int & p1 & index till den ena partikeln & vec3 & F & total momentan kraftpåverkan\\ 
+    int & p2 & index till den andra partikel & float & m & massa \\
+    \hline
+    \end{tabular}
+  \label{table_ark} % is used to refer this table in the text
+\end{table}
+\\\\
 Vad som också framgår i Figur \ref{systemark::nonfloat} är att all numerisk integrering beräknas i en separat modul vilket gjorde det enkelt att ändra integreringsmetod vid behov, då den var oberoende av resten av systemet.
+
 %OBS OBS OBS fixa ekvationer!!!!! här under
 \subsubsection{Implementering av numeriska integreringsmetoder}
-Efter att accelerationen för varje partikel hade beräknats genom (BLAHA (den med g)), approximerades deras positioner med en numerisk stegmetod. Den numeriska integreringen gjordes två gånger per tidssteg, då det var en andra ordningens differentialekvation som skulle lösas. Se ekvation (DIFF EKV). Nedan beskrivs hur de två olika integreringsmetoderna i systemet implementerades.
+Efter att accelerationen för varje partikel hade beräknats utifrån (\ref{second_order_diff}), approximerades deras positioner med en numerisk stegmetod. Den numeriska integreringen gjordes två gånger per tidssteg, då det var en andra ordningens differentialekvation som skulle lösas. Se ekvation (\ref{second_order_diff}). Nedan beskrivs hur de två olika integreringsmetoderna i systemet implementerades.
 \paragraph{Eulers stegmetod} 
-Med ett givet tidssteg h beräknades den nya hastigheten utifrån accelerationen a. Hastigheten användes i sin tur för att beräkna den nya positionen. 034i342
-	\begin{equation} 
-	v = v_old + a*h;		%OBS!!!! ATT FIXA TILL 
-	p = p_old + v*h; 
+Med ett givet tidssteg beräknades den nya hastigheten utifrån accelerationen. Hastigheten användes i sin tur för att beräkna den nya positionen enligt (\ref{Euler_impl}).
+	\begin{equation}
+	\begin{split} 
+	v = v_0 + a*h\\
+	p = p_0 + v*h
+	\end{split} 
+	\label{Euler_impl}
 	\end{equation}
+där $a$, $v$ och $p$ ges enligt Tabell \ref{table_ark}. Variablerna $v_0$ och $p_0$ är hastigheten respektive positionen i föregående tidssteg. Steglängden är $h$.
 \paragraph{Runge-Kutta}
 En algoritm för att simulera MSD-systemet med Runge-Kutta implementerades. Genom att kalla på kraftekvationen med olika steglängder kunde värdena $k1$, ..., $k4$ beräknas. Här användes en specifik variant av Runge-Kuttametoden, nämligen Runges variant, med vikterna \begin{math} w_1 = 1, w_2 = 3, w_3 = 3, w_4 = 1 \end{math}.
 \subsubsection{Rendering}
