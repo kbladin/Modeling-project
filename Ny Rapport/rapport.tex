@@ -245,7 +245,7 @@ I Figur \ref{2D_simple::nonfloat} nedan introduceras den nya notationen av ett s
   \caption{Två sammankopplade partiklar}
   \label{2D_simple::nonfloat}
 \end{figure}
-\noindent I MATLAB utvecklades först ett MSD-system i en dimension, där partiklar sammankopplades i serie enligt Figur \ref{simple1D4::nonfloat} nedan.
+\noindent I Matlab utvecklades först ett MSD-system i en dimension, där partiklar sammankopplades i serie enligt Figur \ref{simple1D4::nonfloat} nedan.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=6cm]{Bilder/simple1D4.png} 
@@ -295,7 +295,7 @@ Nästa steg i utvecklingen av MSD-systemet var att implementera det i två dimen
 \end{figure}
 
 \subsubsection{Indexering av partiklar och kopplingar}
-Ett stort problem som kopplingsmetoden i ovanstående stycke medförde var vilka partiklar som skulle höra till varje koppling. För att detta skulle kunna lösas för godtyckligt stora objekt, behövdes ett systematiskt sätt att tilldela kopplingarna deras partiklar. Detta löstes med en funktion som utifrån index till en viss koppling gav indexar till de två partiklar som den kopplade samman. Genom att låta funktionen genomlöpa alla kopplingar innan simuleringen genomfördes kunde indexeringen användas för att finna de rätta konstanterna (massorna) och variablerna (positionerna och hastigheterna) för de sammankopplade partiklarna. En liknande funktion implementerades för att finna triangelindexar som användes för renderingen.
+Ett stort problem som kopplingsmetoden i ovanstående stycke medförde var att ta reda på vilka partiklar som skulle höra till varje koppling. För att detta skulle kunna lösas för godtyckligt stora objekt, behövdes ett systematiskt sätt att tilldela kopplingarna deras partiklar. Detta löstes med en funktion som utifrån index till en viss koppling gav indexar till de två partiklar som den kopplade samman. Genom att låta funktionen genomlöpa alla kopplingar innan simuleringen genomfördes kunde indexeringen användas för att finna de rätta konstanterna (massorna) och variablerna (positionerna och hastigheterna) för de sammankopplade partiklarna. En liknande funktion implementerades för att finna triangelindexar som användes för renderingen.
 
 \subsubsection{Interaktion med omgivning}
 Gravitation simulerades genom att den globala tyngdaccelerationen på \begin{math}9.82 m/s^2 \end{math} adderades på samtliga partiklars acceleration i samband med beräkningen av krafterna. Tillsammans med detta implementerades hantering av kollision med ett markplan för att materialets beteende skulle kunna studeras under bekanta förhållanden (se Figur \ref{blaa::nonfloat}). Kollisionen implementerades genom en enkel algoritm.
