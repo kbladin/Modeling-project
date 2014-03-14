@@ -403,7 +403,7 @@ Samtliga kopplingar identifieras med ett index, och definieras av följande info
 Vad som också framgår i Figur \ref{systemark::nonfloat} är att all numerisk integrering beräknas i en separat modul vilket gjorde det enkelt att ändra integreringsmetod vid behov, då den var oberoende av resten av systemet.
 %OBS OBS OBS fixa ekvationer!!!!! här under
 \subsubsection{Implementering av numeriska integreringsmetoder}
-Efter att accelerationen för varje partikel hade beräknats genom (BLAHA (den med g)), approximerades deras positioner med en numerisk stegmetod. Den numeriska integreringen gjordes två gånger per tidssteg, då det var en andra ordningens differentialekvation som skulle lösas. Se ekvation (DIFF EKV). Nedan beskrivs hur de två olika integreringsmetoderna i systemet implementerades.
+Efter att accelerationen för varje partikel hade beräknats utifrån (\ref{second_order_diff}), approximerades deras positioner med en numerisk stegmetod. Den numeriska integreringen gjordes två gånger per tidssteg, då det var en andra ordningens differentialekvation som skulle lösas. Se ekvation (DIFF EKV). Nedan beskrivs hur de två olika integreringsmetoderna i systemet implementerades.
 \paragraph{Eulers stegmetod} 
 Med ett givet tidssteg h beräknades den nya hastigheten utifrån accelerationen a. Hastigheten användes i sin tur för att beräkna den nya positionen. 034i342
 	\begin{equation} 
