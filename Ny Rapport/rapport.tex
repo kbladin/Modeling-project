@@ -45,7 +45,7 @@
 %-------------------------------------------------------------Här börjar dokumentet 
 \begin{document}
 % Framsida
-\author{Grupp 9\\\\Kalle Bladin\\Erik Broberg\\Emma Forsling Parborg\\Martin Gråd}
+\author{Kalle Bladin\\Erik Broberg\\Emma Forsling Parborg\\Martin Gråd}
 \affil{TNM085 - Modelleringsprojekt\\Linköpings Universitet}
 \title{Fysikalisk Simulering av Elastiska Material}
 %\date{2014-03-xx}
@@ -184,7 +184,7 @@ För att kunna beskriva hur kraften på partiklarna i ett MSD-system påverkar v
 \label{kraft}
 \end{equation}
 
-Ekvationen bestämmer kraften som påverkar partikel $i$. Ekvationen grundar sig i (\ref{N2}), (\ref{Hooke}) och (\ref{Damp}) och beskriver hur den totala kraftvektorn för partikel $i$ ges av summan av kraftpåverkan från mängden av alla sammankopplade partiklar $A_i$. Varje sammankopplad partikel ger en kraftkomponent som beräknas utifrån skillnad i position och hastighet samt med hjälp av kopplingarnas egenskaper. Absolutbeloppet $F_{k_{i,j}}$ av fjäderkraften togs fram med Hookes lag enligt (\ref{Hooke}). Fjäderns längd är här absolutbeloppet av skillnaderna mellan partiklarnas positioner, d.v.s. \begin{math} | \Delta \mathbf{x_{i,j}} | \end{math}, se Figur \ref{Hookes_image::nonfloat}. Absolutbeloppet $F_{b_{i,j}}$ av dämparkraften är proportionell mot hastighetsskillnaden enligt (\ref{Damp}). Hastighetsskillnaden är den som sker i fjäderns riktning, varför hastighetsvektorn ortogonalprojiceras på \begin{math} \Delta \mathbf{x_{i,j}}  \end{math}, se figur \ref{damper_image::nonfloat}. Den resulterande storheten vektoriseras, varvid den ges riktningen \begin{math} \Delta \mathbf{\hat{x_{i,j}}}  \end{math} mellan de två sammankopplade partiklarna, d.v.s. all kraft sker i fjäderns riktning.
+Ekvationen bestämmer kraften som påverkar partikel $i$. Ekvationen grundar sig i (\ref{N2}), (\ref{Hooke}) och (\ref{Damp}) och beskriver hur den totala kraftvektorn för partikel $i$ ges av summan av kraftpåverkan från mängden av alla sammankopplade partiklar $A_i$. Varje sammankopplad partikel ger en kraftkomponent som beräknas utifrån skillnad i position och hastighet samt med hjälp av kopplingarnas egenskaper. Absolutbeloppet $F_{k_{i,j}}$ av fjäderkraften togs fram med Hookes lag enligt (\ref{Hooke}). Fjäderns längd är här absolutbeloppet av skillnaderna mellan partiklarnas positioner, d.v.s. \begin{math} | \Delta \mathbf{x_{i,j}} | \end{math}, se Figur \ref{Hookes_image::nonfloat}. Absolutbeloppet $F_{b_{i,j}}$ av dämparkraften är proportionell mot hastighetsskillnaden enligt (\ref{Damp}). Hastighetsskillnaden är den som sker i fjäderns riktning, varför hastighetsvektorn ortogonalprojiceras på \begin{math} \Delta \mathbf{x_{i,j}}  \end{math}, se Figur \ref{damper_image::nonfloat}. Den resulterande storheten vektoriseras, varvid den ges riktningen \begin{math} \Delta \mathbf{\hat{x_{i,j}}}  \end{math} mellan de två sammankopplade partiklarna, d.v.s. all kraft sker i fjäderns riktning.
 
 \begin{figure}[h!]
   \begin{center}
@@ -283,7 +283,7 @@ Nästa steg i utvecklingen av MSD-systemet var att implementera det i två dimen
   \caption{Instabil struktur ges av kopplingsregeln i Figur \ref{2D_Neighbors::nonfloat}a}
   \label{2D_Instabil::nonfloat}
 \end{figure}
-
+\pagebreak
 \noindent Med regeln enligt Figur \ref{2D_Neighbors::nonfloat}b erhålls däremot en struktur som är mer stabil, men fortfarande inte alltför komplex. Att materialet inte skulle kollapsa var en förutsättning för att elastiska material skulle kunna modelleras på ett trovärdigt sätt. Detta motiverade valet att använda kopplingar enligt Figur \ref{2D_Neighbors::nonfloat}b. Strukturen som ges med denna regel redovisas i Figur \ref{2D_stabil::nonfloat} nedan.
 
 \begin{figure}[h!]
@@ -372,7 +372,7 @@ Att implementera kraftekvationen för varje partikel i ett MSD-system enligt (\r
   }
 \caption{Algoritm baserad på kopplingarna mellan partiklar\label{alg3}}
 \end{algorithm}
-\noindent \\\\I Algoritm \ref{alg3} utnyttjas Newtons andra lag, dvs det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm \ref{alg2} användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.
+\noindent \\\\I Algoritm \ref{alg3} utnyttjas Newtons andra lag, dvs det faktum att en koppling påverkar dess två ändpunkter med lika stora krafter, med enda skillnaden att de är motriktade varandra. På så sätt reduceras antalet beräkningar av kraftekvationen till hälften, vilket motiverade beslutet att Algoritm \ref{alg3} användes i detta projekt. Läsaren kan övertyga sig själv om att antalet beräkningar av kraftekvationen halveras genom att betrakta följande enkla MSD-system.
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=3cm]{Bilder/2D_2x2.png} 
@@ -549,7 +549,7 @@ Fausett, L.V , 2008, \textit{Applied Numerical Analysis Using Matlab}, Pearson P
 
 
 
-
+\pagebreak
 %Bilagor
 \appendix
 
