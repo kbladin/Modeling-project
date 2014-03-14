@@ -383,23 +383,24 @@ Se Figur \ref{systemark::nonfloat}.
   \caption{Övergripande systemarkitektur}
   \label{systemark::nonfloat}
 \end{figure}
-\\Klassen MCS (Mass Connection System) är den klass som lagrar all huvudsaklig data. Den innehåller samtliga partiklar och kopplingar för ett system vilka definieras av information enligt nedan.
+\\Klassen MCS (Mass Connection System) är den klass som lagrar all huvudsaklig data. Den innehåller samtliga partiklar och kopplingar för ett system vilka definieras av information enligt Tabell \ref{table_ark} nedan.
 \\
 %\centering
 \begin{table}[h!]
-\centering
-\begin{tabular}{|r l | r l|}
-\hline
- & Kopplingar & & Partiklar\\
-\hline
-l & vilolängd & p & position \\
-k & fjäderkonstant & v & hastighet\\
-b & dämparkonstant & a & acceleration\\
-p1 & index till den ena partikeln & F & total momentan kraftpåverkan\\
-p2 & index till den andra partikel & m & massa\\
-\hline
-\end{tabular}
-\label{table:ark} % is used to refer this table in the text
+  \centering
+  \caption{Lagrad data i kopplingar och partiklar}
+  \begin{tabular}{| r r l | r r l |}
+    \hline
+     Typ & Namn & Förklaring & Typ & Namn & Förklaring\\
+    \hline
+    float & l & vilolängd & vec3 & p & position\\ 
+    float & k & fjäderkonstant & vec3 & v & hastighet\\ 
+    float & b & dämparkonstant & vec3 & a & acceleration\\ 
+    int & p1 & index till den ena partikeln & vec3 & F & total momentan kraftpåverkan\\ 
+    int & p2 & index till den andra partikel & float & m & massa \\
+    \hline
+    \end{tabular}
+  \label{table_ark} % is used to refer this table in the text
 \end{table}
 \\\\
 Vad som också framgår i Figur \ref{systemark::nonfloat} är att all numerisk integrering beräknas i en separat modul vilket gjorde det enkelt att ändra integreringsmetod vid behov, då den var oberoende av resten av systemet.
