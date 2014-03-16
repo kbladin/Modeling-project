@@ -18,17 +18,19 @@ void EulerExplicit::update(MCS& mcs, float dt){
 
 	mcs.calcConnectionForcesOnParticles();
 	for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
-		mcs.calcAccelerationOfParticle(i);
-
-		new_velocity = mcs.particles.velocities[i] + mcs.particles.accelerations[i] * dt;
-        new_position = mcs.particles.positions[i] + new_velocity * dt;
-
-        //Check collisions with collision planes
-        mcs.checkCollisions(new_position, new_velocity);
-
-        //Set new position and velocity
-        mcs.particles.velocities[i] = new_velocity;
-        mcs.particles.positions[i] = new_position;
+        if (!mcs.lock_.particleLocked(i)){ // Detta är inte snyggt, numerical methods borde separeras mer från MCS. Gäller även kollisionen?
+            mcs.calcAccelerationOfParticle(i);
+            
+            new_velocity = mcs.particles.velocities[i] + mcs.particles.accelerations[i] * dt;
+            new_position = mcs.particles.positions[i] + new_velocity * dt;
+            
+            //Check collisions with collision planes
+            mcs.checkCollisions(new_position, new_velocity);
+            
+            //Set new position and velocity
+            mcs.particles.velocities[i] = new_velocity;
+            mcs.particles.positions[i] = new_position;
+        }
 	}
 }
 
@@ -77,26 +79,29 @@ void RungeKutta::update(MCS& mcs, float dt){
     //Update positions and velocities
     glm::vec3 new_position, new_velocity;
     glm::vec3 delta_v, delta_p;
-    for (int i = 0; i < mcs.getNumberOfParticles(); ++i){    	
-    	delta_v = glm::vec3(0,0,0);
-    	delta_p = glm::vec3(0,0,0);
-        //Calc new position and velocity
-        for (int wi = 0; wi < w.size(); ++wi){
-            delta_v += ka[wi][i] * w[wi];
-            delta_p += kv[wi][i] * w[wi];
+    for (int i = 0; i < mcs.getNumberOfParticles(); ++i){
+        if (!mcs.lock_.particleLocked(i)){ // Detta är inte snyggt, numerical methods borde separeras mer från MCS. Gäller även kollisionen?
+
+    		delta_v = glm::vec3(0,0,0);
+    		delta_p = glm::vec3(0,0,0);
+	        //Calc new position and velocity
+        	for (int wi = 0; wi < w.size(); ++wi){
+                delta_v += ka[wi][i] * w[wi];
+                delta_p += kv[wi][i] * w[wi];
+            }
+            delta_v *= dt/wSum;
+            delta_p *= dt/wSum;
+
+            new_velocity = mcs.particles.velocities[i] + delta_v;
+            new_position = mcs.particles.positions[i] + delta_p;
+
+            //Check collisions with collision planes
+            mcs.checkCollisions(new_position, new_velocity);
+            
+            //Set new position and velocity
+            mcs.particles.velocities[i] = new_velocity;
+            mcs.particles.positions[i] = new_position;
         }
-        delta_v *= dt/wSum;
-        delta_p *= dt/wSum;
-
-        new_velocity = mcs.particles.velocities[i] + delta_v;
-        new_position = mcs.particles.positions[i] + delta_p;
-
-        //Check collisions with collision planes
-        mcs.checkCollisions(new_position, new_velocity);
-
-        //Set new position and velocity
-        mcs.particles.velocities[i] = new_velocity;
-        mcs.particles.positions[i] = new_position;
     }
 }
 

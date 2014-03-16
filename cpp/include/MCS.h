@@ -95,6 +95,23 @@ struct Vertices{
     std::vector<int> particleIndices;
 };
 
+struct ParticleInterval{
+    int start;
+    int end;
+    int skip;
+};
+
+class Lock{
+public:
+    Lock();
+    Lock(ParticleInterval pi);
+    bool locked;
+    ParticleInterval getParticleInterval();
+    bool particleLocked(int particle_index);
+private:
+    ParticleInterval pi_;
+};
+
 // The MCS - Mass Connection System
 class MCS{
     public:
@@ -132,11 +149,20 @@ class MCS{
         int getNumberOfConnections() const;
         int getNumberOfVertices() const;
 
+
         // Public members
         Particles particles;
         Connections connections;
         Vertices vertices;
         Triangles triangles;
+    
+        ParticleInterval INTERVAL_ALL;
+        ParticleInterval INTERVAL_FIRST_ROW;
+        ParticleInterval INTERVAL_FIRST_COLUMN;
+        ParticleInterval INTERVAL_FIRST_STACK;
+        ParticleInterval INTERVAL_LAST_ROW;
+    
+    	Lock lock_;
     
         //Applied during update
         glm::vec3 externalAcceleration;
@@ -149,7 +175,9 @@ class MCS{
         void initConnections();
         void initTriangles();
         void initVertices();
+        void initParticleIntervals();
 
+    
         std::vector<CollisionPlane> collisionPlanes;
     
         // The dimensions constants for the MCS

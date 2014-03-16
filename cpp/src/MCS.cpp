@@ -1,13 +1,36 @@
 #include "MCS.h"
 
+Lock::Lock(){
+    ParticleInterval pi;
+    pi.start = 0;
+    pi.skip = 1;
+    pi.end = 0;
+    pi_ = pi;
+    locked = false;
+}
+Lock::Lock(ParticleInterval pi){
+    pi_ = pi;
+    locked = true;
+}
+ParticleInterval Lock::getParticleInterval(){
+    return pi_;
+}
+bool Lock::particleLocked(int particle_index){
+    return locked &&
+    particle_index > pi_.start &&
+    particle_index < pi_.end &&
+    particle_index % pi_.skip == 0;
+}
+
 //Constructor
-MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):   
+MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
     N_ROWS(n_rows),N_COLS(n_cols),N_STACKS(n_stacks)
 {
 	initParticles();
     initConnections();
     initVertices();
     initTriangles();
+    initParticleIntervals();
 
     externalAcceleration = glm::vec3(0,0,0);
     externalForce = glm::vec3(0,0,0);
@@ -148,6 +171,28 @@ void MCS::initVertices(){
         vertices.normals[i] = glm::vec3(0,0,0);
         vertices.colors[i] = glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX);
     }
+}
+
+void MCS::initParticleIntervals(){
+    INTERVAL_ALL.start = 0;
+    INTERVAL_ALL.skip = 1;
+    INTERVAL_ALL.end = N_ROWS*N_COLS*N_STACKS;
+    
+    INTERVAL_FIRST_ROW.start = 0;
+    INTERVAL_FIRST_ROW.skip = 1;
+    INTERVAL_FIRST_ROW.end = N_COLS;
+    
+    INTERVAL_LAST_ROW.start = N_ROWS*(N_COLS-1)-1;
+    INTERVAL_LAST_ROW.skip = 1;
+    INTERVAL_LAST_ROW.end = N_ROWS*N_COLS;
+    
+    INTERVAL_FIRST_COLUMN.start = 0;
+    INTERVAL_FIRST_COLUMN.skip = N_COLS;
+    INTERVAL_FIRST_COLUMN.end = N_ROWS*N_COLS*N_STACKS;
+    
+    INTERVAL_FIRST_STACK.start = 0;
+    INTERVAL_FIRST_STACK.skip = 1;
+    INTERVAL_FIRST_STACK.end = N_ROWS*N_COLS;
 }
 
 void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, float friction){
