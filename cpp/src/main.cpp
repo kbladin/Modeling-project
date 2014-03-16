@@ -18,7 +18,6 @@
 #include "user_input.h"
 #include "MatrixHandler.h"
 
-
 // Global functions
 static void error_callback(int error, const char* description);
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -61,7 +60,7 @@ int main(void){
     matrices = new MatrixHandler(cam);
     
     // INIT SIMULATION 
-    int simulations_per_frame = 10;
+    int simulations_per_frame = 4;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
     std::vector<float> w;
@@ -72,7 +71,7 @@ int main(void){
 
     RungeKutta rk4(w);
     EulerExplicit ee;
-    NumericalMethod * nm = &ee; //Make use of polymorphism
+    NumericalMethod * nm = &rk4; //Make use of polymorphism
 
     float current_time = glfwGetTime();;
     int FPS = 0;
