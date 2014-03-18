@@ -31,13 +31,21 @@ option(test "Build all tests." OFF) # Makes boolean 'test' available.
 set(CMAKE_CXX_FLAGS "-g")
 
 # Creating our own library
-file(GLOB Library_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB Library_SOURCES ${PROJECT_SOURCE_DIR}/src/ElasticMaterials_lib/*.cpp)
+file(GLOB Library_HEADERS ${PROJECT_SOURCE_DIR}/include/ElasticMaterials_lib/*.h ${PROJECT_SOURCE_DIR}/include/ElasticMaterials_lib.h)
+add_library(ElasticMaterials_lib ${Library_SOURCES} ${Library_HEADERS})
+
+# Creating our Helper library
+file(GLOB Helper_library_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 # We do not want main.cpp in the library
 file(GLOB to_remove ${PROJECT_SOURCE_DIR}/src/main.cpp)
-list(REMOVE_ITEM Library_SOURCES ${to_remove})
-file(GLOB Library_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
+list(REMOVE_ITEM Helper_library_SOURCES ${to_remove})
+file(GLOB Helper_library_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
+# We do not want ElasticMaterials_lib.h in the library
+file(GLOB to_remove ${PROJECT_SOURCE_DIR}/include/ElasticMaterials_lib.h)
+list(REMOVE_ITEM Helper_library_HEADERS ${to_remove})
+add_library(Helper_lib ${Helper_library_SOURCES} ${Helper_library_HEADERS})
 
-add_library(ElasticMaterials_lib ${Library_SOURCES} ${Library_HEADERS})
 
 # Creating our executable
 add_executable(ElasticMaterials src/main.cpp)
@@ -50,7 +58,7 @@ set_target_properties(ElasticMaterials_lib PROPERTIES COMPILE_FLAGS "-std=c++11"
 set_target_properties(ElasticMaterials PROPERTIES COMPILE_FLAGS "-std=c++11")
 
 # Link all the libraries (including our own)
-target_link_libraries(ElasticMaterials ElasticMaterials_lib ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_FRAMEWORK} ${COCOA_FRAMEWORK})
+target_link_libraries(ElasticMaterials ElasticMaterials_lib Helper_lib ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_FRAMEWORK} ${COCOA_FRAMEWORK})
 
 ################################
 # Testing
@@ -63,7 +71,7 @@ if (test)
   endif( MSVC)
 
   # This adds another subdirectory, which has 'project(gtest)'.
-  add_subdirectory(lib/gtest-1.7.0)
+  add_subdirectory(external_libs/gtest-1.7.0)
 
   enable_testing()
 
@@ -82,7 +90,7 @@ if (test)
   target_link_libraries(runUnitTests gtest gtest_main)
 
   # Extra linking for the project.
-  target_link_libraries(runUnitTests ElasticMaterials_lib)
+  target_link_libraries(runUnitTests ElasticMaterials_lib Helper_lib)
 
   # This is so you can do 'make test' to see all your tests run, instead of
   # manually running the executable runUnitTests to see those specific tests.

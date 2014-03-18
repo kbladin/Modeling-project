@@ -1,26 +1,4 @@
-#include "MCS.h"
-
-Lock::Lock(){
-    ParticleInterval pi;
-    pi.start = 0;
-    pi.skip = 1;
-    pi.end = 0;
-    pi_ = pi;
-    locked = false;
-}
-Lock::Lock(ParticleInterval pi){
-    pi_ = pi;
-    locked = true;
-}
-ParticleInterval Lock::getParticleInterval(){
-    return pi_;
-}
-bool Lock::particleLocked(int particle_index){
-    return locked &&
-    particle_index > pi_.start &&
-    particle_index < pi_.end &&
-    particle_index % pi_.skip == 0;
-}
+#include "ElasticMaterials_lib/MCS.h"
 
 //Constructor
 MCS::MCS(const int n_rows, const int n_cols, const int n_stacks):
@@ -170,6 +148,7 @@ void MCS::initVertices(){
         vertices.positions[i] = particles.positions[vertices.particleIndices[i]];
         vertices.normals[i] = glm::vec3(0,0,0);
         vertices.colors[i] = glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX);
+        vertexIndex2UVcoordinate(i, vertices.UVs[i].x, vertices.UVs[i   ].y, N_ROWS, N_COLS, N_STACKS);
     }
 }
 
@@ -196,11 +175,7 @@ void MCS::initParticleIntervals(){
 }
 
 void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, float friction){
-    CollisionPlane cp; 
-    cp.normal = glm::normalize(normal);
-    cp.position = position;
-    cp.elasticity = elasticity;
-    cp.friction = friction;
+    CollisionPlane cp(glm::normalize(normal), position, elasticity, friction);
     collisionPlanes.push_back(cp);
 }
 
@@ -292,8 +267,8 @@ void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
     glm::vec3 n;
     float pos;
     for (int i = 0; i < collisionPlanes.size(); ++i){
-        n = collisionPlanes[i].normal;
-        pos = collisionPlanes[i].position;
+        n = collisionPlanes[i].normal_;
+        pos = collisionPlanes[i].position_;
         float p_dot_n = glm::dot(p,n);
 
         if (p_dot_n < pos){
@@ -305,8 +280,8 @@ void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
             //std::cout << "v_parallel_n: "<< v_parallel_n[0] << " " << v_parallel_n[1] << " " << v_parallel_n[2] << std::endl;
 
             p -= p_offset;
-            v -= v_parallel_n*(1.0f+collisionPlanes[i].elasticity);
-            v -= v_orthogonal_n*collisionPlanes[i].friction;
+            v -= v_parallel_n*(1.0f+collisionPlanes[i].elasticity_);
+            v -= v_orthogonal_n*collisionPlanes[i].friction_;
         }
     }
 }

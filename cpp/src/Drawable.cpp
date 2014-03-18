@@ -4,6 +4,7 @@ OpenGL_drawable::OpenGL_drawable(){
     vertexPositionBuffer = GL_FALSE;
     vertexColorBuffer = GL_FALSE;
     vertexNormalBuffer = GL_FALSE;
+    vertexUVBuffer = GL_FALSE;
 
     vertexArray = GL_FALSE;
     elementBuffer = GL_FALSE;
@@ -28,6 +29,8 @@ void OpenGL_drawable::deleteBuffers(){
         glDeleteBuffers(1, &vertexNormalBuffer);
     if(vertexColorBuffer)
         glDeleteBuffers(1, &vertexColorBuffer);
+    if(vertexUVBuffer)
+        glDeleteBuffers(1, &vertexUVBuffer);
 
     if(vertexArray)
         glDeleteVertexArrays(1, &vertexArray);

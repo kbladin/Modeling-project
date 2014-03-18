@@ -4,6 +4,7 @@
 layout(location = 0) in vec3 vertexPosition_modelspace;
 layout(location = 1) in vec3 vertexColor;
 layout(location = 2) in vec3 vertexNormal_modelspace;
+layout(location = 3) in vec2 vertexUV;
 
 // Uniforms
 uniform mat4 MVP;
@@ -25,6 +26,7 @@ out vec3 lightDirectionToFragment_viewSpace;
 
 void main(){
     fragColor = vertexColor;
+    UV = vertexUV;
 	fragPosition_worldSpace = (M * vec4(vertexPosition_modelspace, 1.0)).xyz;
 
 	vec3 vertexPosition_viewSpace = ( V * M * vec4(vertexPosition_modelspace,1)).xyz;

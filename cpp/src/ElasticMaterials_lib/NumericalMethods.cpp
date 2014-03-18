@@ -1,5 +1,4 @@
-#include "glm/glm.hpp"
-#include "NumericalMethods.h"
+#include "ElasticMaterials_lib/NumericalMethods.h"
 
 /** Global functions  **/
 glm::vec3 calculateEulerExplicit(){

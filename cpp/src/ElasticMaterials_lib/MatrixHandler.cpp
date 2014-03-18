@@ -1,4 +1,4 @@
-#include "MatrixHandler.h"
+#include "ElasticMaterials_lib/MatrixHandler.h"
 
 MatrixHandler::MatrixHandler(Camera* camera){
     camera_ = camera;
@@ -18,7 +18,7 @@ void MatrixHandler::calculateMatrices(){
     glm::mat4 translate = glm::translate(-camera_->position);
     glm::mat4 view_translate = glm::translate(-camera_->target_->centerOfMass() + glm::vec3(0.0f,-5.0f,0.0f));
     
-    V =  translate * rotate;
+    V =  translate * rotate;//*view_translate;
     MV = V * M;
     P = glm::perspective(camera_->fov, camera_->getAspectRatio(), 0.1f, 400.f);
     MVP = P*V*M;

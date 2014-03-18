@@ -8,15 +8,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-#include <shader.h>
-#include "conversions.h"
-#include "NumericalMethods.h"
-#include "debugtools.h"
+#include "ElasticMaterials_lib.h"
 
+#include "shader.h"
+#include "texture.h"
 #include "Drawable.h"
-#include "MCS.h"
 #include "user_input.h"
-#include "MatrixHandler.h"
 
 // Global functions
 static void error_callback(int error, const char* description);
@@ -28,6 +25,7 @@ void cleanUpGLFW();
 
 bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs);
 bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs);
+bool draw(const OpenGL_drawable& openGL_drawable, const CollisionPlane& collision_plane);
 
 MCS * createFloppyThing();
 MCS * createRollingDice();
@@ -58,9 +56,11 @@ int main(void){
 
     cam = new Camera(window, mcs);
     matrices = new MatrixHandler(cam);
+
+    OpenGL_drawable collision_plane_drawable;
     
     // INIT SIMULATION 
-    int simulations_per_frame = 4;
+    int simulations_per_frame = 10;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
     std::vector<float> w;
@@ -71,7 +71,7 @@ int main(void){
 
     RungeKutta rk4(w);
     EulerExplicit ee;
-    NumericalMethod * nm = &rk4; //Make use of polymorphism
+    NumericalMethod * nm = &ee; //Make use of polymorphism
 
     float current_time = glfwGetTime();;
     int FPS = 0;
@@ -80,6 +80,9 @@ int main(void){
     ////od.add(mcs);
     
     initOpenGL(openGL_drawable, *mcs);
+    
+    // Really ugly to do like this. The collision plane drawable should have nothing to do with the MCS. What should be done instead is to send the data to the initOpenGL function independent of what type of object it is.
+    initOpenGL(collision_plane_drawable, *mcs);
     
     int frame = 0;
     
@@ -116,6 +119,9 @@ int main(void){
         //if(!draw(od.vecDrawable[0], mcs)) break;
         //if(!draw(od.vecDrawable[0], *od.vecMCS[0])) break;
         if(!draw(openGL_drawable, *mcs)) break;
+        // If there exist collision planes draw the first one
+        if(mcs->collisionPlanes.size() > 0)
+            if(!draw(collision_plane_drawable, mcs->collisionPlanes[0])) break;
 
         //Swap draw buffers
         glfwSwapBuffers(window);
@@ -304,7 +310,7 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
     glGenVertexArrays(1, &openGL_drawable.vertexArray);
 
     // Create and compile the shader
-    openGL_drawable.programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
+    openGL_drawable.programID = LoadShaders( "../../data/shaders/simple.vert", "../../data/shaders/simple.frag" );
 
     // Bind the VAO
     glBindVertexArray(openGL_drawable.vertexArray);
@@ -353,6 +359,21 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
         0,                  // stride
         reinterpret_cast<void*>(0) // array buffer offset
     );
+
+    //generate VBO for vertex UV
+    glGenBuffers(1, &openGL_drawable.vertexUVBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexUVBuffer);
+    //upload data to GPU
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * mcs.vertices.UVs.size(), &mcs.vertices.UVs[0], GL_STATIC_DRAW);
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(
+                          3,                  // attribute 3. No particular reason for 3, but must match the layout in the shader.
+                          2,                  // size
+                          GL_FLOAT,           // type
+                          GL_FALSE,           // normalized?
+                          0,                  // stride
+                          reinterpret_cast<void*>(0) // array buffer offset
+                          );
     
     // Unbind the current VAO
     glBindVertexArray(0);
@@ -365,6 +386,10 @@ bool initOpenGL(OpenGL_drawable& openGL_drawable, const MCS& mcs){
 
     openGL_drawable.lightPos_loc = glGetUniformLocation( openGL_drawable.programID, "lightPos_worldSpace");
     openGL_drawable.lightColor_loc = glGetUniformLocation( openGL_drawable.programID, "lightColor");
+    
+    //Texture
+    openGL_drawable.textureID = loadBMP_custom("../../data/textures/empty.bmp");
+    openGL_drawable.texture_loc = glGetUniformLocation( openGL_drawable.programID, "textureSampler");
 
     int err = glGetError();
     if (err > 0){
@@ -382,7 +407,7 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     // Do the matrix stuff
     matrices->calculateMatrices();
 
-    glm::vec3 lightPos = glm::vec3(30,30,0);
+    glm::vec3 lightPos = glm::vec3(30,30,30);
     glm::vec3 lightColor = glm::vec3(1,1,1);
 
     // Bind the VAO (Contains the vertex buffers)
@@ -391,8 +416,8 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     // Bind buffers and upload data to GPU
     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexPositionBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.positions.size(), &mcs.vertices.positions[0], GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.colors.size(), &mcs.vertices.colors[0], GL_STATIC_DRAW);
+    //glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.colors.size(), &mcs.vertices.colors[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexNormalBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.vertices.normals.size(), &mcs.vertices.normals[0], GL_STATIC_DRAW);
 
@@ -404,6 +429,12 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     glUniformMatrix4fv(openGL_drawable.M_loc, 1, GL_FALSE, &matrices->M[0][0]);
     glUniformMatrix4fv(openGL_drawable.MV_loc, 1, GL_FALSE, &matrices->MV[0][0]);
     glUniformMatrix4fv(openGL_drawable.V_loc, 1, GL_FALSE, &matrices->V[0][0]);
+    
+    // Bind our texture in Texture Unit 0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, openGL_drawable.textureID);
+    // Set our "textureSampler" sampler to user Texture Unit 0
+    glUniform1i(openGL_drawable.texture_loc, 0);
 
     // Light data
     glUniform3fv(openGL_drawable.lightPos_loc, 1, &lightPos[0]);
@@ -419,12 +450,15 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
      GL_UNSIGNED_INT,   // type
      (void*)0           // element array buffer offset
     );
+    
 
     // Unbind VAO
     glBindVertexArray(0);
     
     // Unbind shader
     glUseProgram(0);
+    
+    
 
     int err = glGetError();
     if (err > 0){
@@ -434,6 +468,70 @@ bool draw(const OpenGL_drawable& openGL_drawable, const MCS& mcs){
     return true;
 }
 
+bool draw(const OpenGL_drawable& openGL_drawable, const CollisionPlane& collision_plane){
+    
+    ratio = width / (float) height;
+    
+    // Do the matrix stuff
+    matrices->calculateMatrices();
+    
+    glm::vec3 lightPos = glm::vec3(30,30,30);
+    glm::vec3 lightColor = glm::vec3(1,1,1);
+
+
+     // Bind the VAO (Contains the vertex buffers)
+     glBindVertexArray(openGL_drawable.vertexArray);
+     
+     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGL_drawable.elementBuffer);
+     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(IndexedTriangle) * collision_plane.triangles_.triangleIndices.size(), &collision_plane.triangles_.triangleIndices[0], GL_STATIC_DRAW);
+     
+     // Bind buffers and upload data to GPU
+        //ALL THIS SHOULD REALLY BE DONE ONLY ONCE FOR THE COLLISION PLANE
+     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexPositionBuffer);
+     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * collision_plane.vertices_.positions.size(), &collision_plane.vertices_.positions[0], GL_STATIC_DRAW);
+     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
+     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * collision_plane.vertices_.colors.size(), &collision_plane.vertices_.colors[0], GL_STATIC_DRAW);
+     glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexNormalBuffer);
+     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * collision_plane.vertices_.normals.size(), &collision_plane.vertices_.normals[0], GL_STATIC_DRAW);
+     
+     // Bind shader
+     glUseProgram(openGL_drawable.programID);
+     
+     // Matrix data
+     glUniformMatrix4fv(openGL_drawable.MVP_loc, 1, GL_FALSE, &matrices->MVP[0][0]);
+     glUniformMatrix4fv(openGL_drawable.M_loc, 1, GL_FALSE, &matrices->M[0][0]);
+     glUniformMatrix4fv(openGL_drawable.MV_loc, 1, GL_FALSE, &matrices->MV[0][0]);
+     glUniformMatrix4fv(openGL_drawable.V_loc, 1, GL_FALSE, &matrices->V[0][0]);
+     
+     // Light data
+     glUniform3fv(openGL_drawable.lightPos_loc, 1, &lightPos[0]);
+     glUniform3fv(openGL_drawable.lightColor_loc, 1, &lightColor[0]);
+     
+     // Index buffer
+     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGL_drawable.elementBuffer);
+     
+     // Draw the triangles !
+     glDrawElements(
+     GL_TRIANGLES,      // mode
+     collision_plane.vertices_.positions.size()*3,    // count
+     GL_UNSIGNED_INT,   // type
+     (void*)0           // element array buffer offset
+     );
+     
+     
+     // Unbind VAO
+     glBindVertexArray(0);
+     
+     // Unbind shader
+     glUseProgram(0);
+
+    int err = glGetError();
+    if (err > 0){
+        std::cout << "Error in draw(const OpenGL_drawable&, const MCS&). Error code: " << err << std::endl;
+        return false;
+    }
+    return true;
+}
 
 void cleanUpGLFW(){
     // Terminate glfw
@@ -499,7 +597,7 @@ MCS * createStandingSnake(){
 MCS * createCloth(){
     MCS * tmp_mcs = new MCS(30,30,1);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(1.0,0.0,0.0),2.5f);
+    tmp_mcs->addRotation(glm::vec3(1.0,0.5,0.0),1.0f);
     tmp_mcs->connections.setSpringConstant(10000.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));

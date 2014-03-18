@@ -35,4 +35,11 @@ void triangle2vertexIndices(int triangleIndex,
                             const int n_cols,
                             const int n_stacks);
 
+void vertexIndex2UVcoordinate(const int vertexIndex,
+                              float &U,
+                              float &V,
+                              const int n_rows,
+                              const int n_cols,
+                              const int n_stacks);
+
 #endif

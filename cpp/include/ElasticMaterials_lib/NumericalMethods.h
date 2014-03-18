@@ -1,8 +1,8 @@
 #ifndef NUMERICAL_METHODS_H
 #define NUMERICAL_METHODS_H
 
-#include "MCS.h"
-
+#include "glm/glm.hpp"
+#include "ElasticMaterials_lib/MCS.h"
 
 /** Declare global functions  **/
 glm::vec3 calculateEulerExplicit();

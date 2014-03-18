@@ -14,7 +14,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <shader.h>
 
-#include "MCS.h"
+#include "ElasticMaterials_lib.h"
 
 
 class OpenGL_drawable {
@@ -27,6 +27,7 @@ public:
     GLuint vertexPositionBuffer;
     GLuint vertexColorBuffer;
     GLuint vertexNormalBuffer;
+    GLuint vertexUVBuffer;
 
     GLuint vertexArray;
     GLuint elementBuffer;
@@ -37,7 +38,10 @@ public:
     GLint M_loc;
     GLint lightPos_loc;
     GLint lightColor_loc;
-
+    
+    GLuint texture_loc;
+    
+    GLuint textureID;
     GLuint programID;
     // Vertex color data
     //std::vector<glm::vec3> vertex_color_data;

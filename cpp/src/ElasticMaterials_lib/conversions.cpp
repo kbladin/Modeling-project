@@ -1,4 +1,4 @@
-#include "conversions.h"
+#include "ElasticMaterials_lib/conversions.h"
 
 void connection2massIndices(const int connection_index, int &mass_index1, int &mass_index2, const int n_rows, const int n_cols, const int n_stacks){
 	// Number of connections of a certain type (13 different directions)
@@ -393,4 +393,52 @@ void triangle2vertexIndices(int triangleIndex, int &vertexIndex1, int &vertexInd
         vertexIndex2 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4;
         vertexIndex3 += Ntype_verts0 + Ntype_verts1 + Ntype_verts2 + Ntype_verts3 + Ntype_verts4;
     }
+}
+
+void vertexIndex2UVcoordinate(const int vertex_index, float &U, float &V, const int n_rows, const int n_cols, const int n_stacks){
+    int Ntype0 = n_rows * n_cols;         //back
+    int Ntype1 = Ntype0;                          //front
+    int Ntype2 = n_rows * n_stacks;       //left
+    int Ntype3 = Ntype2;                          //right
+    int Ntype4 = n_stacks * n_cols;       //bottom
+    int Ntype5 = Ntype4;
+    
+    int TotNtype = Ntype0 + Ntype1 + Ntype2 + Ntype3 + Ntype4 + Ntype5;
+
+    assert(vertex_index < TotNtype);
+    
+    int new_vertex_index;
+
+    if(vertex_index < Ntype0){                                         //back
+        new_vertex_index = vertex_index;
+        U = (1 - (new_vertex_index % n_cols)/(float)(n_cols-1))/4.0f + 0.25f;
+        V = (1 - (new_vertex_index / n_cols)/(float)(n_rows-1))/4.0f + 0.75f;
+    }
+    else if(vertex_index < Ntype0 + Ntype1){                           //front
+        new_vertex_index = vertex_index - Ntype0;
+        U = (1 - (new_vertex_index % n_cols)/(float)(n_cols-1))/4.0f + 0.25f;
+        V = ((new_vertex_index / n_cols)/(float)(n_rows-1))/4.0f + 0.25f;
+    }
+    else if(vertex_index < Ntype0+Ntype1+Ntype2){                  //left
+        new_vertex_index = vertex_index - Ntype0 - Ntype1;
+        U = ((new_vertex_index / n_stacks)/(float)(n_cols-1))/4.0f;
+        V = (1 - (new_vertex_index % n_stacks)/(float)(n_stacks-1))/4.0f + 0.5f;
+    }
+    else if(vertex_index < Ntype0+Ntype1+Ntype2+Ntype3){           //right
+        new_vertex_index = vertex_index - Ntype0 - Ntype1 - Ntype2;
+        U = (1 - (new_vertex_index / n_stacks)/(float)(n_cols-1))/4.0f + 0.5;
+        V = (1 - (new_vertex_index % n_stacks)/(float)(n_stacks-1))/4.0f + 0.5f;
+    }
+    else if(vertex_index < Ntype0+Ntype1+Ntype2+Ntype3+Ntype4){    //bottom
+        new_vertex_index = vertex_index - Ntype0 - Ntype1 - Ntype2 - Ntype3;
+        U = (1 - (new_vertex_index % n_cols)/(float)(n_stacks-1))/4.0f + 0.25;
+        V = ((new_vertex_index / n_cols)/(float)(n_cols-1))/4.0f;
+    }
+    else if(vertex_index < TotNtype){                                  //top
+        new_vertex_index = vertex_index - Ntype0 - Ntype1 - Ntype2 - Ntype3 - Ntype4;
+        U = (1 - (new_vertex_index % n_cols)/(float)(n_stacks-1))/4.0f + 0.25;
+        V = (1 - (new_vertex_index / n_cols)/(float)(n_cols-1))/4.0f + 0.5f;
+    }
+    
+    // TESTA DENNA FUNKTION
 }
