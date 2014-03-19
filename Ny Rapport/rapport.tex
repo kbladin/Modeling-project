@@ -160,7 +160,9 @@ Att lösa differentialekvationen med Runge-Kuttametoden innebär att flera deriv
 \begin{equation}
 \begin{split}
 \mathbf x(t+h)=\mathbf x(t)+\frac { 1 }{ 6 } ({ k }_{ 1 }+2{ k }_{ 2 }+2{ k }_{ 3 }+{ k }_{ 4 })
-\\ dar
+
+\\ varest
+
 \\ \mathbf{ k }_{ 1 }=h\mathbf f(t,\mathbf x(t))
 \\ \mathbf{ k }_{ 2 }=h\mathbf f(t+h/2,\mathbf x(t)+\mathbf { k }_{ 1 }/2)
 \\ \mathbf{ k }_{ 3 }=h\mathbf f(t+h/2,\mathbf x(t)+\mathbf{ k }_{ 2 }/2)
@@ -177,7 +179,8 @@ För att kunna beskriva hur kraften på partiklarna i ett MSD-system påverkar v
 \begin{equation}
 \begin{split}
 { \mathbf{ F }_{ i } }(t)=\sum _{ j\epsilon { A }_{ i } }{ ({ F }_{ { k }_{ i,j } }(t)+{ F }_{ { b }_{ i,j } }(t))\Delta \hat { \mathbf{ x }_{ i,j } } (t) }
-\\ där
+\\ varest
+\\
 \\ { F }_{ { k }_{ i,j } }(t)=-{ k }_{ i,j }(\left| \Delta { \mathbf{ x }_{ i,j }(t) } \right| -l_{ { 0 }_{ i,j } })
 \\ { F }_{ { b }_{ i,j } }(t)=-{ b }_{ i,j }\Delta { \mathbf{ x }_{ i,j }'(t)\cdot  }\Delta { \hat { \mathbf{ x }_{ i,j } } (t) }
 \\ \Delta \mathbf{ x }_{ i,j }(t)=\mathbf{ x }_{ i }(t)-\mathbf{ x }_{ j }(t)
@@ -204,11 +207,11 @@ Ekvationen bestämmer kraften som påverkar partikel $i$. Ekvationen grundar sig
 Utifrån kraftekvationen kunde en differentialekvation för systemet ställas upp, se (\ref{second_order_diff}).
 \begin{equation}
 \begin{split}
-\mathbf X''(t)=\mathbf G(\mathbf X(t),\mathbf X'(t))\\ där\\ \mathbf X''(t)=\begin{pmatrix} \mathbf{ x }_{ 1 }''(t)
+\mathbf X''(t)=\mathbf G(\mathbf X(t),\mathbf X'(t))\\\\ varest\\\\ \mathbf X''(t)=\begin{pmatrix} \mathbf{ x }_{ 1 }''(t)
 \\ \mathbf{ x }_{ 2 }''(t)
 \\ \vdots 
-\\ \mathbf{ x }_{ N }''(t) \end{pmatrix}
-\\ \mathbf G(\mathbf X(t),\mathbf X'(t))=\begin{pmatrix} \frac { \mathbf{ F }_{ 1 }(t) }{ { m }_{ 1 } } 
+\\ \mathbf{ x }_{ N }''(t) \end{pmatrix},      
+\mathbf G(\mathbf X(t),\mathbf X'(t))=\begin{pmatrix} \frac { \mathbf{ F }_{ 1 }(t) }{ { m }_{ 1 } } 
 \\ \frac { \mathbf{ F }_{ 2 }(t) }{ { m }_{ 2 } }
 \\ \vdots 
 \\ \frac { \mathbf{ F }_{ N }(t) }{ { m }_{ N } }  \end{pmatrix}
@@ -222,7 +225,7 @@ Utifrån kraftekvationen kunde en differentialekvation för systemet ställas up
     { Y }_{ 1 }'(t)=H(Y_{ 2 }(t))\\
     { Y }_{ 2 }'(t)=G(Y_{ 1 }(t),Y_{ 2 }(t))
   \end{cases}\\
-  där\\
+  varest\\
   \begin{cases}
     { Y }_{ 1 }(t)=X(t)\\
     { Y }_{ 2 }(t)={ X }'(t)
@@ -516,8 +519,6 @@ Testet av stabilitetsgränser för de numeriska metoderna presenteras i Tabell \
 %Diskussion
 \pagebreak
 \section{Diskussion}
-Under projektets gång gjordes ett antal val. Dessa var val av numerisk metod, algoritm för kraftkvation, fjädersortering/indexering samt dämpare.
-
 \noindent\\Den största anledningen till att Runge-Kuttametoden var mer beräkningstung var att mycket data behövde kopieras under simuleringen. Runge-Kuttametoden gav visserligen en mer korrekt simulering men eftersom det var kritiskt att med hög prestanda erhålla ett relativt stabilt system gjordes valet att använda Eulers metod i slutprodukten.
 
 \noindent\\Valet av algoritm för kraftekvationen grundade sig i antalet gånger kraftekvationen behövde beräknas. Med Algoritm \ref{alg3} behövde beräkningen göras hälften så många gånger. Dock krävde algoritmen att partiklarna loopades igenom en gång efter det att krafterna hade beräknats för att applicera accelerationen på dem. Trots detta hölls antalet beräkningar på en lägre nivå för Algoritm \ref{alg3} än för Algoritm \ref{alg2}, varför Algoritm \ref{alg3} valdes för slutimplementeringen.
