@@ -99,7 +99,7 @@ struct ParticleInterval{
 
 class CollisionPlane{
 public:
-    CollisionPlane(glm::vec3 normal, float position, float elasticity, float friction);
+    CollisionPlane(glm::vec3 normal, float position, float elasticity, float friction, float scale);
     
     const glm::vec3 normal_;
     const float position_;

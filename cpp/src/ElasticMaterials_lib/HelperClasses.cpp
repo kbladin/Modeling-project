@@ -1,10 +1,9 @@
 #include "ElasticMaterials_lib/HelperClasses.h"
 
-CollisionPlane::CollisionPlane(glm::vec3 normal, float position, float elasticity, float friction) :
+CollisionPlane::CollisionPlane(glm::vec3 normal, float position, float elasticity, float friction, float scale) :
 normal_(glm::normalize(normal)), position_(position), elasticity_(elasticity), friction_(friction) {
     
     const int N_VERTS = 8; // Both sides
-    float scale = 200.0f;
     glm::vec3 axis1;
     glm::vec3 axis2;
     
@@ -23,10 +22,10 @@ normal_(glm::normalize(normal)), position_(position), elasticity_(elasticity), f
     
     // Positions
     for (int i=0; i<2; ++i) {
-        vertices_.positions[0+i*4] = (-0.5f * axis1 - 0.5f * axis2) * scale + normal_*position_;
-        vertices_.positions[1+i*4] = (-0.5f * axis1 + 0.5f * axis2) * scale + normal_*position_;
-        vertices_.positions[2+i*4] = (0.5f * axis1 - 0.5f * axis2) * scale + normal_*position_;
-        vertices_.positions[3+i*4] = (0.5f * axis1 + 0.5f * axis2) * scale + normal_*position_;
+        vertices_.positions[0+i*4] = (-0.5f * axis2 - 0.5f * axis1) * scale + normal_*position_;
+        vertices_.positions[1+i*4] = (-0.5f * axis2 + 0.5f * axis1) * scale + normal_*position_;
+        vertices_.positions[2+i*4] = (0.5f * axis2 - 0.5f * axis1) * scale + normal_*position_;
+        vertices_.positions[3+i*4] = (0.5f * axis2 + 0.5f * axis1) * scale + normal_*position_;
     }
     // Normals
     for (int i=0; i<4; ++i) {

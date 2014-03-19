@@ -51,8 +51,20 @@ bool backward = false;
 
 GLuint programID;
 GLuint dry_material_programID;
+
 GLuint textureID;
 GLuint faces_textureID;
+GLuint waffle_textureID;
+GLuint cloth1_textureID;
+GLuint cloth2_textureID;
+GLuint cloth3_textureID;
+GLuint cloth4_textureID;
+GLuint cloth5_textureID;
+GLuint floor2_textureID;
+GLuint floor3_textureID;
+GLuint die_textureID;
+GLuint tiling_textureID;
+GLuint induction_textureID;
 
 Material* ground_material;
 Material* object_material;
@@ -69,8 +81,20 @@ int main(void){
     
     // Create and compile the shader
     programID = LoadShaders( "../../data/shaders/simple.vert", "../../data/shaders/simple.frag" );
+    
     textureID = loadBMP_custom("../../data/textures/empty.bmp");
     faces_textureID = loadBMP_custom("../../data/textures/empty1.bmp");
+    waffle_textureID = loadBMP_custom("../../data/textures/waffle.bmp");
+    cloth1_textureID = loadBMP_custom("../../data/textures/cloth1.bmp");
+    cloth2_textureID = loadBMP_custom("../../data/textures/cloth2.bmp");
+    cloth3_textureID = loadBMP_custom("../../data/textures/cloth3.bmp");
+    cloth4_textureID = loadBMP_custom("../../data/textures/cloth4.bmp");
+    cloth5_textureID = loadBMP_custom("../../data/textures/cloth5.bmp");
+    floor2_textureID = loadBMP_custom("../../data/textures/floor2.bmp");
+    floor3_textureID = loadBMP_custom("../../data/textures/floor3.bmp");
+    die_textureID = loadBMP_custom("../../data/textures/die.bmp");
+    induction_textureID = loadBMP_custom("../../data/textures/induction.bmp");
+    tiling_textureID = loadBMP_custom("../../data/textures/tiling.bmp");
 
     
     // INIT SIMULATION 
@@ -249,16 +273,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Rolling Dice..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers(faces_textureID);
+        drawable_mcs->setUpBuffers(die_textureID);
         mcs = createRollingDice();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,faces_textureID);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,die_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
         drawable_planes.resize(0);
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
         }
         std::cout << "Done" << std::endl;
     }
@@ -355,10 +379,29 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_8 && action == GLFW_PRESS){
         std::cout << "Loading Waffle... " << std::endl;
         delete mcs;
-        openGL_drawable.deleteBuffers();
+        drawable_mcs->deleteBuffers();
+        drawable_mcs->setUpBuffers(waffle_textureID);
         mcs = createWaffle();
         cam->setTarget(mcs);
-        initOpenGL(openGL_drawable, *mcs);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,waffle_textureID);
+        for (int i = 0; i<drawable_planes.size(); ++i) {
+            delete drawable_planes[i];
+        }
+        drawable_planes.resize(0);
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            switch (i) {
+                case 0: // Ground
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, induction_textureID));
+                    break;
+                case 1: // Wall
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, tiling_textureID));
+                    break;
+                default:
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
+                    break;
+            }
+            
+        }
         std::cout << "Done" << std::endl;
     }
 
@@ -532,11 +575,19 @@ MCS * createWaffle(){
     tmp_mcs->connections.setSpringConstant(5000.0f);
     tmp_mcs->connections.setDamperConstant(70.0f);
     //tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
-    tmp_mcs->setAvgPosition(glm::vec3(-10,-0.6,-10));
+    tmp_mcs->setAvgPosition(glm::vec3(0,-0.6,0));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0.2));
+    
+    float scene_scale = 50.0f;
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                -5.0f,      //positions the plane on normal
                                1.0f,      //elasticity
-                               0.3f);      //friction
+                               0.3f,      //friction
+                               scene_scale);    //scale
+    tmp_mcs->addCollisionPlane(glm::vec3(0,0,1),    //normal of the plane
+                               -scene_scale/2,      //positions the plane on normal
+                               1.0f,      //elasticity
+                               0.3f,      //friction
+                               scene_scale);    //scale
     return tmp_mcs;
 }

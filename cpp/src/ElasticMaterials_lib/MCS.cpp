@@ -174,8 +174,8 @@ void MCS::initParticleIntervals(){
     INTERVAL_FIRST_STACK.end = N_ROWS*N_COLS;
 }
 
-void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, float friction){
-    CollisionPlane cp(glm::normalize(normal), position, elasticity, friction);
+void MCS::addCollisionPlane(glm::vec3 normal, float position, float elasticity, float friction, float scale){
+    CollisionPlane cp(glm::normalize(normal), position, elasticity, friction, scale);
     collisionPlanes.push_back(cp);
 }
 
