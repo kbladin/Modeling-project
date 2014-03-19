@@ -62,7 +62,7 @@ int main(void){
     OpenGL_drawable collision_plane_drawable;
     
     // INIT SIMULATION 
-    int simulations_per_frame = 12;
+    int simulations_per_frame = 10;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
     std::vector<float> w;
