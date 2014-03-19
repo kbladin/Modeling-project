@@ -13,9 +13,11 @@ find_package(OPENGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLFW3 REQUIRED)
 
-# Find external libraries
-find_library(OPENGL_FRAMEWORK OpenGL)
-find_library(COCOA_FRAMEWORK Cocoa)
+if(APPLE)
+  # Find external libraries
+  find_library(OPENGL_FRAMEWORK OpenGL)
+  find_library(COCOA_FRAMEWORK Cocoa)
+endif(APPLE)
 
 # Add glew and glfw to the include directories 
 include_directories(${GLEW_INCLUDE_DIR})
@@ -58,7 +60,12 @@ set_target_properties(ElasticMaterials_lib PROPERTIES COMPILE_FLAGS "-std=c++11"
 set_target_properties(ElasticMaterials PROPERTIES COMPILE_FLAGS "-std=c++11")
 
 # Link all the libraries (including our own)
-target_link_libraries(ElasticMaterials ElasticMaterials_lib Helper_lib ${GLEW_LIBRARY} ${GLFW_LIBRARIES} ${OPENGL_FRAMEWORK} ${COCOA_FRAMEWORK})
+target_link_libraries(ElasticMaterials ElasticMaterials_lib Helper_lib ${OPENGL_LIBRARIES} ${OPENGL_glu_LIBRARY} ${GLEW_LIBRARY} ${GLFW_LIBRARIES})
+
+######### OPENGL LIBRARY (ONLY FOR OSX) #############
+if(APPLE)
+  target_link_libraries(ElasticMaterials ${OPENGL_FRAMEWORK} ${COCOA_FRAMEWORK})
+endif(APPLE)
 
 ################################
 # Testing

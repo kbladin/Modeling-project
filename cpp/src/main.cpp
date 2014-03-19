@@ -88,6 +88,8 @@ int main(void){
     
     int frame = 0;
     
+    std::cout << "🐙" << std::endl;
+    
     while (!glfwWindowShouldClose(window)){
 
         // Moving one mass 
