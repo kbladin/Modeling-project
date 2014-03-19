@@ -631,10 +631,10 @@ MCS * createStandingSnake(){
 MCS * createCloth(){
     MCS * tmp_mcs = new MCS(30,30,1);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(1.0,0.5,0.0),1.0f);
+    tmp_mcs->addRotation(glm::vec3(1.0,0.5,0.0),0.0f);
     tmp_mcs->connections.setSpringConstant(10000.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
-    tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
+    tmp_mcs->setAvgVelocity(glm::vec3(2,2,2));
     
     Lock l(tmp_mcs->INTERVAL_LAST_ROW);
     tmp_mcs->lock_ = l;
