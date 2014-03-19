@@ -611,7 +611,7 @@ MCS * createFloppyThing(){
 
 MCS * createRollingDice(){
     MCS * tmp_mcs = new MCS(3,3,3);
-    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*80.0f;
     tmp_mcs->addRotation(glm::vec3(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX),15.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
     tmp_mcs->connections.setSpringConstant(100000.0f);
