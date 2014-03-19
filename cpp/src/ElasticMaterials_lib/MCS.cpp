@@ -348,7 +348,10 @@ void MCS::updateNormals(){
         vertices.normals[triangles.triangleIndices[ti].idx3] += n;
     }
     for (int i = 0; i < n_vertices; ++i){
-        vertices.normals[i] = glm::normalize(vertices.normals[i]);
+        if (!(vertices.normals[i] == glm::vec3(0.0f,0.0f,0.0f)))
+            vertices.normals[i] = glm::normalize(vertices.normals[i]);
+        else
+            vertices.normals[i] = glm::vec3(1.0f,1.0f,1.0f);
     }
 }
 

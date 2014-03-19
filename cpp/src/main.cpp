@@ -32,6 +32,8 @@ MCS * createRollingDice();
 MCS * createStandingSnake();
 MCS * createCloth();
 MCS * createSoftCube();
+MCS * createSpinner();
+MCS * createJelly();
 
 
 // Global variables
@@ -60,7 +62,7 @@ int main(void){
     OpenGL_drawable collision_plane_drawable;
     
     // INIT SIMULATION 
-    int simulations_per_frame = 10;
+    int simulations_per_frame = 12;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
     std::vector<float> w;
@@ -240,6 +242,26 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         delete mcs;
         openGL_drawable.deleteBuffers();
         mcs = createSoftCube();
+        cam->setTarget(mcs);
+        initOpenGL(openGL_drawable, *mcs);
+        std::cout << "Done" << std::endl;
+    }
+    
+    if (key == GLFW_KEY_6 && action == GLFW_PRESS){
+        std::cout << "Loading Spinner..." << std::endl;
+        delete mcs;
+        openGL_drawable.deleteBuffers();
+        mcs = createSpinner();
+        cam->setTarget(mcs);
+        initOpenGL(openGL_drawable, *mcs);
+        std::cout << "Done" << std::endl;
+    }
+    
+    if (key == GLFW_KEY_7 && action == GLFW_PRESS){
+        std::cout << "Loading Jelly..." << std::endl;
+        delete mcs;
+        openGL_drawable.deleteBuffers();
+        mcs = createJelly();
         cam->setTarget(mcs);
         initOpenGL(openGL_drawable, *mcs);
         std::cout << "Done" << std::endl;
@@ -493,6 +515,9 @@ bool draw(const OpenGL_drawable& openGL_drawable, const CollisionPlane& collisio
      glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * collision_plane.vertices_.colors.size(), &collision_plane.vertices_.colors[0], GL_STATIC_DRAW);
      glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexNormalBuffer);
      glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * collision_plane.vertices_.normals.size(), &collision_plane.vertices_.normals[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexUVBuffer);
+    //upload data to GPU
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * collision_plane.vertices_.UVs.size(), &collision_plane.vertices_.UVs[0], GL_STATIC_DRAW);
      
      // Bind shader
      glUseProgram(openGL_drawable.programID);
@@ -502,7 +527,13 @@ bool draw(const OpenGL_drawable& openGL_drawable, const CollisionPlane& collisio
      glUniformMatrix4fv(openGL_drawable.M_loc, 1, GL_FALSE, &matrices->M[0][0]);
      glUniformMatrix4fv(openGL_drawable.MV_loc, 1, GL_FALSE, &matrices->MV[0][0]);
      glUniformMatrix4fv(openGL_drawable.V_loc, 1, GL_FALSE, &matrices->V[0][0]);
-     
+    
+    // Bind our texture in Texture Unit 0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, openGL_drawable.textureID);
+    // Set our "textureSampler" sampler to user Texture Unit 0
+    glUniform1i(openGL_drawable.texture_loc, 0);
+    
      // Light data
      glUniform3fv(openGL_drawable.lightPos_loc, 1, &lightPos[0]);
      glUniform3fv(openGL_drawable.lightColor_loc, 1, &lightColor[0]);
@@ -553,9 +584,9 @@ void setMCS(){
 */
 
 MCS * createFloppyThing(){
-    MCS * tmp_mcs = new MCS(3,12,20); //Minns inte hur den var
+    MCS * tmp_mcs = new MCS(2,15,30); //Minns inte hur den var
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,2.0),-5.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
@@ -568,10 +599,10 @@ MCS * createFloppyThing(){
 MCS * createRollingDice(){
     MCS * tmp_mcs = new MCS(3,3,3);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),25.0f);
+    tmp_mcs->addRotation(glm::vec3(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX),15.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
-    tmp_mcs->connections.setSpringConstant(20000.0f);
-    tmp_mcs->setAvgVelocity(glm::vec3(8,5,0));
+    tmp_mcs->connections.setSpringConstant(100000.0f);
+    tmp_mcs->setAvgVelocity(glm::vec3(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX)*5.0f);
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
@@ -609,18 +640,48 @@ MCS * createCloth(){
 }
 
 MCS * createSoftCube(){
-    int s = 5;
+    int s = 7;
     MCS * tmp_mcs = new MCS(s,s,s);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->connections.setSpringConstant(100.0f);
+    tmp_mcs->connections.setSpringConstant(50.0f);
     tmp_mcs->connections.setDamperConstant(70.0f);
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-2.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
-    tmp_mcs->setAvgVelocity(glm::vec3(20,20,0));
+    tmp_mcs->setAvgVelocity(glm::vec3(0,20,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
                                     0.3f);      //friction
-    
+    return tmp_mcs;
+}
+
+MCS * createSpinner(){
+        int s = 3;
+        MCS * tmp_mcs = new MCS(s,s,s);
+        tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+        tmp_mcs->connections.setSpringConstant(5000.0f);
+        tmp_mcs->connections.setDamperConstant(10.0f);
+        tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.3),-50.0f);
+        tmp_mcs->setAvgPosition(glm::vec3(0,-3,0));
+        tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
+        tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                                   -5.0f,      //positions the plane on normal
+                                   1.0f,      //elasticity
+                                   0.1f);      //friction
+    return tmp_mcs;
+}
+
+MCS * createJelly(){
+    MCS * tmp_mcs = new MCS(10,10,10); //Minns inte hur den var
+    tmp_mcs->connections.setDamperConstant(0.1);
+    tmp_mcs->connections.setSpringConstant(2200);
+    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,2.0),-5.0f);
+    tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
+    tmp_mcs->setAvgVelocity(glm::vec3(1,2,0));
+    tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                               -5.0f,      //positions the plane on normal
+                               1.0f,      //elasticity
+                               0.3f);      //friction
     return tmp_mcs;
 }

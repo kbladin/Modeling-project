@@ -38,6 +38,9 @@ normal_(glm::normalize(normal)), position_(position), elasticity_(elasticity), f
         vertices_.colors[i] = glm::vec3(float(rand())/RAND_MAX, float(rand())/RAND_MAX, float(rand())/RAND_MAX);
     }
     // UVs ...
+    for (int i=0; i<8; ++i) {
+        vertexIndex2UVcoordinate(i, vertices_.UVs[i].x, vertices_.UVs[i].y, 2, 2, 1);
+    }
     
     //Triangles
     triangles_.triangleIndices[0].idx1 = 0;

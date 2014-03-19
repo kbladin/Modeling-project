@@ -411,33 +411,33 @@ void vertexIndex2UVcoordinate(const int vertex_index, float &U, float &V, const 
 
     if(vertex_index < Ntype0){                                         //back
         new_vertex_index = vertex_index;
-        U = (1 - (new_vertex_index % n_cols)/(float)(n_cols-1))/4.0f + 0.25f;
+        U = ((new_vertex_index % n_cols)/(float)(n_cols-1))/4.0f + 0.25f;
         V = (1 - (new_vertex_index / n_cols)/(float)(n_rows-1))/4.0f + 0.75f;
     }
     else if(vertex_index < Ntype0 + Ntype1){                           //front
         new_vertex_index = vertex_index - Ntype0;
-        U = (1 - (new_vertex_index % n_cols)/(float)(n_cols-1))/4.0f + 0.25f;
+        U = ((new_vertex_index % n_cols)/(float)(n_cols-1))/4.0f + 0.25f;
         V = ((new_vertex_index / n_cols)/(float)(n_rows-1))/4.0f + 0.25f;
     }
     else if(vertex_index < Ntype0+Ntype1+Ntype2){                  //left
         new_vertex_index = vertex_index - Ntype0 - Ntype1;
-        U = ((new_vertex_index / n_stacks)/(float)(n_cols-1))/4.0f;
+        U = ((new_vertex_index / n_stacks)/(float)(n_rows-1))/4.0f;
         V = (1 - (new_vertex_index % n_stacks)/(float)(n_stacks-1))/4.0f + 0.5f;
     }
     else if(vertex_index < Ntype0+Ntype1+Ntype2+Ntype3){           //right
         new_vertex_index = vertex_index - Ntype0 - Ntype1 - Ntype2;
-        U = (1 - (new_vertex_index / n_stacks)/(float)(n_cols-1))/4.0f + 0.5;
+        U = (1 - (new_vertex_index / n_stacks)/(float)(n_rows-1))/4.0f + 0.5;
         V = (1 - (new_vertex_index % n_stacks)/(float)(n_stacks-1))/4.0f + 0.5f;
     }
     else if(vertex_index < Ntype0+Ntype1+Ntype2+Ntype3+Ntype4){    //bottom
         new_vertex_index = vertex_index - Ntype0 - Ntype1 - Ntype2 - Ntype3;
-        U = (1 - (new_vertex_index % n_cols)/(float)(n_stacks-1))/4.0f + 0.25;
-        V = ((new_vertex_index / n_cols)/(float)(n_cols-1))/4.0f;
+        U = ((new_vertex_index % n_cols)/(float)(n_cols-1))/4.0f + 0.25;
+        V = ((new_vertex_index / n_cols)/(float)(n_stacks-1))/4.0f;
     }
     else if(vertex_index < TotNtype){                                  //top
         new_vertex_index = vertex_index - Ntype0 - Ntype1 - Ntype2 - Ntype3 - Ntype4;
-        U = (1 - (new_vertex_index % n_cols)/(float)(n_stacks-1))/4.0f + 0.25;
-        V = (1 - (new_vertex_index / n_cols)/(float)(n_cols-1))/4.0f + 0.5f;
+        U = ((new_vertex_index % n_cols)/(float)(n_cols-1))/4.0f + 0.25;
+        V = (1 - (new_vertex_index / n_cols)/(float)(n_stacks-1))/4.0f + 0.5f;
     }
     
     // TESTA DENNA FUNKTION
