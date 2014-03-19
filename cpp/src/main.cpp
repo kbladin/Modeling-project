@@ -584,15 +584,16 @@ void setMCS(){
 */
 
 MCS * createFloppyThing(){
-    MCS * tmp_mcs = new MCS(2,15,30); //Minns inte hur den var
+    MCS * tmp_mcs = new MCS(20,7,2);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,2.0),-5.0f);
-    tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
+    tmp_mcs->connections.setSpringConstant(5000.0f);
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
+    tmp_mcs->setAvgPosition(glm::vec3(-10,5,-10));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
-                                   -5.0f,      //positions the plane on normal
-                                    1.0f,      //elasticity
-                                    0.3f);      //friction
+                               -5.0f,      //positions the plane on normal
+                               1.0f,      //elasticity
+                               0.3f);      //friction
     return tmp_mcs;
 }
 
