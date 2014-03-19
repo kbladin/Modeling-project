@@ -1,6 +1,6 @@
 #include "Drawable.h"
 
-OpenGL_drawable::OpenGL_drawable(){
+OpenGL_drawable::OpenGL_drawable(const MCS* mcs){
     vertexPositionBuffer = GL_FALSE;
     vertexColorBuffer = GL_FALSE;
     vertexNormalBuffer = GL_FALSE;
@@ -15,6 +15,123 @@ OpenGL_drawable::OpenGL_drawable(){
     M_loc = -1;
     lightPos_loc = -1;
     lightColor_loc = -1;
+    
+    
+    vertex_position_data_ = &mcs->vertices.positions[0];
+    vertex_normal_data_ = &mcs->vertices.normals[0];
+    vertex_color_data_ = &mcs->vertices.colors[0];
+    vertex_UV_data_ = &mcs->vertices.UVs[0];
+    element_data_ = &mcs->triangles.triangleIndices[0];
+    
+    n_elements_ = mcs->triangles.triangleIndices.size() * 3;
+    n_verts_ = mcs->vertices.positions.size();
+    
+    setUpBuffers();
+
+}
+
+GLint OpenGL_drawable::MVP_loc = -1;
+GLint OpenGL_drawable::MV_loc = -1;
+GLint OpenGL_drawable::V_loc = -1;
+GLint OpenGL_drawable::M_loc = -1;
+GLint OpenGL_drawable::lightPos_loc = -1;
+GLint OpenGL_drawable::lightColor_loc = -1;
+
+void OpenGL_drawable::setUpBuffers(){
+    // Generate the element buffer
+    glGenBuffers(1, &elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * n_elements_, element_data_, GL_STATIC_DRAW);
+    
+    //generate the VAO
+    glGenVertexArrays(1, &vertexArray);
+    
+    // Create and compile the shader
+    programID = LoadShaders( "../../data/shaders/simple.vert", "../../data/shaders/simple.frag" );
+    
+    // Bind the VAO
+    glBindVertexArray(vertexArray);
+    
+    //generate VBO for vertex positions
+    glGenBuffers(1, &vertexPositionBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
+    //upload data to GPU
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * n_verts_, vertex_position_data_, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(
+                          0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                          3,                  // size
+                          GL_FLOAT,           // type
+                          GL_FALSE,           // normalized?
+                          0,                  // stride
+                          reinterpret_cast<void*>(0) // array buffer offset
+                          );
+    
+    //generate VBO for vertex colors
+    glGenBuffers(1, &vertexColorBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
+    //upload data to GPU
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * n_verts_, vertex_color_data_, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(
+                          1,                  // attribute 1. No particular reason for 1, but must match the layout in the shader.
+                          3,                  // size
+                          GL_FLOAT,           // type
+                          GL_FALSE,           // normalized?
+                          0,                  // stride
+                          reinterpret_cast<void*>(0) // array buffer offset
+                          );
+    
+    //generate VBO for vertex normals
+    glGenBuffers(1, &vertexNormalBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexNormalBuffer);
+    //upload data to GPU
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * n_verts_, vertex_normal_data_, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(
+                          2,                  // attribute 2. No particular reason for 2, but must match the layout in the shader.
+                          3,                  // size
+                          GL_FLOAT,           // type
+                          GL_FALSE,           // normalized?
+                          0,                  // stride
+                          reinterpret_cast<void*>(0) // array buffer offset
+                          );
+    
+    //generate VBO for vertex UV
+    glGenBuffers(1, &vertexUVBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexUVBuffer);
+    //upload data to GPU
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * n_verts_, vertex_UV_data_, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(
+                          3,                  // attribute 3. No particular reason for 3, but must match the layout in the shader.
+                          2,                  // size
+                          GL_FLOAT,           // type
+                          GL_FALSE,           // normalized?
+                          0,                  // stride
+                          reinterpret_cast<void*>(0) // array buffer offset
+                          );
+    
+    // Unbind the current VAO
+    glBindVertexArray(0);
+    
+    // Shader IDs
+    MVP_loc = glGetUniformLocation( programID, "MVP");
+    MV_loc = glGetUniformLocation( programID, "MV");
+    V_loc = glGetUniformLocation( programID, "V");
+    M_loc = glGetUniformLocation( programID, "M");
+    
+    lightPos_loc = glGetUniformLocation( programID, "lightPos_worldSpace");
+    lightColor_loc = glGetUniformLocation( programID, "lightColor");
+    
+    //Texture
+    textureID = loadBMP_custom("../../data/textures/empty.bmp");
+    texture_loc = glGetUniformLocation( programID, "textureSampler");
+    
+    int err = glGetError();
+    if (err > 0){
+        std::cout << "Error in initOpenGL(const OpenGL_drawable&, const MCS&). Error code: " << err << std::endl;
+    }
 }
 
 OpenGL_drawable::~OpenGL_drawable(){
@@ -31,6 +148,9 @@ void OpenGL_drawable::deleteBuffers(){
         glDeleteBuffers(1, &vertexColorBuffer);
     if(vertexUVBuffer)
         glDeleteBuffers(1, &vertexUVBuffer);
+    if(elementBuffer)
+        glDeleteBuffers(1, &elementBuffer);
+    
 
     if(vertexArray)
         glDeleteVertexArrays(1, &vertexArray);
@@ -50,164 +170,77 @@ void OpenGL_drawable::print() const{
 	//std::cout << "vertex_color_data.size(): " << vertex_color_data.size() << std::endl;
 }
 
-// KOMMENTERAR BORT DENNA KLASS SÅ LÄNGE, SE H-FILEN
-/*
-bool OpenGL_Drawer::add(MCS& mcs){
-	OpenGL_drawable openGL_drawable;
-
-    // Generate the element buffer
-    glGenBuffers(1, &openGL_drawable.elementBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGL_drawable.elementBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.triangles.triangleIndices[0], GL_STATIC_DRAW);
-
-    //generate the VAO
-    glGenVertexArrays(1, &openGL_drawable.vertexArray);
-
+void OpenGL_drawable::updateBuffers(const MCS *mcs, MatrixHandler* matrices){
     
-
-    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
-    glBindVertexArray(openGL_drawable.vertexArray);
- 
-    //generate VBO for vertex positions
-    glGenBuffers(1, &openGL_drawable.vertexPositionBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexPositionBuffer);
-    //upload data to GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mcs.particles.positions.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-        3,                  // size
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        0,                  // stride
-        reinterpret_cast<void*>(0) // array buffer offset
-    );
- 
-    //generate VBO for vertex colors
-    glGenBuffers(1, &openGL_drawable.vertexColorBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
-    //upload data to GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * openGL_drawable.vertex_color_data.size(), &openGL_drawable.vertex_color_data[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(
-        1,                  // attribute 1. No particular reason for 1, but must match the layout in the shader.
-        3,                  // size
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        0,                  // stride
-        reinterpret_cast<void*>(0) // array buffer offset
-    );
+    vertex_position_data_ = &mcs->vertices.positions[0];
+    vertex_normal_data_ = &mcs->vertices.normals[0];
+    vertex_color_data_ = &mcs->vertices.colors[0];
+    vertex_UV_data_ = &mcs->vertices.UVs[0];
+    element_data_ = &mcs->triangles.triangleIndices[0];
     
-    // Unbind the current VAO
+    n_elements_ = mcs->triangles.triangleIndices.size() * 3;
+    n_verts_ = mcs->vertices.positions.size();
+    
+    // Do the matrix stuff
+    matrices->calculateMatrices();
+    
+    glm::vec3 lightPos = glm::vec3(30,30,30);
+    glm::vec3 lightColor = glm::vec3(1,1,1);
+    
+    // Bind the VAO (Contains the vertex buffers)
+    glBindVertexArray(vertexArray);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, vertexPositionBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * n_verts_, vertex_position_data_, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexColorBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * n_verts_, vertex_color_data_, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexNormalBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * n_verts_, vertex_normal_data_, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexUVBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * n_verts_, vertex_UV_data_, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, elementBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * n_elements_, element_data_, GL_STATIC_DRAW);
+    
+    // Bind shader
+    glUseProgram(programID);
+    
+    // Matrix data
+    glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &matrices->MVP[0][0]);
+    glUniformMatrix4fv(M_loc, 1, GL_FALSE, &matrices->M[0][0]);
+    glUniformMatrix4fv(MV_loc, 1, GL_FALSE, &matrices->MV[0][0]);
+    glUniformMatrix4fv(V_loc, 1, GL_FALSE, &matrices->V[0][0]);
+    
+    // Bind our texture in Texture Unit 0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    // Set our "textureSampler" sampler to user Texture Unit 0
+    glUniform1i(texture_loc, 0);
+    
+    // Light data
+    glUniform3fv(lightPos_loc, 1, &lightPos[0]);
+    glUniform3fv(lightColor_loc, 1, &lightColor[0]);
+}
+
+void OpenGL_drawable::draw(){
+    // Bind shader
+    glUseProgram(programID);
+    
+    // Index buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+    
+    // Draw the triangles !
+    glDrawElements(
+                   GL_TRIANGLES,      // mode
+                   n_elements_,    // count
+                   GL_UNSIGNED_INT,   // type
+                   (void*)0           // element array buffer offset
+                   );
+    
+    
+    // Unbind VAO
     glBindVertexArray(0);
- 
-    //BIND SHADER HERE
-    //glUseProgram(programID);
-    // Create and compile the shader
-    openGL_drawable.programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
-
-    openGL_drawable.MVP_loc = glGetUniformLocation( openGL_drawable.programID, "MVP");
-    openGL_drawable.MV_loc = glGetUniformLocation( openGL_drawable.programID, "MV");
-    openGL_drawable.V_loc = glGetUniformLocation( openGL_drawable.programID, "V");
-    openGL_drawable.M_loc = glGetUniformLocation( openGL_drawable.programID, "M");
-
-    openGL_drawable.lightPos_loc = glGetUniformLocation( openGL_drawable.programID, "lightPos_worldSpace");
-    openGL_drawable.lightColor_loc = glGetUniformLocation( openGL_drawable.programID, "lightColor");
-
-
-    vecMCS.push_back(&mcs);
-    vecDrawable.push_back(openGL_drawable);
-
-    //std::cout << "\nDONE openGL_drawable:" << std::endl;
-    //openGL_drawable.print();
-
-    int err = glGetError();
-    if (err > 0){
-        std::cout << "ERROR in OpenGL_Drawer::add(). Error code: " << err << std::endl;
-        return false;
-    }
-    return true;
+    
+    // Unbind shader
+    glUseProgram(0);
 }
-
-bool OpenGL_Drawer::draw(){
-	for (int i = 0; i < vecMCS.size(); ++i){
-        int c=0;
-
-		assert(vecMCS[i] != NULL);
-		const MCS& mcs = *vecMCS[i];
-		const OpenGL_drawable& openGL_drawable = vecDrawable[i];
-
-		
-	    // Do the matrix stuff
-	    float speed = 0.0f;
-	    glm::mat4 M = glm::mat4(1.0f);
-	    glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), speed * (float) glfwGetTime(), glm::vec3(0.0f,1.0f,0.0f));
-	    glm::mat4 translate = glm::translate(glm::vec3(0.0f,0.0f,-20.0f));
-	    glm::mat4 V = translate * rotate;
-        glm::mat4 MV = V * M;
-	    glm::mat4 P = glm::perspective(45.0f, ratio, 0.1f, 100.f);
-	    glm::mat4 MVP = P*V*M;
-
-        glm::vec3 lightPos = glm::vec3(10,10,0);
-        glm::vec3 lightColor = glm::vec3(1,1,1);
-
-	    
-
-        std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
-	    // Bind the VAO (will contain one vertex position buffer and one vertex color buffer)
-        std::cout << "openGL_drawable.vertexArray = " << openGL_drawable.vertexArray << std::endl;
-	    glBindVertexArray(openGL_drawable.vertexArray);
-        std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
-	    // Bind position buffer
-	    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexPositionBuffer);
-	    //upload data to GPU
-	    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-	    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * mcs.triangles.triangleIndices.size(), &mcs.particles.positions[0], GL_STATIC_DRAW);
-        std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
-	    // Bind color buffer
-	    glBindBuffer(GL_ARRAY_BUFFER, openGL_drawable.vertexColorBuffer);
-	    //upload data to GPU
-	    // THIS IS NOR SUPER (SENDING DATA TO GPU EVERY FRAME)
-	    glBufferData(GL_ARRAY_BUFFER, sizeof(int) * 3 * openGL_drawable.vertex_color_data.size(), &openGL_drawable.vertex_color_data[0], GL_STATIC_DRAW);
-        std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
-	    //BIND SHADER HERE
-	    glUseProgram(openGL_drawable.programID);
-
-
-        glUniformMatrix4fv(openGL_drawable.MVP_loc, 1, GL_FALSE, &MVP[0][0]);
-        glUniformMatrix4fv(openGL_drawable.M_loc, 1, GL_FALSE, &M[0][0]);
-        glUniformMatrix4fv(openGL_drawable.MV_loc, 1, GL_FALSE, &MV[0][0]);
-        glUniformMatrix4fv(openGL_drawable.V_loc, 1, GL_FALSE, &V[0][0]);
-
-        glUniform3fv(openGL_drawable.lightPos_loc, 1, &lightPos[0]);
-        glUniform3fv(openGL_drawable.lightColor_loc, 1, &lightColor[0]);
-
-        std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
-	    // Index buffer
-	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGL_drawable.elementBuffer);
-        std::cout << "c=" << c++ << " :  glGetError() = " << glGetError() << std::endl;
-	    // Draw the triangles !
-	    glDrawElements(
-	     GL_TRIANGLES,      // mode
-	     mcs.triangles.triangleIndices.size()*3,    // count
-	     GL_UNSIGNED_INT,   // type
-	     (void*)0           // element array buffer offset
-	    );
-
-	 
-	    //unbind
-	    glBindVertexArray(0);
-	    
-	    //UNBIND SHADER HERE
-	    glUseProgram(0);
-        int err = glGetError();
-        if (err > 0){
-            std::cout << "Error in OpenGL_Drawer::draw(). Error code: " << err << std::endl;
-            return false;
-        }
-	}
-    return true;
-}
-*/
-
 

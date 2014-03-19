@@ -13,57 +13,54 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <shader.h>
+#include "texture.h"
+
 
 #include "ElasticMaterials_lib.h"
 
 
 class OpenGL_drawable {
 public:
-    OpenGL_drawable();
+    OpenGL_drawable(const MCS* mcs);
     ~OpenGL_drawable();
-
+    
+    void setUpBuffers();
     void deleteBuffers();
-
+    
+    void print() const;
+    void updateBuffers(const MCS *mcs, MatrixHandler* matrices);
+    void draw();
+    
+private:
     GLuint vertexPositionBuffer;
     GLuint vertexColorBuffer;
     GLuint vertexNormalBuffer;
     GLuint vertexUVBuffer;
-
+    
     GLuint vertexArray;
     GLuint elementBuffer;
-
-    GLint MVP_loc;
-    GLint MV_loc;
-    GLint V_loc;
-    GLint M_loc;
-    GLint lightPos_loc;
-    GLint lightColor_loc;
+    
+    //Only need one of these since they are updated anyway
+    static GLint MVP_loc;
+    static GLint MV_loc;
+    static GLint V_loc;
+    static GLint M_loc;
+    static GLint lightPos_loc;
+    static GLint lightColor_loc;
     
     GLuint texture_loc;
     
     GLuint textureID;
     GLuint programID;
-    // Vertex color data
-    //std::vector<glm::vec3> vertex_color_data;
-
-    void print() const;
-};
-
-
-// DENNA KLASS STÄMMER INTE LÄNGRE ÖVERENS MED UTRITNINGEN, KOMMENTERAR DÄRFÖR BORT DEN SÅ LÄNGE EFTERSOM DEN INTE ANVÄNDS
-/*
-class OpenGL_Drawer{
-public:
-    bool add(MCS& mcs);
-    bool draw();
     
-    float ratio;
-
-    std::vector<MCS*> vecMCS;
-    std::vector<OpenGL_drawable> vecDrawable;
-private:
-
+    const glm::vec3* vertex_position_data_;
+    const glm::vec3* vertex_normal_data_;
+    const glm::vec3* vertex_color_data_;
+    const glm::vec2* vertex_UV_data_;
+    const IndexedTriangle* element_data_;
+    
+    int n_verts_;
+    int n_elements_;
 };
-*/
 
 #endif
