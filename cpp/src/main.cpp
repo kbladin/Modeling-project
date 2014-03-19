@@ -31,13 +31,14 @@ MCS * createSoftCube();
 MCS * createSpinner();
 MCS * createJelly();
 
-
 // Global variables
 GLFWwindow* window;
 MCS * mcs = NULL;
 Camera* cam = NULL;
 //OpenGL_drawable openGL_drawable;
 OpenGL_drawable* drawable_mcs;
+std::vector<OpenGL_drawable*> drawable_planes; //Vet inte varför det måste vara pekare men funkar inte annars
+
 MatrixHandler* matrices;
 
 int width, height;
@@ -47,6 +48,15 @@ bool pause = false;
 bool forward = false;
 bool backward = false;
 
+GLuint programID;
+GLuint dry_material_programID;
+GLuint textureID;
+GLuint faces_textureID;
+
+Material* ground_material;
+Material* object_material;
+
+
 int main(void){
     initGLFW();
     initOpenGL();
@@ -55,8 +65,12 @@ int main(void){
 
     cam = new Camera(window, mcs);
     matrices = new MatrixHandler(cam);
+    
+    // Create and compile the shader
+    programID = LoadShaders( "../../data/shaders/simple.vert", "../../data/shaders/simple.frag" );
+    textureID = loadBMP_custom("../../data/textures/empty.bmp");
+    faces_textureID = loadBMP_custom("../../data/textures/empty1.bmp");
 
-    //OpenGL_drawable collision_plane_drawable;
     
     // INIT SIMULATION 
     int simulations_per_frame = 12;
@@ -78,10 +92,15 @@ int main(void){
     //OpenGL_Drawer //od;
     ////od.add(mcs);
     
-    drawable_mcs = new OpenGL_drawable(mcs);// initOpenGL(openGL_drawable, *mcs);
+    ground_material = new Material;
+    object_material = new Material;
+    object_material->wetness = 0.1f;
+
     
-    // Really ugly to do like this. The collision plane drawable should have nothing to do with the MCS. What should be done instead is to send the data to the initOpenGL function independent of what type of object it is.
-    //initOpenGL(collision_plane_drawable, *mcs);
+    drawable_mcs = new OpenGL_drawable(mcs, *object_material, programID, textureID);
+    for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+        drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+    }
     
     int frame = 0;
     
@@ -116,7 +135,19 @@ int main(void){
         //od.ratio = width / (float) height;
         //if(!od.draw()) break;
         
-        drawable_mcs->updateBuffers(mcs, matrices);
+        drawable_mcs->updateRuntimeBuffers(mcs, matrices);
+        
+        
+        /*
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            drawable_planes[i].draw();
+        }
+         */
+        
+        //drawable_plane->draw();
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            drawable_planes[i]->draw();
+        }
         drawable_mcs->draw();
 
         //Swap draw buffers
@@ -140,6 +171,10 @@ int main(void){
     }
     delete mcs;
     delete cam;
+    delete drawable_mcs;
+    for (int i = 0; i<drawable_planes.size(); ++i) {
+        delete drawable_planes[i];
+    }
     cleanUpGLFW();
 }
 
@@ -195,11 +230,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Floppy Thing... " << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers();
+        drawable_mcs->setUpBuffers(textureID);
         mcs = createFloppyThing();
         cam->setTarget(mcs);
-        drawable_mcs->updateBuffers(mcs, matrices);
-        //initOpenGL(drawable_mcs, *mcs);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        for (int i = 0; i<drawable_planes.size(); ++i) {
+            delete drawable_planes[i];
+        }
+        drawable_planes.resize(0);
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, faces_textureID));
+        }
         std::cout << "Done" << std::endl;
     }
 
@@ -207,10 +248,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Rolling Dice..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers();
+        drawable_mcs->setUpBuffers(faces_textureID);
         mcs = createRollingDice();
         cam->setTarget(mcs);
-        drawable_mcs->updateBuffers(mcs, matrices);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,faces_textureID);
+        for (int i = 0; i<drawable_planes.size(); ++i) {
+            delete drawable_planes[i];
+        }
+        drawable_planes.resize(0);
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+        }
         std::cout << "Done" << std::endl;
     }
 
@@ -218,10 +266,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Standing Snake..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers();
+        drawable_mcs->setUpBuffers(textureID);
         mcs = createStandingSnake();
         cam->setTarget(mcs);
-        drawable_mcs->updateBuffers(mcs, matrices);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        for (int i = 0; i<drawable_planes.size(); ++i) {
+            delete drawable_planes[i];
+        }
+        drawable_planes.resize(0);
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+        }
         std::cout << "Done" << std::endl;
     }
 
@@ -229,10 +284,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Cloth..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers();
+        drawable_mcs->setUpBuffers(textureID);
         mcs = createCloth();
         cam->setTarget(mcs);
-        drawable_mcs->updateBuffers(mcs, matrices);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        for (int i = 0; i<drawable_planes.size(); ++i) {
+            delete drawable_planes[i];
+        }
+        drawable_planes.resize(0);
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+        }
         std::cout << "Done" << std::endl;
     }
 
@@ -240,10 +302,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading SoftCube..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers();
+        drawable_mcs->setUpBuffers(textureID);
         mcs = createSoftCube();
         cam->setTarget(mcs);
-        drawable_mcs->updateBuffers(mcs, matrices);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        for (int i = 0; i<drawable_planes.size(); ++i) {
+            delete drawable_planes[i];
+        }
+        drawable_planes.resize(0);
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+        }
         std::cout << "Done" << std::endl;
     }
     
@@ -251,10 +320,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Spinner..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers();
+        drawable_mcs->setUpBuffers(textureID);
         mcs = createSpinner();
         cam->setTarget(mcs);
-        drawable_mcs->updateBuffers(mcs, matrices);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        for (int i = 0; i<drawable_planes.size(); ++i) {
+            delete drawable_planes[i];
+        }
+        drawable_planes.resize(0);
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+        }
         std::cout << "Done" << std::endl;
     }
     
@@ -262,10 +338,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Jelly..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers();
+        drawable_mcs->setUpBuffers(textureID);
         mcs = createJelly();
         cam->setTarget(mcs);
-        drawable_mcs->updateBuffers(mcs, matrices);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        for (int i = 0; i<drawable_planes.size(); ++i) {
+            delete drawable_planes[i];
+        }
+        drawable_planes.resize(0);
+        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+        }
         std::cout << "Done" << std::endl;
     }
 
