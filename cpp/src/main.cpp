@@ -34,6 +34,7 @@ MCS * createCloth();
 MCS * createSoftCube();
 MCS * createSpinner();
 MCS * createJelly();
+MCS * createWaffle();
 
 
 // Global variables
@@ -264,6 +265,15 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         delete mcs;
         openGL_drawable.deleteBuffers();
         mcs = createJelly();
+        cam->setTarget(mcs);
+        initOpenGL(openGL_drawable, *mcs);
+        std::cout << "Done" << std::endl;
+    }
+    if (key == GLFW_KEY_8 && action == GLFW_PRESS){
+        std::cout << "Loading Waffle... " << std::endl;
+        delete mcs;
+        openGL_drawable.deleteBuffers();
+        mcs = createWaffle();
         cam->setTarget(mcs);
         initOpenGL(openGL_drawable, *mcs);
         std::cout << "Done" << std::endl;
@@ -682,6 +692,21 @@ MCS * createJelly(){
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,2.0),-5.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
     tmp_mcs->setAvgVelocity(glm::vec3(1,2,0));
+    tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
+                               -5.0f,      //positions the plane on normal
+                               1.0f,      //elasticity
+                               0.3f);      //friction
+    return tmp_mcs;
+}
+
+MCS * createWaffle(){
+    MCS * tmp_mcs = new MCS(10,8,2);
+    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*30.0f;
+    tmp_mcs->connections.setSpringConstant(5000.0f);
+    tmp_mcs->connections.setDamperConstant(70.0f);
+    //tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
+    tmp_mcs->setAvgPosition(glm::vec3(-10,-0.6,-10));
+    tmp_mcs->setAvgVelocity(glm::vec3(0,0,0.2));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                -5.0f,      //positions the plane on normal
                                1.0f,      //elasticity
