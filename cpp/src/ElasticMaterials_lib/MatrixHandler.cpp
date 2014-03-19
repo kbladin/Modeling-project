@@ -34,11 +34,11 @@ Camera::Camera(GLFWwindow* window, MCS* target){
 }
 
 glm::vec3 Camera::rotation_axis = glm::vec3(0.0f,1.0f,0.0f);
-glm::vec3 Camera::position = glm::vec3(0.0f,0.0f,0.0f);
+glm::vec3 Camera::position = glm::vec3(0.0f,0.0f,35.0f);
 glm::vec3 Camera::direction = glm::vec3(0.0f,0.0f,-1.0f);
 glm::vec3 Camera::up = glm::vec3(0.0f,1.0f,0.0f);
 float Camera::fov = 40;
-float Camera::x_pos_incr = 0.0f;
+float Camera::x_pos_incr = 00.0f;
 float Camera::y_pos_incr = 0.0f;
 MCS* Camera::target_ = NULL;
 
