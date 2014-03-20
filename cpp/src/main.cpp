@@ -60,6 +60,7 @@ GLuint cloth2_textureID;
 GLuint cloth3_textureID;
 GLuint cloth4_textureID;
 GLuint cloth5_textureID;
+GLuint slime_textureID;
 GLuint floor2_textureID;
 GLuint floor3_textureID;
 GLuint die_textureID;
@@ -90,6 +91,7 @@ int main(void){
     cloth3_textureID = loadBMP_custom("../../data/textures/cloth3.bmp");
     cloth4_textureID = loadBMP_custom("../../data/textures/cloth4.bmp");
     cloth5_textureID = loadBMP_custom("../../data/textures/cloth5.bmp");
+    slime_textureID = loadBMP_custom("../../data/textures/slime2.bmp");
     floor2_textureID = loadBMP_custom("../../data/textures/floor2.bmp");
     floor3_textureID = loadBMP_custom("../../data/textures/floor3.bmp");
     die_textureID = loadBMP_custom("../../data/textures/die.bmp");
@@ -363,10 +365,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Jelly..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers(faces_textureID);
+        drawable_mcs->setUpBuffers(slime_textureID);
         mcs = createJelly();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,faces_textureID);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,slime_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
