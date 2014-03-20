@@ -98,7 +98,7 @@ int main(void){
 
     
     // INIT SIMULATION 
-    int simulations_per_frame = 10;
+    int simulations_per_frame = 12;
     float dt = 1.0f/(60.0f*simulations_per_frame);
 
     std::vector<float> w;
@@ -309,10 +309,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Cloth..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers(textureID);
+        drawable_mcs->setUpBuffers(cloth2_textureID);
         mcs = createCloth();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices, cloth2_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -363,10 +363,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Jelly..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers(textureID);
+        drawable_mcs->setUpBuffers(faces_textureID);
         mcs = createJelly();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,faces_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -509,14 +509,14 @@ MCS * createStandingSnake(){
 }
 
 MCS * createCloth(){
-    MCS * tmp_mcs = new MCS(30,30,1);
+    MCS * tmp_mcs = new MCS(31,31,1);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->addRotation(glm::vec3(1.0,0.5,0.0),1.0f);
     tmp_mcs->connections.setSpringConstant(10000.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
     
-    Lock l(tmp_mcs->INTERVAL_LAST_ROW);
+    Lock l(tmp_mcs->INTERVAL_LAST_ROW_SKIP15);
     tmp_mcs->lock_ = l;
 
     return tmp_mcs;
@@ -526,8 +526,8 @@ MCS * createSoftCube(){
     int s = 7;
     MCS * tmp_mcs = new MCS(s,s,s);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->connections.setSpringConstant(50.0f);
-    tmp_mcs->connections.setDamperConstant(70.0f);
+    tmp_mcs->connections.setSpringConstant(70.0f);
+    tmp_mcs->connections.setDamperConstant(80.0f);
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-2.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
     tmp_mcs->setAvgVelocity(glm::vec3(0,20,0));
@@ -559,7 +559,7 @@ MCS * createJelly(){
     tmp_mcs->connections.setDamperConstant(0.1);
     tmp_mcs->connections.setSpringConstant(2200);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,2.0),-5.0f);
+    tmp_mcs->addRotation(glm::vec3(0.0,1.0,2.0),-7.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
     tmp_mcs->setAvgVelocity(glm::vec3(1,2,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane

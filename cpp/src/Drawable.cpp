@@ -164,17 +164,18 @@ void OpenGL_drawable::setUpBuffers(GLuint textureID){
     //textureID = loadBMP_custom("../../data/textures/empty.bmp");
     texture_loc_ = glGetUniformLocation( programID_, "textureSampler");
     
+    
     reflectance_loc_ = glGetUniformLocation( programID_, "reflectance");
     specularity_loc_ = glGetUniformLocation( programID_, "specularity");
     shinyness_loc_ = glGetUniformLocation( programID_, "shinyness");
     wetness_loc_ = glGetUniformLocation( programID_, "wetness");
     
+    /*
 	glUniform1fv(reflectance_loc_, 1, &material_.reflectance);
     glUniform1fv(specularity_loc_, 1, &material_.specularity);
     glUniform1fv(shinyness_loc_, 1, &material_.shinyness);
     glUniform1fv(wetness_loc_, 1, &material_.wetness);
-    
-    std::cout << "material_.wetness = " << material_.wetness << std::endl;
+    */
     
     int err = glGetError();
     if (err > 0){

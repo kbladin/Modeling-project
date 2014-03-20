@@ -57,6 +57,7 @@ class MCS{
         ParticleInterval INTERVAL_FIRST_COLUMN;
         ParticleInterval INTERVAL_FIRST_STACK;
         ParticleInterval INTERVAL_LAST_ROW;
+        ParticleInterval INTERVAL_LAST_ROW_SKIP15;
     
     	Lock lock_;
     
