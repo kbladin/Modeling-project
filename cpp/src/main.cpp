@@ -329,16 +329,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading SoftCube..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers(textureID);
+        drawable_mcs->setUpBuffers(faces_textureID);
         mcs = createSoftCube();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,faces_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
         drawable_planes.resize(0);
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
         }
         std::cout << "Done" << std::endl;
     }
@@ -347,16 +347,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Spinner..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers(textureID);
+        drawable_mcs->setUpBuffers(cloth1_textureID);
         mcs = createSpinner();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,cloth1_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
         drawable_planes.resize(0);
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor3_textureID));
         }
         std::cout << "Done" << std::endl;
     }
@@ -374,7 +374,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         }
         drawable_planes.resize(0);
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+            switch (i) {
+                case 0: // Ground
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
+                    break;
+                case 1: // Wall
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
+                    break;
+                default:
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
+                    break;
+            }
         }
         std::cout << "Done" << std::endl;
     }
@@ -564,10 +574,17 @@ MCS * createJelly(){
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,2.0),-7.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
     tmp_mcs->setAvgVelocity(glm::vec3(1,2,0));
+    float scene_scale = 250.0f;
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                -5.0f,      //positions the plane on normal
                                1.0f,      //elasticity
-                               0.3f);      //friction
+                               0.3f,      //friction
+                               scene_scale);
+    tmp_mcs->addCollisionPlane(glm::vec3(0,0,1),    //normal of the plane
+                               -scene_scale/2,      //positions the plane on normal
+                               1.0f,      //elasticity
+                               0.3f,      //friction
+                               scene_scale);    //scale
     return tmp_mcs;
 }
 
