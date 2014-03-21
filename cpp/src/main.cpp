@@ -516,10 +516,26 @@ MCS * createRollingDice(){
     tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
     tmp_mcs->connections.setSpringConstant(100000.0f);
     tmp_mcs->setAvgVelocity(glm::vec3(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX)*50.0f);
+    float scene_scale = 80.0f;
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
-                                   -5.0f,      //positions the plane on normal
-                                    1.0f,      //elasticity
-                                    0.3f);      //friction
+                             -5.0f,      //positions the plane on normal
+                             1.0f,      //elasticity
+                             0.3f,      //friction
+                             scene_scale);    //scale
+    tmp_mcs->addCollisionPlane(glm::vec3(0,0,-1),    //normal of the plane
+                             -scene_scale/2,      //positions the plane on normal
+                             1.0f,      //elasticity
+                             0.3f,      //friction
+                             scene_scale);    //scale
+  tmp_mcs->addCollisionPlane(glm::vec3(-1,0,0),    //normal of the plane
+                             -scene_scale/2,      //positions the plane on normal
+                             1.0f,      //elasticity
+                             0.3f,      //friction
+                             scene_scale);    //scale
+
+  
+  
+
     return tmp_mcs;
 }
 

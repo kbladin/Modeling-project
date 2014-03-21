@@ -7,7 +7,7 @@ normal_(glm::normalize(normal)), position_(position), elasticity_(elasticity), f
     glm::vec3 axis1;
     glm::vec3 axis2;
     
-    if ( glm::dot(normal_, glm::vec3(1.0f,0.0f,0.0f)) != glm::length(normal_))
+  if ( glm::abs(glm::dot(normal_, glm::vec3(1.0f,0.0f,0.0f))) != glm::length(normal_))
         axis1 = glm::normalize(glm::cross(normal_, glm::vec3(1.0f,0.0f,0.0f)));
     else
         axis1 = glm::normalize(glm::cross(normal_, glm::vec3(0.0f,1.0f,0.0f)));
