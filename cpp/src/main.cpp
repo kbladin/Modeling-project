@@ -132,9 +132,9 @@ int main(void){
     object_material->wetness = 0.1f;
 
     
-    drawable_mcs = new OpenGL_drawable(mcs, *object_material, programID, textureID);
+    drawable_mcs = new OpenGL_drawable(mcs, *object_material, programID, cloth1_textureID);
     for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-        drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+        drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor3_textureID));
     }
     
     int frame = 0;
@@ -277,16 +277,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Floppy Thing... " << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers(textureID);
+        drawable_mcs->setUpBuffers(cloth1_textureID);
         mcs = createFloppyThing();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices,cloth1_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
         drawable_planes.resize(0);
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, wall1_textureID));
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor3_textureID));
         }
         std::cout << "Done" << std::endl;
     }
@@ -391,10 +391,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
                     drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor3_textureID));
                     break;
                 case 1: // Wall
-                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth4_textureID));
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth5_textureID));
                     break;
                 default:
-                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth4_textureID));
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth5_textureID));
                     break;
             }
         }
@@ -543,10 +543,12 @@ MCS * createFloppyThing(){
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-5.0f);
     tmp_mcs->setAvgPosition(glm::vec3(-10,5,-10));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
+    float scene_scale = 100.0f;
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                -5.0f,      //positions the plane on normal
                                1.0f,      //elasticity
-                               0.3f);      //friction
+                               0.3f,
+                               scene_scale);      //friction
     return tmp_mcs;
 }
 
@@ -601,17 +603,17 @@ MCS * createSoftCube(){
     tmp_mcs->connections.setDamperConstant(80.0f);
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-2.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
-    tmp_mcs->setAvgVelocity(glm::vec3(0,20,-40));
-    float scene_scale = 200.0f;
+    tmp_mcs->setAvgVelocity(glm::vec3(0,20,-30));
+    float scene_scale = 50.0f;
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                -5.0f,      //positions the plane on normal
                                1.0f,      //elasticity
-                               0.1f,      //friction
+                               0.3f,      //friction
                                scene_scale);
     tmp_mcs->addCollisionPlane(glm::vec3(0,0,1),    //normal of the plane
                                -scene_scale/2,      //positions the plane on normal
                                -0.9f,      //elasticity
-                               1.0f,      //friction
+                               0.8f,      //friction
                                scene_scale);    //scale
     return tmp_mcs;
 }
