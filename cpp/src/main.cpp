@@ -260,7 +260,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         drawable_mcs->setUpBuffers(textureID);
         mcs = createFloppyThing();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices,textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -278,7 +278,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         drawable_mcs->setUpBuffers(die_textureID);
         mcs = createRollingDice();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,die_textureID);
+        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices,die_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -296,7 +296,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         drawable_mcs->setUpBuffers(textureID);
         mcs = createStandingSnake();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices,textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -314,7 +314,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         drawable_mcs->setUpBuffers(cloth2_textureID);
         mcs = createCloth();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices, cloth2_textureID);
+        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices, cloth2_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -332,7 +332,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         drawable_mcs->setUpBuffers(textureID);
         mcs = createSoftCube();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices,textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -350,7 +350,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         drawable_mcs->setUpBuffers(textureID);
         mcs = createSpinner();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices,textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -368,7 +368,11 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         drawable_mcs->setUpBuffers(slime_textureID);
         mcs = createJelly();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,slime_textureID);
+      Material slime_material;
+      slime_material.wetness = 0.1;
+      slime_material.shinyness = 64;
+      slime_material.specularity = 0.5;
+        drawable_mcs->updateAllBuffers(mcs, slime_material, matrices,slime_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -385,7 +389,21 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         drawable_mcs->setUpBuffers(waffle_textureID);
         mcs = createWaffle();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, ground_material, matrices,waffle_textureID);
+      Material waffle_material;
+      waffle_material.wetness = 0.0;
+      waffle_material.shinyness = 4;
+      waffle_material.specularity = 0.2;
+        drawable_mcs->updateAllBuffers(mcs, waffle_material, matrices,waffle_textureID);
+      
+      Material tiling_material;
+      tiling_material.wetness = 0.001;
+      tiling_material.shinyness = 128;
+      tiling_material.specularity = 0.3;
+      
+      Material induction_material;
+      induction_material.wetness = 0.0;
+      induction_material.shinyness = 512;
+      induction_material.specularity = 0.4;
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -393,10 +411,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
             switch (i) {
                 case 0: // Ground
-                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, induction_textureID));
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], induction_material, programID, induction_textureID));
                     break;
                 case 1: // Wall
-                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, tiling_textureID));
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], tiling_material, programID, tiling_textureID));
                     break;
                 default:
                     drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
@@ -485,9 +503,9 @@ MCS * createRollingDice(){
     MCS * tmp_mcs = new MCS(3,3,3);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*80.0f;
     tmp_mcs->addRotation(glm::vec3(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX),15.0f);
-    tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
+    tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
     tmp_mcs->connections.setSpringConstant(100000.0f);
-    tmp_mcs->setAvgVelocity(glm::vec3(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX)*5.0f);
+    tmp_mcs->setAvgVelocity(glm::vec3(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX)*50.0f);
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
