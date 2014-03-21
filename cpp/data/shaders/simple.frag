@@ -13,6 +13,12 @@ uniform vec3 lightPos_worldSpace;
 uniform vec3 lightColor;
 uniform sampler2D textureSampler;
 
+uniform float reflectance;
+uniform float specularity;
+uniform float shinyness;
+uniform float wetness;
+
+
 // Ouput data
 out vec3 color;
 
@@ -40,12 +46,12 @@ void main(){
 	vec3 diffuse = materialDiffuseColor * lightColor * cosTheta * invDistSquare * lightIntensity;
 
 	//Specular light
-	float specularity = 0.5;
-	float shinyNess = 30;
-	float wetness = 0.1;
+	//float specularity = 0.5;
+	//float shinyNess = 30;
+	//float wetness = 0.1;
 	float cosAlpha = clamp( dot( e,-r ), 0,1 ) * (1 + wetness);
-	vec3 specular = lightColor * clamp(pow(cosAlpha, shinyNess),0,1) * invDistSquare * lightIntensity * specularity;
+	vec3 specular = lightColor * clamp(pow(cosAlpha, shinyness),0,1) * invDistSquare * lightIntensity * specularity;
 
 	// Total light
-	color = ambient + diffuse + specular;
+	color =reflectance * (ambient + diffuse + specular);
 }

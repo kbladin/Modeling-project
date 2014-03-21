@@ -24,7 +24,8 @@ class MCS{
         void addCollisionPlane(glm::vec3 normal,
                            float position,
                            float elasticity = 0.0f,
-                           float friction = 0.0f);
+                           float friction = 0.0f,
+                               float scale = 200.0f);
         void freeze();
 
         void calcConnectionForcesOnParticles();
@@ -56,6 +57,7 @@ class MCS{
         ParticleInterval INTERVAL_FIRST_COLUMN;
         ParticleInterval INTERVAL_FIRST_STACK;
         ParticleInterval INTERVAL_LAST_ROW;
+        ParticleInterval INTERVAL_LAST_ROW_SKIP15;
     
     	Lock lock_;
     
