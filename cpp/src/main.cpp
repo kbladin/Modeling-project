@@ -70,6 +70,7 @@ GLuint tiling_textureID;
 GLuint induction_textureID;
 GLuint wall1_textureID;
 GLuint wall2_textureID;
+GLuint wall3_textureID;
 
 Material* ground_material;
 Material* object_material;
@@ -103,6 +104,7 @@ int main(void){
     tiling_textureID = loadBMP_custom("../../data/textures/tiling.bmp");
     wall1_textureID = loadBMP_custom("../../data/textures/wall1.bmp");
     wall2_textureID = loadBMP_custom("../../data/textures/wall2.bmp");
+    wall3_textureID = loadBMP_custom("../../data/textures/wall3.bmp");
 
     
     // INIT SIMULATION 
@@ -284,7 +286,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         }
         drawable_planes.resize(0);
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, faces_textureID));
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, wall1_textureID));
         }
         std::cout << "Done" << std::endl;
     }
@@ -361,10 +363,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
                     drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, wall2_textureID));
                     break;
                 case 1: // Wall
-                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth3_textureID));
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, wall3_textureID));
                     break;
                 default:
-                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth3_textureID));
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, wall3_textureID));
                     break;
             }
         }
