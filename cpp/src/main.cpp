@@ -36,9 +36,11 @@ MCS * createWaffle();
 GLFWwindow* window;
 MCS * mcs = NULL;
 Camera* cam = NULL;
+
 //OpenGL_drawable openGL_drawable;
 OpenGL_drawable* drawable_mcs;
 std::vector<OpenGL_drawable*> drawable_planes; //Vet inte varför det måste vara pekare men funkar inte annars
+static bool wireframe = false;
 
 MatrixHandler* matrices;
 
@@ -255,6 +257,18 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_F && action == GLFW_PRESS){
         mcs->freeze();
     }
+    if (key == GLFW_KEY_TAB && action == GLFW_PRESS){
+        if(!wireframe){
+            glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+            glDisable(GL_CULL_FACE);
+            wireframe = true;
+        }
+        else{
+            glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+            glEnable(GL_CULL_FACE);
+            wireframe = false;
+        }
+    }
 
     //INITS
     if (key == GLFW_KEY_1 && action == GLFW_PRESS){
@@ -392,10 +406,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         drawable_mcs->setUpBuffers(slime_textureID);
         mcs = createJelly();
         cam->setTarget(mcs);
-      Material slime_material;
-      slime_material.wetness = 0.1;
-      slime_material.shinyness = 64;
-      slime_material.specularity = 0.5;
+        Material slime_material;
+        slime_material.wetness = 0.1;
+        slime_material.shinyness = 64;
+        slime_material.specularity = 0.5;
         drawable_mcs->updateAllBuffers(mcs, slime_material, matrices,slime_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
@@ -509,6 +523,7 @@ bool initOpenGL(){
     
     glEnable(GL_CULL_FACE);
 
+
     return true;
 }
 
@@ -565,10 +580,10 @@ MCS * createStandingSnake(){
 MCS * createCloth(){
     MCS * tmp_mcs = new MCS(31,31,1);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(1.0,0.5,0.0),1.0f);
+    tmp_mcs->addRotation(glm::vec3(1.0,0.5,0.0),0.0f);
     tmp_mcs->connections.setSpringConstant(10000.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
-    tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
+    tmp_mcs->setAvgVelocity(glm::vec3(2,2,2));
     
     Lock l(tmp_mcs->INTERVAL_LAST_ROW_SKIP15);
     tmp_mcs->lock_ = l;
