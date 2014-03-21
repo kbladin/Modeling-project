@@ -66,6 +66,8 @@ GLuint floor3_textureID;
 GLuint die_textureID;
 GLuint tiling_textureID;
 GLuint induction_textureID;
+GLuint wall1_textureID;
+GLuint wall2_textureID;
 
 Material* ground_material;
 Material* object_material;
@@ -97,6 +99,8 @@ int main(void){
     die_textureID = loadBMP_custom("../../data/textures/die.bmp");
     induction_textureID = loadBMP_custom("../../data/textures/induction.bmp");
     tiling_textureID = loadBMP_custom("../../data/textures/tiling.bmp");
+    wall1_textureID = loadBMP_custom("../../data/textures/wall1.bmp");
+    wall2_textureID = loadBMP_custom("../../data/textures/wall2.bmp");
 
     
     // INIT SIMULATION 
@@ -338,7 +342,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         }
         drawable_planes.resize(0);
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
+            switch (i) {
+                case 0: // Ground
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, wall2_textureID));
+                    break;
+                case 1: // Wall
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth3_textureID));
+                    break;
+                default:
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth3_textureID));
+                    break;
+            }
         }
         std::cout << "Done" << std::endl;
     }
@@ -356,7 +370,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         }
         drawable_planes.resize(0);
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor3_textureID));
+            switch (i) {
+                case 0: // Ground
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor3_textureID));
+                    break;
+                case 1: // Wall
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth4_textureID));
+                    break;
+                default:
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, cloth4_textureID));
+                    break;
+            }
         }
         std::cout << "Done" << std::endl;
     }
@@ -560,11 +584,18 @@ MCS * createSoftCube(){
     tmp_mcs->connections.setDamperConstant(80.0f);
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-2.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
-    tmp_mcs->setAvgVelocity(glm::vec3(0,20,0));
+    tmp_mcs->setAvgVelocity(glm::vec3(0,20,-40));
+    float scene_scale = 200.0f;
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
-                                   -5.0f,      //positions the plane on normal
-                                    1.0f,      //elasticity
-                                    0.3f);      //friction
+                               -5.0f,      //positions the plane on normal
+                               1.0f,      //elasticity
+                               0.1f,      //friction
+                               scene_scale);
+    tmp_mcs->addCollisionPlane(glm::vec3(0,0,1),    //normal of the plane
+                               -scene_scale/2,      //positions the plane on normal
+                               -0.9f,      //elasticity
+                               1.0f,      //friction
+                               scene_scale);    //scale
     return tmp_mcs;
 }
 
@@ -577,10 +608,27 @@ MCS * createSpinner(){
         tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.3),-50.0f);
         tmp_mcs->setAvgPosition(glm::vec3(0,-3,0));
         tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
+        float scene_scale = 50.0f;
         tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
                                    1.0f,      //elasticity
-                                   0.1f);      //friction
+                                   0.1f,
+                                   scene_scale);      //friction
+        tmp_mcs->addCollisionPlane(glm::vec3(1,0,0),    //normal of the plane
+                               -scene_scale/2,      //positions the plane on normal
+                               1.0f,      //elasticity
+                               0.3f,      //friction
+                               scene_scale);    //scale
+        tmp_mcs->addCollisionPlane(glm::vec3(0,0,1),    //normal of the plane
+                               -scene_scale/2,      //positions the plane on normal
+                               1.0f,      //elasticity
+                               0.3f,      //friction
+                               scene_scale);    //scale
+        tmp_mcs->addCollisionPlane(glm::vec3(-1,0,0.001),    //normal of the plane
+                               -scene_scale/2,      //positions the plane on normal
+                               1.0f,      //elasticity
+                               0.3f,      //friction
+                               scene_scale);    //scale
     return tmp_mcs;
 }
 
