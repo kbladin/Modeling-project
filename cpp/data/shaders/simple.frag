@@ -25,7 +25,7 @@ out vec3 color;
 void main(){
 	vec3 materialDiffuseColor = texture( textureSampler, UV ).rgb;//vec3(UV,0);
 
-	float lightIntensity = 2000;
+	float lightIntensity = 4000;
 
 	vec3 n = normalize(fragNormal_viewSpace);
 	vec3 e = normalize(viewDirectionToVertex_viewSpace); // Eye vector (away from the camera)

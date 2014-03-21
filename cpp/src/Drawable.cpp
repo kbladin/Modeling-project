@@ -227,7 +227,7 @@ void OpenGL_drawable::updateRuntimeBuffers(const MCS *mcs, MatrixHandler* matric
     // Do the matrix stuff
     matrices->calculateMatrices();
     
-    glm::vec3 lightPos = glm::vec3(30,30,30);
+    glm::vec3 lightPos = glm::vec3(10,50,30);
     glm::vec3 lightColor = glm::vec3(1,1,1);
     
     // Bind the VAO (Contains the vertex buffers)
