@@ -36,7 +36,7 @@ public:
     
     void print() const;
     void updateRuntimeBuffers(const MCS *mcs, MatrixHandler* matrices);
-    void updateAllBuffers(const MCS *mcs, Material* material, MatrixHandler* matrices, GLuint textureID);
+    void updateAllBuffers(const MCS *mcs, Material& material, MatrixHandler* matrices, GLuint textureID);
     void draw();
     
 private:

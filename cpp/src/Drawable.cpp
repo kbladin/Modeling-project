@@ -264,8 +264,9 @@ void OpenGL_drawable::updateRuntimeBuffers(const MCS *mcs, MatrixHandler* matric
 }
 
 
-void OpenGL_drawable::updateAllBuffers(const MCS *mcs, Material* material, MatrixHandler* matrices, GLuint textureID){
-    
+void OpenGL_drawable::updateAllBuffers(const MCS *mcs, Material& material, MatrixHandler* matrices, GLuint textureID){
+  
+  material_ = material;
     textureID_ = textureID;
     
     vertex_position_data_ = &mcs->vertices.positions[0];
