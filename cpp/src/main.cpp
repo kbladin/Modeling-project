@@ -96,7 +96,7 @@ int main(void){
     cloth3_textureID = loadBMP_custom("../../data/textures/cloth3.bmp");
     cloth4_textureID = loadBMP_custom("../../data/textures/cloth4.bmp");
     cloth5_textureID = loadBMP_custom("../../data/textures/cloth5.bmp");
-    slime_textureID = loadBMP_custom("../../data/textures/slime2.bmp");
+    slime_textureID = loadBMP_custom("../../data/textures/slime3.bmp");
     floor2_textureID = loadBMP_custom("../../data/textures/floor2.bmp");
     floor3_textureID = loadBMP_custom("../../data/textures/floor3.bmp");
     die_textureID = loadBMP_custom("../../data/textures/die.bmp");
