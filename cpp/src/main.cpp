@@ -71,6 +71,11 @@ GLuint induction_textureID;
 GLuint wall1_textureID;
 GLuint wall2_textureID;
 GLuint wall3_textureID;
+GLuint wall4_textureID;
+GLuint wall5_textureID;
+GLuint asfalt_textureID;
+GLuint hose_textureID;
+GLuint slime2_textureID;
 
 Material* ground_material;
 Material* object_material;
@@ -89,7 +94,7 @@ int main(void){
     programID = LoadShaders( "../../data/shaders/simple.vert", "../../data/shaders/simple.frag" );
     
     textureID = loadBMP_custom("../../data/textures/empty.bmp");
-    faces_textureID = loadBMP_custom("../../data/textures/empty1.bmp");
+    faces_textureID = loadBMP_custom("../../data/textures/faces.bmp");
     waffle_textureID = loadBMP_custom("../../data/textures/waffle.bmp");
     cloth1_textureID = loadBMP_custom("../../data/textures/cloth1.bmp");
     cloth2_textureID = loadBMP_custom("../../data/textures/cloth2.bmp");
@@ -99,14 +104,19 @@ int main(void){
     slime_textureID = loadBMP_custom("../../data/textures/slime2.bmp");
     floor2_textureID = loadBMP_custom("../../data/textures/floor2.bmp");
     floor3_textureID = loadBMP_custom("../../data/textures/floor3.bmp");
-    die_textureID = loadBMP_custom("../../data/textures/die.bmp");
+    die_textureID = loadBMP_custom("../../data/textures/die2.bmp");
     induction_textureID = loadBMP_custom("../../data/textures/induction.bmp");
     tiling_textureID = loadBMP_custom("../../data/textures/tiling.bmp");
     wall1_textureID = loadBMP_custom("../../data/textures/wall1.bmp");
     wall2_textureID = loadBMP_custom("../../data/textures/wall2.bmp");
     wall3_textureID = loadBMP_custom("../../data/textures/wall3.bmp");
+    wall4_textureID = loadBMP_custom("../../data/textures/casino.bmp");
+    wall5_textureID = loadBMP_custom("../../data/textures/casino2.bmp");
+    asfalt_textureID = loadBMP_custom("../../data/textures/asfalt.bmp");
+    hose_textureID = loadBMP_custom("../../data/textures/hose.bmp");
+    slime2_textureID = loadBMP_custom("../../data/textures/slime3.bmp");
 
-    
+  
     // INIT SIMULATION 
     int simulations_per_frame = 12;
     float dt = 1.0f/(60.0f*simulations_per_frame);
@@ -303,26 +313,29 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
             delete drawable_planes[i];
         }
         drawable_planes.resize(0);
-        for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
+        Material diffuse_material;
+        diffuse_material.specularity = 0;
+        drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[0], diffuse_material, programID, wall4_textureID));
+        for (int i=1; i<mcs->collisionPlanes.size(); ++i) {
+          drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i]  , *ground_material, programID, wall5_textureID));
         }
         std::cout << "Done" << std::endl;
     }
 
     if (key == GLFW_KEY_3 && action == GLFW_PRESS){
-        std::cout << "Loading Standing Snake..." << std::endl;
+        std::cout << "Loading Standing Hose..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers(textureID);
+        drawable_mcs->setUpBuffers(hose_textureID);
         mcs = createStandingSnake();
         cam->setTarget(mcs);
-        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices,textureID);
+        drawable_mcs->updateAllBuffers(mcs, *ground_material, matrices,hose_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
         drawable_planes.resize(0);
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
-            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, textureID));
+            drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, asfalt_textureID));
         }
         std::cout << "Done" << std::endl;
     }
@@ -405,14 +418,14 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         std::cout << "Loading Jelly..." << std::endl;
         delete mcs;
         drawable_mcs->deleteBuffers();
-        drawable_mcs->setUpBuffers(slime_textureID);
+        drawable_mcs->setUpBuffers(slime2_textureID);
         mcs = createJelly();
         cam->setTarget(mcs);
         Material slime_material;
         slime_material.wetness = 0.1;
         slime_material.shinyness = 64;
         slime_material.specularity = 0.5;
-        drawable_mcs->updateAllBuffers(mcs, slime_material, matrices,slime_textureID);
+        drawable_mcs->updateAllBuffers(mcs, slime_material, matrices,slime2_textureID);
         for (int i = 0; i<drawable_planes.size(); ++i) {
             delete drawable_planes[i];
         }
@@ -420,13 +433,13 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         for (int i=0; i<mcs->collisionPlanes.size(); ++i) {
             switch (i) {
                 case 0: // Ground
-                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, tiling_textureID));
                     break;
                 case 1: // Wall
-                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, tiling_textureID));
                     break;
                 default:
-                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, floor2_textureID));
+                    drawable_planes.push_back(new OpenGL_drawable(&mcs->collisionPlanes[i], *ground_material, programID, tiling_textureID));
                     break;
             }
         }
@@ -554,12 +567,14 @@ MCS * createFloppyThing(){
 
 MCS * createRollingDice(){
     MCS * tmp_mcs = new MCS(3,3,3);
-    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*80.0f;
-    tmp_mcs->addRotation(glm::vec3(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX),15.0f);
+    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*180.0f;
+    //tmp_mcs->addRotation(glm::vec3(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX),15.0f);
+  tmp_mcs->addRotation(glm::vec3(1.0f,1.0f,0.1f * rand()/((float) RAND_MAX)),15.0f);
+  
     tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
     tmp_mcs->connections.setSpringConstant(100000.0f);
-    tmp_mcs->setAvgVelocity(glm::vec3(-40.0f,10.0f,-50.0f));
-    float scene_scale = 80.0f;
+    tmp_mcs->setAvgVelocity(glm::vec3(-15.0f,50.0f,-30.0f) * 1.2f);
+    float scene_scale = 50.0f;
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                              -5.0f,      //positions the plane on normal
                              1.0f,      //elasticity
@@ -588,12 +603,14 @@ MCS * createStandingSnake(){
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
     tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.0),0.0f);
     tmp_mcs->connections.setSpringConstant(100000.0f);
-    tmp_mcs->setAvgPosition(glm::vec3(0,h/2-6,-15));
+    tmp_mcs->setAvgPosition(glm::vec3(0,h/2-6,0));
     tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
                                     1.0f,      //elasticity
-                                    0.3f);      //friction
+                                    0.3f,
+                                    100);      //friction
+
     return tmp_mcs;
 }
 
@@ -612,15 +629,16 @@ MCS * createCloth(){
 }
 
 MCS * createSoftCube(){
-    int s = 7;
+    int s = 4;
     MCS * tmp_mcs = new MCS(s,s,s);
     tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->connections.setSpringConstant(70.0f);
-    tmp_mcs->connections.setDamperConstant(80.0f);
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,1.0),-2.0f);
+    tmp_mcs->connections.setSpringConstant(100.0f);
+    tmp_mcs->connections.setDamperConstant(90.0f);
+    tmp_mcs->connections.setLengths(1.5f);
+    tmp_mcs->addRotation(glm::vec3(rand()/((float) RAND_MAX) - 0.5f,rand()/((float) RAND_MAX) -0.5f,rand()/((float) RAND_MAX)) - 0.5f,10.0f);
     tmp_mcs->setAvgPosition(glm::vec3(0,0,0));
     tmp_mcs->setAvgVelocity(glm::vec3(0,20,-30));
-    float scene_scale = 50.0f;
+    float scene_scale = 30.0f;
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                -5.0f,      //positions the plane on normal
                                1.0f,      //elasticity
@@ -643,23 +661,18 @@ MCS * createSpinner(){
         tmp_mcs->addRotation(glm::vec3(0.0,1.0,0.3),-50.0f);
         tmp_mcs->setAvgPosition(glm::vec3(0,-3,0));
         tmp_mcs->setAvgVelocity(glm::vec3(0,0,0));
-        float scene_scale = 50.0f;
+        float scene_scale = 70.0f;
         tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                    -5.0f,      //positions the plane on normal
                                    1.0f,      //elasticity
                                    0.1f,
                                    scene_scale);      //friction
-        tmp_mcs->addCollisionPlane(glm::vec3(1,0,0),    //normal of the plane
-                               -scene_scale/2,      //positions the plane on normal
-                               1.0f,      //elasticity
-                               0.3f,      //friction
-                               scene_scale);    //scale
         tmp_mcs->addCollisionPlane(glm::vec3(0,0,1),    //normal of the plane
                                -scene_scale/2,      //positions the plane on normal
                                1.0f,      //elasticity
                                0.3f,      //friction
                                scene_scale);    //scale
-        tmp_mcs->addCollisionPlane(glm::vec3(-1,0,0.001),    //normal of the plane
+        tmp_mcs->addCollisionPlane(glm::vec3(-1,0,0),    //normal of the plane
                                -scene_scale/2,      //positions the plane on normal
                                1.0f,      //elasticity
                                0.3f,      //friction
@@ -668,14 +681,17 @@ MCS * createSpinner(){
 }
 
 MCS * createJelly(){
-    MCS * tmp_mcs = new MCS(10,10,10); //Minns inte hur den var
+    int s  = 10;
+    MCS * tmp_mcs = new MCS(s,s,s); //Minns inte hur den var
     tmp_mcs->connections.setDamperConstant(0.1);
     tmp_mcs->connections.setSpringConstant(2200);
-    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f;
-    tmp_mcs->addRotation(glm::vec3(0.0,1.0,2.0),-7.0f);
+    tmp_mcs->externalAcceleration = glm::vec3(0,-1,0)*9.82f*1.0f;
+    tmp_mcs->addRotation(glm::vec3(rand()/((float) RAND_MAX),rand()/((float) RAND_MAX),-rand()/((float) RAND_MAX)),-5.0f);
+
     tmp_mcs->setAvgPosition(glm::vec3(0,5,0));
     tmp_mcs->setAvgVelocity(glm::vec3(1,2,0));
-    float scene_scale = 250.0f;
+    tmp_mcs->connections.setLengths(1.05f);
+    float scene_scale = 40.0f;
     tmp_mcs->addCollisionPlane(glm::vec3(0,1,0),    //normal of the plane
                                -5.0f,      //positions the plane on normal
                                1.0f,      //elasticity
@@ -686,6 +702,12 @@ MCS * createJelly(){
                                1.0f,      //elasticity
                                0.3f,      //friction
                                scene_scale);    //scale
+  tmp_mcs->addCollisionPlane(glm::vec3(1,0,0),    //normal of the plane
+                             -scene_scale/2,      //positions the plane on normal
+                             1.0f,      //elasticity
+                             0.3f,      //friction
+                             scene_scale);    //scale
+
     return tmp_mcs;
 }
 
