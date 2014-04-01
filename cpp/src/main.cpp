@@ -229,8 +229,8 @@ static void error_callback(int error, const char* description){
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
     //EXIT
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
+    //if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        //glfwSetWindowShouldClose(window, GL_TRUE);
 
     //PLAYBACK
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
