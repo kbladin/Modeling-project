@@ -240,6 +240,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         forward = true;
     if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
         forward = false;
+  /*
     if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
         backward = true;
     if (key == GLFW_KEY_LEFT && action == GLFW_RELEASE)
@@ -269,6 +270,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_F && action == GLFW_PRESS){
         mcs->freeze();
     }
+  */
     if (key == GLFW_KEY_TAB && action == GLFW_PRESS){
         if(!wireframe){
             glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
