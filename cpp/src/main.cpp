@@ -91,30 +91,30 @@ int main(void){
     matrices = new MatrixHandler(cam);
     
     // Create and compile the shader
-    programID = LoadShaders( "../../data/shaders/simple.vert", "../../data/shaders/simple.frag" );
+    programID = LoadShaders( "data/shaders/simple.vert", "data/shaders/simple.frag" );
     
-    textureID = loadBMP_custom("../../data/textures/empty.bmp");
-    faces_textureID = loadBMP_custom("../../data/textures/faces.bmp");
-    waffle_textureID = loadBMP_custom("../../data/textures/waffle.bmp");
-    cloth1_textureID = loadBMP_custom("../../data/textures/cloth1.bmp");
-    cloth2_textureID = loadBMP_custom("../../data/textures/cloth2.bmp");
-    cloth3_textureID = loadBMP_custom("../../data/textures/cloth3.bmp");
-    cloth4_textureID = loadBMP_custom("../../data/textures/cloth4.bmp");
-    cloth5_textureID = loadBMP_custom("../../data/textures/cloth5.bmp");
-    slime_textureID = loadBMP_custom("../../data/textures/slime3.bmp");
-    floor2_textureID = loadBMP_custom("../../data/textures/floor2.bmp");
-    floor3_textureID = loadBMP_custom("../../data/textures/floor3.bmp");
-    die_textureID = loadBMP_custom("../../data/textures/die2.bmp");
-    induction_textureID = loadBMP_custom("../../data/textures/induction.bmp");
-    tiling_textureID = loadBMP_custom("../../data/textures/tiling.bmp");
-    wall1_textureID = loadBMP_custom("../../data/textures/wall1.bmp");
-    wall2_textureID = loadBMP_custom("../../data/textures/wall2.bmp");
-    wall3_textureID = loadBMP_custom("../../data/textures/wall3.bmp");
-    wall4_textureID = loadBMP_custom("../../data/textures/casino.bmp");
-    wall5_textureID = loadBMP_custom("../../data/textures/casino2.bmp");
-    asfalt_textureID = loadBMP_custom("../../data/textures/asfalt.bmp");
-    hose_textureID = loadBMP_custom("../../data/textures/hose.bmp");
-    slime2_textureID = loadBMP_custom("../../data/textures/slime3.bmp");
+    textureID = loadBMP_custom("data/textures/empty.bmp");
+    faces_textureID = loadBMP_custom("data/textures/faces.bmp");
+    waffle_textureID = loadBMP_custom("data/textures/waffle.bmp");
+    cloth1_textureID = loadBMP_custom("data/textures/cloth1.bmp");
+    cloth2_textureID = loadBMP_custom("data/textures/cloth2.bmp");
+    cloth3_textureID = loadBMP_custom("data/textures/cloth3.bmp");
+    cloth4_textureID = loadBMP_custom("data/textures/cloth4.bmp");
+    cloth5_textureID = loadBMP_custom("data/textures/cloth5.bmp");
+    slime_textureID = loadBMP_custom("data/textures/slime3.bmp");
+    floor2_textureID = loadBMP_custom("data/textures/floor2.bmp");
+    floor3_textureID = loadBMP_custom("data/textures/floor3.bmp");
+    die_textureID = loadBMP_custom("data/textures/die2.bmp");
+    induction_textureID = loadBMP_custom("data/textures/induction.bmp");
+    tiling_textureID = loadBMP_custom("data/textures/tiling.bmp");
+    wall1_textureID = loadBMP_custom("data/textures/wall1.bmp");
+    wall2_textureID = loadBMP_custom("data/textures/wall2.bmp");
+    wall3_textureID = loadBMP_custom("data/textures/wall3.bmp");
+    wall4_textureID = loadBMP_custom("data/textures/casino.bmp");
+    wall5_textureID = loadBMP_custom("data/textures/casino2.bmp");
+    asfalt_textureID = loadBMP_custom("data/textures/asfalt.bmp");
+    hose_textureID = loadBMP_custom("data/textures/hose.bmp");
+    slime2_textureID = loadBMP_custom("data/textures/slime3.bmp");
 
   
     // INIT SIMULATION 
