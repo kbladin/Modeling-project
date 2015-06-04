@@ -1,6 +1,7 @@
-Modeling_project
+Modeling_project - Elastic Materials
 ================
 
-Simulation of elastic materials
+Simulation of deformable objects.
 
-Well hello there!
+Watch the result of the project here:
+http://kbladin.se/dmt_projects/elastic_materials.php
